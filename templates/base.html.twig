@@ -1,12 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100" lang="es-ES">
     <head>
         <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    	{% block meta %}{% endblock %}
+    	<meta name="author" content="Juan Antonio Fernández Ruiz, EE UNITIC Fcom">
+        
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        
+        {# 'app' must match the first argument to addEntry() in webpack.config.js #}
+            
+            {{ encore_entry_link_tags('app') }}
+            <link rel="stylesheet" href="/reservasfgh/public/build/vendors~app.css"><link rel="stylesheet" href="/reservasfgh/public/build/app.css">
+		{% block stylesheets %}{% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    <body class="d-flex flex-column h-100">
+        <header>
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+                <a class="navbar-brand" href="#"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+          
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#"><i class="fa fa-home fa-fw"></i> SGR: UNITIC fgh <span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mt-2 mt-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+            
+                </div>
+            </nav>
+        </header>
+    
+        <main role="main" class="flex-shrink-0">
+            <div class="container-fluid">
+                {% block body %}{% endblock %}
+            </div>
+        </main>
+        
+       
+        <footer class="footer mt-auto py-3">
+            <div class="container-fluid">
+                <div class="">
+                    <a href="https://geografiaehistoria.us.es/" alt="Facultad de Geografía e Historia"><img src="{{ asset('images/MarcaAguaFGH.svg')}}" width="150px"></a>
+                    <a href="http://www.us.es" alt="Universidad de Sevilla"><img src="{{ asset('images/logo_us.jpg') }}"></a>
+                </div>
+                <div class="">
+                    SGR: Sitema de Gestión de Reservas.
+                </div>
+            </div>
+        </footer>     
+
+        {% block javascripts %}
+        	{{ encore_entry_script_tags('app') }}
+
+            <!-- Renders app.js & a webpack runtime.js file
+                <script src="/build/runtime.js"></script>
+                <script src="/build/app.js"></script> -->
+             
+                <script src="/reservasfgh/public/build/runtime.js"></script>
+                <script src="/reservasfgh/public/build/vendors~app.js"></script>
+                <script src="/reservasfgh/public/build/app.js"></script>
+        {% endblock %}
     </body>
 </html>

@@ -1,0 +1,44 @@
+{# templates/static/wellcome.html.twig #}
+
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}
+	<link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+	<style>
+	  
+	    #font-lato {
+	        text-align: center;
+	        vertical-align: middle;
+	        font-weight: 100;
+	        font-family: 'Lato';
+	        font-size:56px;
+	        font-style: italic;
+	        color: #B0BEC5;
+	    }
+	</style>
+{% endblock %}
+
+{% block title %}
+	
+	SGR: wellcome
+{% endblock %}
+
+{% block header %}
+	<h1> </h1>
+	
+{% endblock %}
+
+{% block content %}
+	<div id="font-lato">
+		<p> {{ site_name }} </p>
+		<p> {{ site_app }} </p>
+	</div>
+	<div class="row justify-content-md-center">
+   		<div class="col col-md-6">
+			<div class="alert alert-primary text-center" role="alert">
+				Aplicación en desarrollo
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
