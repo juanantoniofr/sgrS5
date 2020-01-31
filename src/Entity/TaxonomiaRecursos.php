@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * TaxonomiaRecursos
@@ -22,9 +23,11 @@ class TaxonomiaRecursos
     private $id;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="nombre", type="string", length=256, nullable=true, options={"comment"="Agrupación de recursos, por ejemplo, salas de informática, salas de docencia, cámaras de Kanón XL 1200...."})
+     * @ORM\Column(name="nombre", type="string", length=256, options={"comment"="Agrupación de recursos, por ejemplo, salas de informática, salas de docencia, cámaras de Kanón XL 1200...."})
+     *
+     * @Assert\NotNull
      */
     private $nombre;
 
