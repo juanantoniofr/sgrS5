@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TaxonomiaRecursosController!{% endblock %}
+{% block title %}Hello!{% endblock %}
 
 {% block body %}
 <style>
@@ -9,12 +9,14 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/juanan/proyectos/testsymfony/testsetup/src/Controller/TaxonomiaRecursosController.php'|file_link(0) }}">src/Controller/TaxonomiaRecursosController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/juanan/proyectos/testsymfony/testsetup/templates/taxonomia_recursos/index.html.twig'|file_link(0) }}">templates/taxonomia_recursos/index.html.twig</a></code></li>
+	{% dump taxonomias %}
+    <h1>Hello, taxonomia (clasificación) de recursos</h1>
+
+     <ul>
+       	{% for taxonomia in taxonomias %}
+       		<li>{{ taxonomia.nombre }} ({{ taxonomia.id }})</li>
+       	{% endfor %}
     </ul>
 </div>
 {% endblock %}

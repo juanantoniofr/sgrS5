@@ -15,8 +15,12 @@ class TaxonomiaRecursosController extends AbstractController
      */
     public function index()
     {
+        $repository = $this->getDoctrine()->getRepository(TaxonomiaRecursos::class);
+
+        $taxonomias = $repository->findAll();
+
         return $this->render('taxonomia_recursos/index.html.twig', [
-            'controller_name' => 'TaxonomiaRecursosController',
+            'taxonomias' => $taxonomias,
         ]);
     }
 
