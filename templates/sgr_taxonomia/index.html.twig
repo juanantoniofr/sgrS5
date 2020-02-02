@@ -13,8 +13,14 @@
 
     Taxonomias espacios:
     <ul>
-        {% for Taxonomia in taxonomias %}
-        	<li> {{ taxonomia.nombre }}, ( {{ taxonomia.descripcion }})</li>
+        {% for taxonomia in taxonomias %}
+        	<li> {{ taxonomia.nombre }}, ( {{ taxonomia.descripcion }} )
+        		<ul>
+        		{% for espacio in taxonomia.sgrespacios %}
+        			<li>{{ espacio.nombre }}</li>
+        		{% endfor %}
+        		</ul>
+        	</li>
         {% endfor %}
     </ul>
 </div>

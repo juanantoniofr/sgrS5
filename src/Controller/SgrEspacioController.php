@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\SgrEspacio;
+use App\Entity\SgrTaxonomiaEspacio;
 
 class SgrEspacioController extends AbstractController
 {
@@ -28,18 +29,23 @@ class SgrEspacioController extends AbstractController
     /**
     * @Route("/sgr/espacio/create", name="sgr_espacio_create")
     */
-    public function createEspacio(): Response
+    public function create(): Response
     {
-    	$entityManager = $this->getDoctrine()->getManager();
-
+		$taxonomia = new SgrTaxonomiaEspacio();
+    	$taxonomia->setNombre('Aulas de Docencia');
+   	
     	$espacio = new SgrEspacio();
     	$espacio->setNombre('Aula de Teoría 2.1');
     	$espacio->setDescripcion('Aula de Teoría planta 2ª');
     	$espacio->setAforo(100);
     	$espacio->setMedios([ 'proyector' => true, 'Pc' => true ]);
+    	$espacio->setTaxonomia($taxonomia);
+
+    	$entityManager = $this->getDoctrine()->getManager();
 
     	$entityManager->persist($espacio);
-
+    	$entityManager->persist($taxonomia);    	
+    	
     	$entityManager->flush();
 
     	return new Response('Espacio creado con éxito. Id ='. $espacio->getId());
@@ -50,16 +56,15 @@ class SgrEspacioController extends AbstractController
     */
     public function show($id): Response
     {
-    	$respository = $this->getDoctrine()->getRepository(SgrEspacio::class);
-    	$espacio = $respository->find($id);
-
+    	$espacio = $this->getDoctrine()->getRepository(SgrEspacio::class)->find($id);
+    	
     	if (!$espacio){
 
     		throw $this->CreateNotFoundException("Espacio con id ". $id . " no encontrado");
     		
     	}
 
-    	return new Response( $espacio->getNombre() . '('. $espacio->getId() .')' . 'Descripcion: '. $espacio->getDescripcion());
+    	return new Response( $espacio->getNombre() . '('. $espacio->getTaxonomia()->getNombre() .')');
     }
 
     /**
@@ -101,5 +106,26 @@ class SgrEspacioController extends AbstractController
     	$entityManager->flush();
 
     	return new Response('Espacio eliminado con éxito');
+    }
+
+    /**
+    * @Route("/sgr/espacio/update/taxonomia", name="sgr_espacio_nueva_taxonomia")
+    */
+    public function nuevaTaxonomia(){
+
+    	$taxonomia = new SgrTaxonomiaEspacio();
+    	$taxonomia->setNombre('Aulas de Docencia');
+
+    	$entityManager = $this->getDoctrine()->getManager(); 
+    	$espacio = $entityManager->getRepository(SgrEspacio::class)->find(1);
+
+    	$espacio->setTaxonomia($taxonomia);
+
+    	$entityManager->persist($espacio);
+    	$entityManager->persist($taxonomia);
+
+    	$entityManager->flush();
+
+    	return new Response('Actualizada taxonomia '. $taxonomia->id .' del espacio ' . $espacio->getId());
     }
 }

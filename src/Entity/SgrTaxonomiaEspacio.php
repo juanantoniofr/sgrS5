@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,7 +26,17 @@ class SgrTaxonomiaEspacio
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $desccripcion;
+    private $descripcion;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrEspacio", mappedBy="taxonomia", orphanRemoval=true)
+     */
+    private $sgrEspacios;
+
+    public function __construct()
+    {
+        $this->sgrEspacios = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -43,14 +55,45 @@ class SgrTaxonomiaEspacio
         return $this;
     }
 
-    public function getDesccripcion(): ?string
+    public function getDescripcion(): ?string
     {
-        return $this->desccripcion;
+        return $this->descripcion;
     }
 
-    public function setDesccripcion(?string $desccripcion): self
+    public function setDescripcion(?string $descripcion): self
     {
-        $this->desccripcion = $desccripcion;
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SgrEspacio[]
+     */
+    public function getSgrEspacios(): Collection
+    {
+        return $this->sgrEspacios;
+    }
+
+    public function addSgrEspacio(SgrEspacio $sgrEspacio): self
+    {
+        if (!$this->sgrEspacios->contains($sgrEspacio)) {
+            $this->sgrEspacios[] = $sgrEspacio;
+            $sgrEspacio->setTaxonomia($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSgrEspacio(SgrEspacio $sgrEspacio): self
+    {
+        if ($this->sgrEspacios->contains($sgrEspacio)) {
+            $this->sgrEspacios->removeElement($sgrEspacio);
+            // set the owning side to null (unless already changed)
+            if ($sgrEspacio->getTaxonomia() === $this) {
+                $sgrEspacio->setTaxonomia(null);
+            }
+        }
 
         return $this;
     }

@@ -99,4 +99,17 @@ class SgrTaxonomiaController extends AbstractController
 
     	return new Response('taxonomia eliminado con éxito');
     }
+
+    /**
+    * @Route("/sgr/taxonomia/show/espacios/{id}", name="sgr_taxonomia_show_espacios")
+	*/
+	public function showEspacios()
+	{
+		$taxonomia = $this->getDoctrine()->getRepository(SgrTaxonomiaController::class)->find($id);
+
+		$espacios = $taxonomia->getSgrEspacios();
+		return $this->render('sgr_taxonomia/index.html.twig', [
+            'taxonomias' => $taxonomias,
+        ]);
+	}
 }
