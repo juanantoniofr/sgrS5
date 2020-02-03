@@ -9,6 +9,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\SgrTaxonomiaEspacio;
 
+//form
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
+
 class SgrTaxonomiaController extends AbstractController
 {
     /**
@@ -27,19 +33,23 @@ class SgrTaxonomiaController extends AbstractController
     /**
     * @Route("/sgr/taxonomia/create", name="sgr_taxonomia_create")
     */
-    public function createTaxonomia(): Response
+    public function create(Request $request): Response
     {
     	$entityManager = $this->getDoctrine()->getManager();
 
     	$taxonomia = new SgrTaxonomiaEspacio();
-    	$taxonomia->setNombre('Aulas de Teoría');
-    	$taxonomia->setDescripcion('Aula de uso para docencia teórica');
+    	$taxonomia->setNombre('');
+    	$taxonomia->setDescripcion('');
     	
-    	$entityManager->persist($taxonomia);
+    	$form = $this->createFormBuilder($taxonomia)
+            ->add('nombre', TextType::class)
+            ->add('descripcion', TextType::class)
+            ->add('save', SubmitType::class, ['label' => 'Crear Taxonomia'])
+            ->getForm();
 
-    	$entityManager->flush();
-
-    	return new Response('taxonomia creado con éxito. Id ='. $taxonomia->getId());
+        return $this->render('sgr_taxonomia/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
     
     /**
