@@ -47,6 +47,19 @@ class SgrTaxonomiaController extends AbstractController
             ->add('save', SubmitType::class, ['label' => 'Crear Taxonomia'])
             ->getForm();
 
+        $form->handleRequest($request);
+    	if ($form->isSubmitted() && $form->isValid()) {
+	        // $form->getData() holds the submitted values
+	        // but, the original `$taxonomia` variable has also been updated
+	        $taxonomia = $form->getData();
+
+	        $entityManager = $this->getDoctrine()->getManager();
+	        $entityManager->persist($taxonomia);
+	        $entityManager->flush();
+
+	        return $this->redirectToRoute('sgr_taxonomia');
+    	}
+
         return $this->render('sgr_taxonomia/create.html.twig', [
             'form' => $form->createView(),
         ]);
