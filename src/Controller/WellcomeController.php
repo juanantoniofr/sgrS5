@@ -11,7 +11,7 @@ class WellcomeController extends AbstractController
 {
     
     /**
-       * @Route("/wellcome", name="sgr_wellcome")
+       * @Route("/", name="sgr_wellcome")
     */
     public function wellcome()
     {
