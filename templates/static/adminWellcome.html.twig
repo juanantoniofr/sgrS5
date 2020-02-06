@@ -34,13 +34,15 @@
 		<p> {{ site_app }} </p>
 	</div>
 	<div class="row justify-content-md-center">
-   		<div class="col col-md-6">
-   			<h2>Bienvenido </h2
+   		<div class="col col-md-6 py-3">
+   			<h2>Bienvenido </h2>
 			<div class="alert alert-primary text-center" role="alert">
-				Página de inicio para usuarios con ROL {{ user.getNombre }}
-				{{ dump(user.getRoles) }}
+				Página de inicio para {{ user.getNombre }}
+				
 			</div>
 		</div>
 	</div>
+
+
 
 {% endblock %}

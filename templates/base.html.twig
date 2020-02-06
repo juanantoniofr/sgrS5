@@ -30,16 +30,21 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav mt-2 mt-md-0">
-                        <li class="nav-item disabled">
-                            <a class="nav-link" aria-disabled="true" href="#">Link</a>
-                        </li>
                         {% if (is_granted('IS_AUTHENTICATED_FULLY') == false) %}
                             <li class="nav-item active">
                                 <a class="nav-link" href="{{path('app_login')}}" tabindex="-1">Login</a>
                             </li>
                         {% else %}
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Menú
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="{{path('sgr_taxonomia')}}">Taxonomias</a>
+                                </div>
+                            </div>
                             <li class="nav-item active">
-                                <a class="nav-link" href="{{path('app_logout')}}" tabindex="-1">Logout</a>
+                                <a class="nav-link" href="{{path('app_logout')}}" tabindex="-1">Logout ({{ app.user.nombre }} {{ app.user.apellidos }})</a>
                             </li>
                         {% endif %}
 
