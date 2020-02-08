@@ -27,10 +27,12 @@ class SgrTermino
     private $descripcion;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SgrTaxonomiaEspacio", inversedBy="terminos")
+     * @ORM\ManyToOne(targetEntity="App\Entity\SgrTaxonomia", inversedBy="sgrTerminos")
      * @ORM\JoinColumn(nullable=false)
      */
     private $taxonomia;
+
+
 
     public function getId(): ?int
     {
@@ -61,15 +63,21 @@ class SgrTermino
         return $this;
     }
 
-    public function getTaxonomia(): ?SgrTaxonomiaEspacio
+    public function getTaxonomia(): ?SgrTaxonomia
     {
         return $this->taxonomia;
     }
 
-    public function setTaxonomia(?SgrTaxonomiaEspacio $taxonomia): self
+    public function setTaxonomia(?SgrTaxonomia $taxonomia): self
     {
         $this->taxonomia = $taxonomia;
 
         return $this;
     }
+
+    public function __toString(){
+
+        return $this->nombre;
+    }
+
 }

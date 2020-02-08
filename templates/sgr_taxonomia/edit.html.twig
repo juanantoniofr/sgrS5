@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit SgrTaxonomia{% endblock %}
+
+{% block body %}
+    <h1>Editar Taxonomia</h1>
+
+    {{ include('sgr_taxonomia/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('sgr_taxonomia_index') }}">Volver a la lista</a>
+
+    {{ include('sgr_taxonomia/_delete_form.html.twig') }}
+{% endblock %}

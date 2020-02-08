@@ -6,7 +6,7 @@
    		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
     	{% block meta %}{% endblock %}
     	<meta name="author" content="Juan Antonio Fernández Ruiz, EE UNITIC Fcom">
-        
+        <meta name="description" content="Aplicación de reserva y gestión de espacios de la Facultad de Geografía e Historia, Universidad de Sevilla">
         <title>{% block title %}Welcome!{% endblock %}</title>
         
         {# 'app' must match the first argument to addEntry() in webpack.config.js #}
@@ -40,7 +40,7 @@
                                     Menú
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="{{path('sgr_taxonomia')}}">Taxonomias</a>
+                                    <a class="dropdown-item" href="{{path('sgr_taxonomia_index')}}">Taxonomías</a>
                                 </div>
                             </div>
                             <li class="nav-item active">
@@ -56,7 +56,11 @@
     
         <main role="main" class="flex-shrink-0">
             <div class="container-fluid">
-                {% block body %}{% endblock %}
+                <div class="row justify-content-md-center py-5">
+                    <div class="col col-md-10">
+                        {% block body %}{% endblock %}
+                    </div>
+                </div>
             </div>
         </main>
         

@@ -2,148 +2,93 @@
 
 namespace App\Controller;
 
+use App\Entity\SgrTaxonomia;
+use App\Form\SgrTaxonomiaType;
+use App\Repository\SgrTaxonomiaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use App\Entity\SgrTaxonomiaEspacio;
-
-use App\Form\SgrTaxonomiaType;
-
-//form
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\Request;
-
+/**
+ * @Route("/admin/sgr/taxonomia")
+ */
 class SgrTaxonomiaController extends AbstractController
 {
     /**
-     * @Route("/admin/taxonomia", name="sgr_taxonomia")
+     * @Route("/", name="sgr_taxonomia_index", methods={"GET"})
      */
-    public function index()
+    public function index(SgrTaxonomiaRepository $sgrTaxonomiaRepository): Response
     {
-        $respository = $this->getDoctrine()->getRepository(SgrTaxonomiaEspacio::class);
-    	$taxonomias = $respository->findAll();
-        
         return $this->render('sgr_taxonomia/index.html.twig', [
-            'taxonomias' => $taxonomias,
+            'sgr_taxonomias' => $sgrTaxonomiaRepository->findAll(),
         ]);
     }
 
     /**
-    * @Route("/admin/taxonomia/create", name="sgr_taxonomia_create")
-    */
-    public function create(Request $request): Response
+     * @Route("/new", name="sgr_taxonomia_new", methods={"GET","POST"})
+     */
+    public function new(Request $request): Response
     {
-    	$entityManager = $this->getDoctrine()->getManager();
-
-    	$taxonomia = new SgrTaxonomiaEspacio();
-    	//$taxonomia->setNombre('');
-    	//$taxonomia->setDescripcion('');
-    	
-    	$form = $this->createForm(SgrTaxonomiaType::class, $taxonomia);
-
+        $sgrTaxonomium = new SgrTaxonomia();
+        $form = $this->createForm(SgrTaxonomiaType::class, $sgrTaxonomium);
         $form->handleRequest($request);
-    	if ($form->isSubmitted() && $form->isValid()) {
-	        // $form->getData() holds the submitted values
-	        // but, the original `$taxonomia` variable has also been updated
-	        $taxonomia = $form->getData();
 
-	        $entityManager = $this->getDoctrine()->getManager();
-	        $entityManager->persist($taxonomia);
-	        $entityManager->flush();
-
-	        return $this->redirectToRoute('sgr_taxonomia');
-    	}
-
-        return $this->render('sgr_taxonomia/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-    
-    /**
-    * @Route("/admin/taxonomia/show/{id}", name="sgr_taxonomia_show")
-    */
-    public function show($id): Response
-    {
-    	$respository = $this->getDoctrine()->getRepository(SgrTaxonomiaEspacio::class);
-    	$taxonomia = $respository->find($id);
-
-    	if (!$taxonomia){
-
-    		throw $this->CreateNotFoundException("taxonomia con id ". $id . " no encontrado");
-    		
-    	}
-
-    	return new Response( $taxonomia->getNombre() . '('. $taxonomia->getId() .')' . 'Descripcion: '. $taxonomia->getDescripcion());
-    }
-
-    /**
-    * @Route("/admin/taxonomia/edit/{id}", name="sgr_taxonomia_update")
-    */
-    public function update($id,Request $request): Response
-    {
-    	$entityManager = $this->getDoctrine()->getManager();
-    	$taxonomia = $entityManager->getRepository( SgrTaxonomiaEspacio::class)->find($id);
-
-    	if (!$taxonomia){
-
-    		throw $this->CreateNotFoundException("taxonomia con id ". $id . " no encontrado");
-    		
-    	}
-
-        $form = $this->createForm(SgrTaxonomiaType::class, $taxonomia);
-
-        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$taxonomia` variable has also been updated
-            $taxonomia = $form->getData();
-
-            // ... perform some action, such as saving the task to the database
-        
-            $entityManager->persist($taxonomia);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($sgrTaxonomium);
             $entityManager->flush();
 
-            return $this->redirectToRoute('sgr_taxonomia');
+            return $this->redirectToRoute('sgr_taxonomia_index');
         }
 
-    	return $this->render('sgr_taxonomia/update.html.twig', [
+        return $this->render('sgr_taxonomia/new.html.twig', [
+            'sgr_taxonomium' => $sgrTaxonomium,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-    * @Route("/admin/taxonomia/delete/{id}", name="sgr_taxonomia_delete")
-    */
-    public function delete($id): Response
+     * @Route("/{id}", name="sgr_taxonomia_show", methods={"GET"})
+     */
+    public function show(SgrTaxonomia $sgrTaxonomium): Response
     {
-    	$entityManager = $this->getDoctrine()->getManager();
-    	$taxonomia = $entityManager->getRepository(SgrTaxonomiaEspacio::class)->find($id);
-
-    	if (!$taxonomia){
-
-    		throw $this->CreateNotFoundException("Error Processing Request");
-    	}
-
-    	$entityManager->remove($taxonomia);
-    	$entityManager->flush();
-
-    	return new Response('taxonomia eliminado con éxito');
+        return $this->render('sgr_taxonomia/show.html.twig', [
+            'sgr_taxonomium' => $sgrTaxonomium,
+        ]);
     }
 
     /**
-    * @Route("/admin/taxonomia/show/espacios/{id}", name="sgr_taxonomia_show_espacios")
-	*/
-	public function showEspacios()
-	{
-		$taxonomia = $this->getDoctrine()->getRepository(SgrTaxonomiaController::class)->find($id);
+     * @Route("/{id}/edit", name="sgr_taxonomia_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, SgrTaxonomia $sgrTaxonomium): Response
+    {
+        $form = $this->createForm(SgrTaxonomiaType::class, $sgrTaxonomium);
+        $form->handleRequest($request);
 
-		$espacios = $taxonomia->getSgrEspacios();
-		return $this->render('sgr_taxonomia/index.html.twig', [
-            'taxonomias' => $taxonomias,
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('sgr_taxonomia_index');
+        }
+
+        return $this->render('sgr_taxonomia/edit.html.twig', [
+            'sgr_taxonomium' => $sgrTaxonomium,
+            'form' => $form->createView(),
         ]);
-	}
+    }
+
+    /**
+     * @Route("/{id}", name="sgr_taxonomia_delete", methods={"DELETE"})
+     */
+    public function delete(Request $request, SgrTaxonomia $sgrTaxonomium): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$sgrTaxonomium->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($sgrTaxonomium);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('sgr_taxonomia_index');
+    }
 }

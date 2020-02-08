@@ -41,11 +41,7 @@ class SgrEspacio
      */
     private $medios = [];
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SgrTaxonomiaEspacio", inversedBy="sgrEspacios")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $taxonomia;
+    
 
     public function getId(): ?int
     {
@@ -110,17 +106,6 @@ class SgrEspacio
         $this->medios = $medios;
 
         return $this;
-    }
-
-    public function getTaxonomia(): ?SgrTaxonomiaEspacio
-    {
-        return $this->taxonomia;
-    }
-
-    public function setTaxonomia(?SgrTaxonomiaEspacio $taxonomia): self
-    {
-        $this->taxonomia = $taxonomia;
-
-        return $this;
-    }
+    }   
+   
 }

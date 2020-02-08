@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SgrTaxonomia{% endblock %}
+
+{% block body %}
+    <h1>Crear nueva Taxonomia</h1>
+
+    {{ include('sgr_taxonomia/_form.html.twig') }}
+
+    <a href="{{ path('sgr_taxonomia_index') }}">Volver a la lista </a>
+{% endblock %}

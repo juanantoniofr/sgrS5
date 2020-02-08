@@ -1,17 +1,18 @@
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}SgrTermino index{% endblock %}
 
-{% block header %}
-    <h1>SgrTermino</h1>
-{% endblock %}
-{% block content %}
+{% block body %}
+
+    <h1>Términos</h1>
+
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Descripcion</th>
+                <th>Taxonomía</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -21,9 +22,10 @@
                 <td>{{ sgr_termino.id }}</td>
                 <td>{{ sgr_termino.nombre }}</td>
                 <td>{{ sgr_termino.descripcion }}</td>
+                <td>{{ sgr_termino.taxonomia }}</td>
                 <td>
-                    <a href="{{ path('sgr_termino_show', {'id': sgr_termino.id}) }}">show</a>
-                    <a href="{{ path('sgr_termino_edit', {'id': sgr_termino.id}) }}">edit</a>
+                    <a type="button" class="btn btn-secondary" href="{{ path('sgr_termino_show', {'id': sgr_termino.id}) }}">Ver</a>
+                    <a type="button" class="btn btn-primary" href="{{ path('sgr_termino_edit', {'id': sgr_termino.id}) }}">Editar</a>
                 </td>
             </tr>
         {% else %}
@@ -34,5 +36,6 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" role="button" href="{{ path('sgr_termino_new') }}">Nuevo término</a>
+    <a class="btn btn-primary" type="button" href="{{ path('sgr_termino_new') }}">Nuevo término</a>
+    <a class="btn btn-link" type="button" href="{{ path('sgr_taxonomia_index') }}">Ir a Taxonomías</a>
 {% endblock %}

@@ -1,36 +1,46 @@
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Hello SgrTaxonomiaController!{% endblock %}
+{% block title %}SgrTaxonomia index{% endblock %}
 
-{% block header %}
-    
-    <h1>Taxonomias</h1>
-    <a class="btn btn-primary" href="{{ path('sgr_taxonomia_create')}}" role="button">Nueva</a>
-
-{% endblock %}
-{% block content %}
+{% block body %}
+    <h1>Taxonomia </h1>
 
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th scope="col" style="width: 80%">Taxonomias</th>
-                <th scope="col" colspan="2">Acciones</th>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Términos</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-        {% for taxonomia in taxonomias %}
+        {% for sgr_taxonomium in sgr_taxonomias %}
             <tr>
-                <th scope="row col">{{ taxonomia.nombre }}</th>
+                <td>{{ sgr_taxonomium.id }}</td>
+                <td>{{ sgr_taxonomium.nombre }}</td>
+                <td>{{ sgr_taxonomium.descripcion }}</td>
                 <td>
-                    <a class="btn btn-primary" href="{{ path('sgr_taxonomia_update',{id :taxonomia.id}) }}" alt="Editar"><i class="fas fa-pencil-alt"></i></a>
-            </td>
-                <td>
-                    <a class="btn btn-danger" href="{{ path('sgr_taxonomia_update',{id :taxonomia.id}) }}" alt="Borrar"><i class="fas fa-trash-alt"></i></a>
+                    {% for sgr_termino in sgr_taxonomium.sgrTerminos %}
+                        {{ sgr_termino.nombre }} <br />
+                    {% endfor %}
                 </td>
-                
+                <td>
+                    <a type="button" class="btn btn-secondary" href="{{ path('sgr_taxonomia_show', {'id': sgr_taxonomium.id}) }}">Ver</a>
+                    <a type="button" class="btn btn-primary" href="{{ path('sgr_taxonomia_edit', {'id': sgr_taxonomium.id}) }}">Editar</a>
+                    
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No hay taxonomias definidas</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    <a class="btn btn-primary" role="button" href="{{ path('sgr_taxonomia_new') }}">Nueva Taxonomia</a>
+    <a type="button" class="btn btn-link" href="{{ path('sgr_termino_index') }}">Ir a Términos</a>
 {% endblock %}
