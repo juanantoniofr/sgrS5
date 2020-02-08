@@ -33,9 +33,15 @@ class SgrTaxonomiaEspacio
      */
     private $sgrEspacios;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrTermino", mappedBy="taxonomia", orphanRemoval=true)
+     */
+    private $terminos;
+
     public function __construct()
     {
         $this->sgrEspacios = new ArrayCollection();
+        $this->terminos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,5 +102,41 @@ class SgrTaxonomiaEspacio
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|SgrTermino[]
+     */
+    public function getTerminos(): Collection
+    {
+        return $this->terminos;
+    }
+
+    public function addTermino(SgrTermino $termino): self
+    {
+        if (!$this->terminos->contains($termino)) {
+            $this->terminos[] = $termino;
+            $termino->setTaxonomia($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTermino(SgrTermino $termino): self
+    {
+        if ($this->terminos->contains($termino)) {
+            $this->terminos->removeElement($termino);
+            // set the owning side to null (unless already changed)
+            if ($termino->getTaxonomia() === $this) {
+                $termino->setTaxonomia(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(){
+
+        return $this->nombre;
     }
 }

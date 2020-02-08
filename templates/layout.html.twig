@@ -10,9 +10,16 @@
 {% block stylesheets %}{% endblock %}
 
 {% block body %}
-
-	{% block header %}{% endblock %}
-
-	{% block content %}{% endblock%}
-	
+	<div class="row px-2">
+        <div class="col ">
+			{% block header %}{% endblock %}
+		</div>
+	</div>
+	<div class="container py-5" >
+		<div class="row justify-content-md-center py-5">
+			<div class="col col-md-8">
+				{% block content %}{% endblock%}
+			</div>
+		</div>
+	</div>
 {% endblock %}

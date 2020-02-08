@@ -1,0 +1,38 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}SgrTermino index{% endblock %}
+
+{% block header %}
+    <h1>SgrTermino</h1>
+{% endblock %}
+{% block content %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sgr_termino in sgr_terminos %}
+            <tr>
+                <td>{{ sgr_termino.id }}</td>
+                <td>{{ sgr_termino.nombre }}</td>
+                <td>{{ sgr_termino.descripcion }}</td>
+                <td>
+                    <a href="{{ path('sgr_termino_show', {'id': sgr_termino.id}) }}">show</a>
+                    <a href="{{ path('sgr_termino_edit', {'id': sgr_termino.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No hay términos definidos </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" role="button" href="{{ path('sgr_termino_new') }}">Nuevo término</a>
+{% endblock %}

@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\SgrTaxonomiaEspacio;
 
+use App\Form\SgrTaxonomiaType;
+
 //form
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -18,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SgrTaxonomiaController extends AbstractController
 {
     /**
-     * @Route("/sgr/taxonomia", name="sgr_taxonomia")
+     * @Route("/admin/taxonomia", name="sgr_taxonomia")
      */
     public function index()
     {
@@ -31,21 +33,17 @@ class SgrTaxonomiaController extends AbstractController
     }
 
     /**
-    * @Route("/sgr/taxonomia/create", name="sgr_taxonomia_create")
+    * @Route("/admin/taxonomia/create", name="sgr_taxonomia_create")
     */
     public function create(Request $request): Response
     {
     	$entityManager = $this->getDoctrine()->getManager();
 
     	$taxonomia = new SgrTaxonomiaEspacio();
-    	$taxonomia->setNombre('');
-    	$taxonomia->setDescripcion('');
+    	//$taxonomia->setNombre('');
+    	//$taxonomia->setDescripcion('');
     	
-    	$form = $this->createFormBuilder($taxonomia)
-            ->add('nombre', TextType::class)
-            ->add('descripcion', TextType::class)
-            ->add('save', SubmitType::class, ['label' => 'Crear Taxonomia'])
-            ->getForm();
+    	$form = $this->createForm(SgrTaxonomiaType::class, $taxonomia);
 
         $form->handleRequest($request);
     	if ($form->isSubmitted() && $form->isValid()) {
@@ -66,7 +64,7 @@ class SgrTaxonomiaController extends AbstractController
     }
     
     /**
-    * @Route("/sgr/taxonomia/show/{id}", name="sgr_taxonomia_show")
+    * @Route("/admin/taxonomia/show/{id}", name="sgr_taxonomia_show")
     */
     public function show($id): Response
     {
@@ -83,9 +81,9 @@ class SgrTaxonomiaController extends AbstractController
     }
 
     /**
-    * @Route("/sgr/taxonomia/edit/{id}", name="sgr_taxonomia_update")
+    * @Route("/admin/taxonomia/edit/{id}", name="sgr_taxonomia_update")
     */
-    public function update($id): Response
+    public function update($id,Request $request): Response
     {
     	$entityManager = $this->getDoctrine()->getManager();
     	$taxonomia = $entityManager->getRepository( SgrTaxonomiaEspacio::class)->find($id);
@@ -96,16 +94,29 @@ class SgrTaxonomiaController extends AbstractController
     		
     	}
 
-    	$taxonomia->setDescripcion('Nueva descripcion');
-    	$entityManager->persist($taxonomia);
+        $form = $this->createForm(SgrTaxonomiaType::class, $taxonomia);
 
-    	$entityManager->flush();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$taxonomia` variable has also been updated
+            $taxonomia = $form->getData();
 
-    	return new Response('Actualización realizada con éxito');
+            // ... perform some action, such as saving the task to the database
+        
+            $entityManager->persist($taxonomia);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('sgr_taxonomia');
+        }
+
+    	return $this->render('sgr_taxonomia/update.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
-    * @Route("/sgr/taxonomia/delete/{id}", name="sgr_taxonomia_delete")
+    * @Route("/admin/taxonomia/delete/{id}", name="sgr_taxonomia_delete")
     */
     public function delete($id): Response
     {
@@ -124,7 +135,7 @@ class SgrTaxonomiaController extends AbstractController
     }
 
     /**
-    * @Route("/sgr/taxonomia/show/espacios/{id}", name="sgr_taxonomia_show_espacios")
+    * @Route("/admin/taxonomia/show/espacios/{id}", name="sgr_taxonomia_show_espacios")
 	*/
 	public function showEspacios()
 	{

@@ -1,16 +1,15 @@
-{# templates/taxonomia/create.html.twig #}
+{# templates/sgr_taxonomia/update.html.twig #}
 {% extends 'layout.html.twig' %}
 
 {% block header %}
 
-	<h1>Nueva taxonomia</h1>
-
+	<h1>Editar taxonomia</h1>
+	
 {% endblock %}
 
 {% block content %}
 	
 	{{ form(form) }}
 	<p><a href="{{ path('sgr_taxonomia') }}">Volver a la lista de taxonomias</p>
-
 
 {% endblock %}

@@ -1,27 +1,36 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
 {% block title %}Hello SgrTaxonomiaController!{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block header %}
+    
+    <h1>Taxonomias</h1>
+    <a class="btn btn-primary" href="{{ path('sgr_taxonomia_create')}}" role="button">Nueva</a>
 
-<div class="example-wrapper">
-    <h1>Hello</h1>
+{% endblock %}
+{% block content %}
 
-    Taxonomias espacios:
-    <ul>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" style="width: 80%">Taxonomias</th>
+                <th scope="col" colspan="2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for taxonomia in taxonomias %}
-        	<li> {{ taxonomia.nombre }}, ( {{ taxonomia.descripcion }} )
-        		<ul>
-        		{% for espacio in taxonomia.sgrespacios %}
-        			<li>{{ espacio.nombre }}</li>
-        		{% endfor %}
-        		</ul>
-        	</li>
+            <tr>
+                <th scope="row col">{{ taxonomia.nombre }}</th>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('sgr_taxonomia_update',{id :taxonomia.id}) }}" alt="Editar"><i class="fas fa-pencil-alt"></i></a>
+            </td>
+                <td>
+                    <a class="btn btn-danger" href="{{ path('sgr_taxonomia_update',{id :taxonomia.id}) }}" alt="Borrar"><i class="fas fa-trash-alt"></i></a>
+                </td>
+                
+            </tr>
         {% endfor %}
-    </ul>
-</div>
+        </tbody>
+    </table>
+
 {% endblock %}
