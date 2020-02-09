@@ -63,12 +63,6 @@ class Espacio
      */
     private $aforoexamen;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="mediosdisponibles", type="string", length=512, nullable=true)
-     */
-    private $mediosdisponibles;
 
     /**
      * @var \DateTime
@@ -167,18 +161,6 @@ class Espacio
     public function setAforoexamen(?int $aforoexamen): self
     {
         $this->aforoexamen = $aforoexamen;
-
-        return $this;
-    }
-
-    public function getMediosdisponibles(): ?string
-    {
-        return $this->mediosdisponibles;
-    }
-
-    public function setMediosdisponibles(?string $mediosdisponibles): self
-    {
-        $this->mediosdisponibles = $mediosdisponibles;
 
         return $this;
     }

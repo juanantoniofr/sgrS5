@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,10 +28,6 @@ class SgrEspacio
      */
     private $descripcion;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $acl;
 
     /**
      * @ORM\Column(type="integer")
@@ -37,9 +35,20 @@ class SgrEspacio
     private $aforo;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $medios = [];
+    private $AforoExamen;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\SgrEquipamiento", inversedBy="sgrEspacios")
+     */
+    private $mediosDisponibles;
+
+    public function __construct()
+    {
+        $this->mediosDisponibles = new ArrayCollection();
+    }
+
 
     
 
@@ -72,18 +81,6 @@ class SgrEspacio
         return $this;
     }
 
-    public function getAcl(): ?string
-    {
-        return $this->acl;
-    }
-
-    public function setAcl(?string $acl): self
-    {
-        $this->acl = $acl;
-
-        return $this;
-    }
-
     public function getAforo(): ?int
     {
         return $this->aforo;
@@ -96,16 +93,47 @@ class SgrEspacio
         return $this;
     }
 
-    public function getMedios(): ?array
+    public function getAforoExamen(): ?int
     {
-        return $this->medios;
+        return $this->AforoExamen;
     }
 
-    public function setMedios(?array $medios): self
+    public function setAforoExamen(?int $AforoExamen): self
     {
-        $this->medios = $medios;
+        $this->AforoExamen = $AforoExamen;
 
         return $this;
-    }   
+    }
+
+    /**
+     * @return Collection|SgrEquipamiento[]
+     */
+    public function getMediosDisponibles(): Collection
+    {
+        return $this->mediosDisponibles;
+    }
+
+    public function addMediosDisponible(SgrEquipamiento $mediosDisponible): self
+    {
+        if (!$this->mediosDisponibles->contains($mediosDisponible)) {
+            $this->mediosDisponibles[] = $mediosDisponible;
+        }
+
+        return $this;
+    }
+
+    public function removeMediosDisponible(SgrEquipamiento $mediosDisponible): self
+    {
+        if ($this->mediosDisponibles->contains($mediosDisponible)) {
+            $this->mediosDisponibles->removeElement($mediosDisponible);
+        }
+
+        return $this;
+    }
+    
+    public function __toString(){
+
+        return $this->nombre;
+    }
    
 }

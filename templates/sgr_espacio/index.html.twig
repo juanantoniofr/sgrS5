@@ -11,9 +11,8 @@
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Descripcion</th>
-                <th>Acl</th>
-                <th>Aforo</th>
-                <th>Medios</th>
+                <th>Aforo Máximo</th>
+                <th>Aforo Examen</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -23,9 +22,8 @@
                 <td>{{ sgr_espacio.id }}</td>
                 <td>{{ sgr_espacio.nombre }}</td>
                 <td>{{ sgr_espacio.descripcion }}</td>
-                <td>{{ sgr_espacio.acl }}</td>
                 <td>{{ sgr_espacio.aforo }}</td>
-                <td>{{ sgr_espacio.medios ? sgr_espacio.medios|json_encode : '' }}</td>
+                <td>{{ sgr_espacio.AforoExamen }} </td>
                 <td>
                     <a class="btn btn-secondary" type="button" href="{{ path('sgr_espacio_show', {'id': sgr_espacio.id}) }}">Ver</a>
                     <a class="btn btn-primary" type="button" href="{{ path('sgr_espacio_edit', {'id': sgr_espacio.id}) }}">Editar</a>

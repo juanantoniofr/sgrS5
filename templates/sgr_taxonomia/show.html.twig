@@ -23,8 +23,8 @@
     </table>
 
     <div class="mb-4">
-        <a class="btn btn-primary" type="button" href="{{ path('sgr_taxonomia_edit', {'id': sgr_taxonomium.id}) }}">Editar</a>
-        <a class="btn btn-link" type="button" href="{{ path('sgr_taxonomia_index') }}">Volver a la lista</a>
+        <a class="btn btn-primary mb-2" type="button" href="{{ path('sgr_taxonomia_edit', {'id': sgr_taxonomium.id}) }}">Editar</a><br />
+        <a href="{{ path('sgr_taxonomia_index') }}">Volver a la lista</a>
     </div>
     {{ include('sgr_taxonomia/_delete_form.html.twig') }}
 

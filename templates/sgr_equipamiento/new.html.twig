@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SgrEquipamiento{% endblock %}
+
+{% block body %}
+    <h1>Nuevo Equipamiento</h1>
+
+    {{ include('sgr_equipamiento/_form.html.twig') }}
+
+    <a href="{{ path('sgr_equipamiento_index') }}">Volver a la lista</a>
+{% endblock %}

@@ -20,24 +20,21 @@
                 <td>{{ sgr_espacio.descripcion }}</td>
             </tr>
             <tr>
-                <th>Acl</th>
-                <td>{{ sgr_espacio.acl }}</td>
-            </tr>
-            <tr>
-                <th>Aforo</th>
+                <th>Aforo Máximo</th>
                 <td>{{ sgr_espacio.aforo }}</td>
             </tr>
             <tr>
-                <th>Medios</th>
-                <td>{{ sgr_espacio.medios ? sgr_espacio.medios|json_encode : '' }}</td>
+                <th>Aforo Examen</th>
+                <td>{{ sgr_espacio.AforoExamen }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a class="btn btn-primary" type="button" href="{{ path('sgr_espacio_edit', {'id': sgr_espacio.id}) }}">Editar</a>
+    <div class="mb-4">
 
-    <a class="btn btn-link" type="button" href="{{ path('sgr_espacio_index') }}">Volver a la lista</a>
-
+        <a class="btn btn-primary mb-2" type="button" href="{{ path('sgr_espacio_edit', {'id': sgr_espacio.id}) }}">Editar</a><br />
+        <a href="{{ path('sgr_espacio_index') }}">Volver a la lista</a>
+    </div>
 
     {{ include('sgr_espacio/_delete_form.html.twig') }}
 {% endblock %}
