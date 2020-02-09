@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +33,16 @@ class SgrTermino
      * @ORM\JoinColumn(nullable=false)
      */
     private $taxonomia;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrEspacio", mappedBy="termino")
+     */
+    private $sgrEspacios;
+
+    public function __construct()
+    {
+        $this->sgrEspacios = new ArrayCollection();
+    }
 
 
 
@@ -78,6 +90,37 @@ class SgrTermino
     public function __toString(){
 
         return $this->nombre;
+    }
+
+    /**
+     * @return Collection|SgrEspacio[]
+     */
+    public function getSgrEspacios(): Collection
+    {
+        return $this->sgrEspacios;
+    }
+
+    public function addSgrEspacio(SgrEspacio $sgrEspacio): self
+    {
+        if (!$this->sgrEspacios->contains($sgrEspacio)) {
+            $this->sgrEspacios[] = $sgrEspacio;
+            $sgrEspacio->setTermino($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSgrEspacio(SgrEspacio $sgrEspacio): self
+    {
+        if ($this->sgrEspacios->contains($sgrEspacio)) {
+            $this->sgrEspacios->removeElement($sgrEspacio);
+            // set the owning side to null (unless already changed)
+            if ($sgrEspacio->getTermino() === $this) {
+                $sgrEspacio->setTermino(null);
+            }
+        }
+
+        return $this;
     }
 
 }

@@ -44,6 +44,12 @@ class SgrEspacio
      */
     private $mediosDisponibles;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\SgrTermino", inversedBy="sgrEspacios")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $termino;
+
     public function __construct()
     {
         $this->mediosDisponibles = new ArrayCollection();
@@ -134,6 +140,18 @@ class SgrEspacio
     public function __toString(){
 
         return $this->nombre;
+    }
+
+    public function getTermino(): ?SgrTermino
+    {
+        return $this->termino;
+    }
+
+    public function setTermino(?SgrTermino $termino): self
+    {
+        $this->termino = $termino;
+
+        return $this;
     }
    
 }
