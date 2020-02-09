@@ -17,7 +17,7 @@ class SgrEspacioType extends AbstractType
             //->add('acl')
             ->add('aforo')
             ->add('aforo_examen')
-            //->add('medios')
+            ->add('mediosDisponibles')
         ;
     }
 

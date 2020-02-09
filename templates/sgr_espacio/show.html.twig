@@ -27,6 +27,16 @@
                 <th>Aforo Examen</th>
                 <td>{{ sgr_espacio.AforoExamen }}</td>
             </tr>
+            <tr>
+                <th>Equipamiento</th>
+                <td>
+                    {% for medio in sgr_espacio.mediosDisponibles %}
+                        {{ medio }} &nbsp;
+                    {% else %}
+                        No hay medios definidos
+                    {% endfor %}
+                </td>
+            </tr>
         </tbody>
     </table>
 

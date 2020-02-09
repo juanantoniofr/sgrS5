@@ -13,7 +13,8 @@
                 <th>Descripcion</th>
                 <th>Aforo Máximo</th>
                 <th>Aforo Examen</th>
-                <th>actions</th>
+                <th>Equipamiento</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,13 @@
                 <td>{{ sgr_espacio.descripcion }}</td>
                 <td>{{ sgr_espacio.aforo }}</td>
                 <td>{{ sgr_espacio.AforoExamen }} </td>
+                <td>
+                    {% for medio in sgr_espacio.mediosDisponibles %}
+                        {{ medio }} &nbsp;
+                    {% else %}
+                        No hay medios definidos
+                    {% endfor %}
+                </td>
                 <td>
                     <a class="btn btn-secondary" type="button" href="{{ path('sgr_espacio_show', {'id': sgr_espacio.id}) }}">Ver</a>
                     <a class="btn btn-primary" type="button" href="{{ path('sgr_espacio_edit', {'id': sgr_espacio.id}) }}">Editar</a>
