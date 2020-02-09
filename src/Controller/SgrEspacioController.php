@@ -2,130 +2,93 @@
 
 namespace App\Controller;
 
+use App\Entity\SgrEspacio;
+use App\Form\SgrEspacioType;
+use App\Repository\SgrEspacioRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use App\Entity\SgrEspacio;
-use App\Entity\SgrTaxonomiaEspacio;
-
+/**
+ * @Route("/admin/sgr/espacio")
+ */
 class SgrEspacioController extends AbstractController
 {
     /**
-     * @Route("/sgr/espacio", name="sgr_espacio")
+     * @Route("/", name="sgr_espacio_index", methods={"GET"})
      */
-    public function index()
+    public function index(SgrEspacioRepository $sgrEspacioRepository): Response
     {
-
-    	$respository = $this->getDoctrine()->getRepository(SgrEspacio::class);
-    	$espacios = $respository->findAll();
-        
         return $this->render('sgr_espacio/index.html.twig', [
-            'espacios' => $espacios,
+            'sgr_espacios' => $sgrEspacioRepository->findAll(),
         ]);
     }
 
     /**
-    * @Route("/sgr/espacio/create", name="sgr_espacio_create")
-    */
-    public function create(): Response
+     * @Route("/new", name="sgr_espacio_new", methods={"GET","POST"})
+     */
+    public function new(Request $request): Response
     {
-		$taxonomia = new SgrTaxonomiaEspacio();
-    	$taxonomia->setNombre('Aulas de Docencia');
-   	
-    	$espacio = new SgrEspacio();
-    	$espacio->setNombre('Aula de Teoría 2.1');
-    	$espacio->setDescripcion('Aula de Teoría planta 2ª');
-    	$espacio->setAforo(100);
-    	$espacio->setMedios([ 'proyector' => true, 'Pc' => true ]);
-    	$espacio->setTaxonomia($taxonomia);
+        $sgrEspacio = new SgrEspacio();
+        $form = $this->createForm(SgrEspacioType::class, $sgrEspacio);
+        $form->handleRequest($request);
 
-    	$entityManager = $this->getDoctrine()->getManager();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($sgrEspacio);
+            $entityManager->flush();
 
-    	$entityManager->persist($espacio);
-    	$entityManager->persist($taxonomia);    	
-    	
-    	$entityManager->flush();
+            return $this->redirectToRoute('sgr_espacio_index');
+        }
 
-    	return new Response('Espacio creado con éxito. Id ='. $espacio->getId());
-    }
-    
-    /**
-    * @Route("/sgr/espacio/show/{id}", name="sgr_espacio_show")
-    */
-    public function show($id): Response
-    {
-    	$espacio = $this->getDoctrine()->getRepository(SgrEspacio::class)->find($id);
-    	
-    	if (!$espacio){
-
-    		throw $this->CreateNotFoundException("Espacio con id ". $id . " no encontrado");
-    		
-    	}
-
-    	return new Response( $espacio->getNombre() . '('. $espacio->getTaxonomia()->getNombre() .')');
+        return $this->render('sgr_espacio/new.html.twig', [
+            'sgr_espacio' => $sgrEspacio,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
-    * @Route("/sgr/espacio/edit/{id}", name="sgr_espacio_update")
-    */
-    public function update($id): Response
+     * @Route("/{id}", name="sgr_espacio_show", methods={"GET"})
+     */
+    public function show(SgrEspacio $sgrEspacio): Response
     {
-    	$entityManager = $this->getDoctrine()->getManager();
-    	$espacio = $entityManager->getRepository(SgrEspacio::class)->find($id);
-
-    	if (!$espacio){
-
-    		throw $this->CreateNotFoundException("Espacio con id ". $id . " no encontrado");
-    		
-    	}
-
-    	$espacio->setDescripcion('Nueva descripcion');
-    	$entityManager->persist($espacio);
-
-    	$entityManager->flush();
-
-    	return new Response('Actualización realizada con éxito');
+        return $this->render('sgr_espacio/show.html.twig', [
+            'sgr_espacio' => $sgrEspacio,
+        ]);
     }
 
     /**
-    * @Route("/sgr/espacio/delete/{id}", name="sgr_espacio_delete")
-    */
-    public function delete($id): Response
+     * @Route("/{id}/edit", name="sgr_espacio_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, SgrEspacio $sgrEspacio): Response
     {
-    	$entityManager = $this->getDoctrine()->getManager();
-    	$espacio = $entityManager->getRepository(SgrEspacio::class)->find($id);
+        $form = $this->createForm(SgrEspacioType::class, $sgrEspacio);
+        $form->handleRequest($request);
 
-    	if (!$espacio){
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-    		throw $this->CreateNotFoundException("Error Processing Request");
-    	}
+            return $this->redirectToRoute('sgr_espacio_index');
+        }
 
-    	$entityManager->remove($espacio);
-    	$entityManager->flush();
-
-    	return new Response('Espacio eliminado con éxito');
+        return $this->render('sgr_espacio/edit.html.twig', [
+            'sgr_espacio' => $sgrEspacio,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
-    * @Route("/sgr/espacio/update/taxonomia", name="sgr_espacio_nueva_taxonomia")
-    */
-    public function nuevaTaxonomia(){
+     * @Route("/{id}", name="sgr_espacio_delete", methods={"DELETE"})
+     */
+    public function delete(Request $request, SgrEspacio $sgrEspacio): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$sgrEspacio->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($sgrEspacio);
+            $entityManager->flush();
+        }
 
-    	$taxonomia = new SgrTaxonomiaEspacio();
-    	$taxonomia->setNombre('Aulas de Docencia');
-
-    	$entityManager = $this->getDoctrine()->getManager(); 
-    	$espacio = $entityManager->getRepository(SgrEspacio::class)->find(1);
-
-    	$espacio->setTaxonomia($taxonomia);
-
-    	$entityManager->persist($espacio);
-    	$entityManager->persist($taxonomia);
-
-    	$entityManager->flush();
-
-    	return new Response('Actualizada taxonomia '. $taxonomia->id .' del espacio ' . $espacio->getId());
+        return $this->redirectToRoute('sgr_espacio_index');
     }
 }
