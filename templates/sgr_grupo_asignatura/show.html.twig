@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrGrupoAsignatura{% endblock %}
+
+{% block body %}
+    <h1>SgrGrupoAsignatura</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sgr_grupo_asignatura.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ sgr_grupo_asignatura.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Capacidad</th>
+                <td>{{ sgr_grupo_asignatura.capacidad }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_grupo_asignatura_index') }}">back to list</a>
+
+    <a href="{{ path('sgr_grupo_asignatura_edit', {'id': sgr_grupo_asignatura.id}) }}">edit</a>
+
+    {{ include('sgr_grupo_asignatura/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SgrGrupoAsignatura{% endblock %}
+
+{% block body %}
+    <h1>Create new SgrGrupoAsignatura</h1>
+
+    {{ include('sgr_grupo_asignatura/_form.html.twig') }}
+
+    <a href="{{ path('sgr_grupo_asignatura_index') }}">back to list</a>
+{% endblock %}

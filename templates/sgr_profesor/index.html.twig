@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrProfesor index{% endblock %}
+
+{% block body %}
+    <h1>SgrProfesor index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Dni</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sgr_profesor in sgr_profesors %}
+            <tr>
+                <td>{{ sgr_profesor.id }}</td>
+                <td>{{ sgr_profesor.nombre }}</td>
+                <td>{{ sgr_profesor.dni }}</td>
+                <td>
+                    <a href="{{ path('sgr_profesor_show', {'id': sgr_profesor.id}) }}">show</a>
+                    <a href="{{ path('sgr_profesor_edit', {'id': sgr_profesor.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_profesor_new') }}">Create new</a>
+{% endblock %}

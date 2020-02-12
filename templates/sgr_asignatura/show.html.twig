@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrAsignatura{% endblock %}
+
+{% block body %}
+    <h1>SgrAsignatura</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sgr_asignatura.id }}</td>
+            </tr>
+            <tr>
+                <th>Codigo</th>
+                <td>{{ sgr_asignatura.codigo }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ sgr_asignatura.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Cuatrimestre</th>
+                <td>{{ sgr_asignatura.cuatrimestre }}</td>
+            </tr>
+            <tr>
+                <th>Curso</th>
+                <td>{{ sgr_asignatura.curso }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_asignatura_index') }}">back to list</a>
+
+    <a href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">edit</a>
+
+    {{ include('sgr_asignatura/_delete_form.html.twig') }}
+{% endblock %}

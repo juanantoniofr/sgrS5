@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrAsignatura index{% endblock %}
+
+{% block body %}
+    <h1>SgrAsignatura index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Cuatrimestre</th>
+                <th>Curso</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sgr_asignatura in sgr_asignaturas %}
+            <tr>
+                <td>{{ sgr_asignatura.id }}</td>
+                <td>{{ sgr_asignatura.codigo }}</td>
+                <td>{{ sgr_asignatura.nombre }}</td>
+                <td>{{ sgr_asignatura.cuatrimestre }}</td>
+                <td>{{ sgr_asignatura.curso }}</td>
+                <td>
+                    <a href="{{ path('sgr_asignatura_show', {'id': sgr_asignatura.id}) }}">show</a>
+                    <a href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_asignatura_new') }}">Create new</a>
+{% endblock %}

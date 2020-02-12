@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit SgrProfesor{% endblock %}
+
+{% block body %}
+    <h1>Edit SgrProfesor</h1>
+
+    {{ include('sgr_profesor/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('sgr_profesor_index') }}">back to list</a>
+
+    {{ include('sgr_profesor/_delete_form.html.twig') }}
+{% endblock %}
