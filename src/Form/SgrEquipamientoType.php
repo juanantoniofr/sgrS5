@@ -14,7 +14,7 @@ class SgrEquipamientoType extends AbstractType
         $builder
             ->add('nombre')
             ->add('descripcion')
-            ->add('sgrEspacios')
+            //->add('sgrEspacios')
         ;
     }
 

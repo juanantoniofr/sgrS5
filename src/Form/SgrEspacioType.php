@@ -18,6 +18,7 @@ class SgrEspacioType extends AbstractType
             ->add('aforo')
             ->add('aforo_examen')
             ->add('mediosDisponibles')
+            ->add('termino')
         ;
     }
 
