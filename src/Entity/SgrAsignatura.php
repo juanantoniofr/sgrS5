@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +37,22 @@ class SgrAsignatura
      * @ORM\Column(type="string", length=255)
      */
     private $curso;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\SgrTitulacion", inversedBy="asignaturas")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sgrTitulacion;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrGrupoAsignatura", mappedBy="sgrAsignatura", orphanRemoval=true)
+     */
+    private $grupos;
+
+    public function __construct()
+    {
+        $this->grupos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -85,6 +103,49 @@ class SgrAsignatura
     public function setCurso(string $curso): self
     {
         $this->curso = $curso;
+
+        return $this;
+    }
+
+    public function getSgrTitulacion(): ?SgrTitulacion
+    {
+        return $this->sgrTitulacion;
+    }
+
+    public function setSgrTitulacion(?SgrTitulacion $sgrTitulacion): self
+    {
+        $this->sgrTitulacion = $sgrTitulacion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SgrGrupoAsignatura[]
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(SgrGrupoAsignatura $grupo): self
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos[] = $grupo;
+            $grupo->setSgrAsignatura($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(SgrGrupoAsignatura $grupo): self
+    {
+        if ($this->grupos->contains($grupo)) {
+            $this->grupos->removeElement($grupo);
+            // set the owning side to null (unless already changed)
+            if ($grupo->getSgrAsignatura() === $this) {
+                $grupo->setSgrAsignatura(null);
+            }
+        }
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,6 +27,16 @@ class SgrProfesor
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $dni;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\SgrGrupoAsignatura", inversedBy="sgrProfesors")
+     */
+    private $grupos;
+
+    public function __construct()
+    {
+        $this->grupos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -51,6 +63,32 @@ class SgrProfesor
     public function setDni(?string $dni): self
     {
         $this->dni = $dni;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SgrGrupoAsignatura[]
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(SgrGrupoAsignatura $grupo): self
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos[] = $grupo;
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(SgrGrupoAsignatura $grupo): self
+    {
+        if ($this->grupos->contains($grupo)) {
+            $this->grupos->removeElement($grupo);
+        }
 
         return $this;
     }
