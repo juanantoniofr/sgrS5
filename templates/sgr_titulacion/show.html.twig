@@ -3,7 +3,7 @@
 {% block title %}SgrTitulacion{% endblock %}
 
 {% block body %}
-    <h1>SgrTitulacion</h1>
+    <h1>Titulación</h1>
 
     <table class="table">
         <tbody>
@@ -25,10 +25,10 @@
             </tr>
         </tbody>
     </table>
-
-    <a href="{{ path('sgr_titulacion_index') }}">back to list</a>
-
-    <a href="{{ path('sgr_titulacion_edit', {'id': sgr_titulacion.id}) }}">edit</a>
-
+    <div class="mb-4">
+        
+        <a class="btn btn-primary mb-2" type="button" href="{{ path('sgr_titulacion_edit', {'id': sgr_titulacion.id}) }}">Editar</a><br />
+        <a href="{{ path('sgr_titulacion_index') }}">Volver a la lista</a>
+    </div>
     {{ include('sgr_titulacion/_delete_form.html.twig') }}
 {% endblock %}

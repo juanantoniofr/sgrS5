@@ -3,17 +3,17 @@
 {% block title %}SgrAsignatura index{% endblock %}
 
 {% block body %}
-    <h1>SgrAsignatura index</h1>
+    <h1>Asignaturas</h1>
 
-    <table class="table">
-        <thead>
+    <table class="table table-striped">
+        <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Codigo</th>
                 <th>Nombre</th>
                 <th>Cuatrimestre</th>
                 <th>Curso</th>
-                <th>actions</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -25,17 +25,17 @@
                 <td>{{ sgr_asignatura.cuatrimestre }}</td>
                 <td>{{ sgr_asignatura.curso }}</td>
                 <td>
-                    <a href="{{ path('sgr_asignatura_show', {'id': sgr_asignatura.id}) }}">show</a>
-                    <a href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">edit</a>
+                    <a class="btn btn-secondary" type="button" href="{{ path('sgr_asignatura_show', {'id': sgr_asignatura.id}) }}">Ver</a>
+                    <a class="btn btn-primary" type="button" href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">Editar</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="6">No hay asignaturas definidas</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('sgr_asignatura_new') }}">Create new</a>
+    <a class="btn btn-primary" type="button" href="{{ path('sgr_asignatura_new') }}">Nueva asignatura</a>
 {% endblock %}

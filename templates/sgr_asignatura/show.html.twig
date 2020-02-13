@@ -30,9 +30,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('sgr_asignatura_index') }}">back to list</a>
-
-    <a href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">edit</a>
-
+    <div class="mb-4">
+        <a class="btn btn-primary mb-2" href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">Editar</a><br />
+        <a href="{{ path('sgr_asignatura_index') }}">Volver a la lista</a>
+    </div>
     {{ include('sgr_asignatura/_delete_form.html.twig') }}
 {% endblock %}

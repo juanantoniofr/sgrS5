@@ -3,15 +3,15 @@
 {% block title %}SgrProfesor index{% endblock %}
 
 {% block body %}
-    <h1>SgrProfesor index</h1>
+    <h1>Profesores</h1>
 
-    <table class="table">
-        <thead>
+    <table class="table table-striped">
+        <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Dni</th>
-                <th>actions</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -21,17 +21,17 @@
                 <td>{{ sgr_profesor.nombre }}</td>
                 <td>{{ sgr_profesor.dni }}</td>
                 <td>
-                    <a href="{{ path('sgr_profesor_show', {'id': sgr_profesor.id}) }}">show</a>
-                    <a href="{{ path('sgr_profesor_edit', {'id': sgr_profesor.id}) }}">edit</a>
+                    <a class="btn btn-secondary" role="button" href="{{ path('sgr_profesor_show', {'id': sgr_profesor.id}) }}">Ver</a>
+                    <a class="btn btn-primary" role="button" href="{{ path('sgr_profesor_edit', {'id': sgr_profesor.id}) }}">Editar</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">No hay profesores definidos</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('sgr_profesor_new') }}">Create new</a>
+    <a class="btn btn-primary" role="button" href="{{ path('sgr_profesor_new') }}">Nuevo profesor</a>
 {% endblock %}
