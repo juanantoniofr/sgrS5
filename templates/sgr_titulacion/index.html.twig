@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SgrTitulacion index{% endblock %}
+{% block title %}Titulaciones{% endblock %}
 
 {% block body %}
-    <h1>SgrTitulacion index</h1>
+    <h1>Titulaciones</h1>
 
-    <table class="table">
-        <thead>
+    <table class="table table-striped">
+        <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Codigo</th>
@@ -23,17 +23,17 @@
                 <td>{{ sgr_titulacion.nombre }}</td>
                 <td>{{ sgr_titulacion.tipo }}</td>
                 <td>
-                    <a href="{{ path('sgr_titulacion_show', {'id': sgr_titulacion.id}) }}">show</a>
-                    <a href="{{ path('sgr_titulacion_edit', {'id': sgr_titulacion.id}) }}">edit</a>
+                    <a class="btn btn-secondary" type="button" href="{{ path('sgr_titulacion_show', {'id': sgr_titulacion.id}) }}">Ver</a>
+                    <a class="btn btn-primary" type="button" href="{{ path('sgr_titulacion_edit', {'id': sgr_titulacion.id}) }}">Editar</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">No hay titulaciones definidas</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('sgr_titulacion_new') }}">Create new</a>
+    <a class="btn btn-primary" type="button" href="{{ path('sgr_titulacion_new') }}">Create new</a>
 {% endblock %}

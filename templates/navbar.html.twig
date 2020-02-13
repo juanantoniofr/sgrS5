@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    
+    <a class="navbar-brand" href="#"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+          
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+        
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><i class="fa fa-home fa-fw"></i> SGR: UNITIC fgh <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mt-2 mt-md-0">
+                {% if (is_granted('IS_AUTHENTICATED_FULLY') == false) %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{path('app_login')}}" tabindex="-1">Login</a>
+                    </li>
+                {% else %}
+                    <div class="dropdown mx-3">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-shapes mr-2"></i>Recursos
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{{path('sgr_espacio_index')}}">Espacios</a>
+                            <a class="dropdown-item" href="{{path('sgr_equipamiento_index')}}">Equipamiento</a>
+                            <a class="dropdown-item" href="{{path('sgr_taxonomia_index')}}">Taxonomías</a>
+                        </div>
+                    </div>
+                    <div class="dropdown mx-3">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-graduation-cap mr-2"></i>Estudios
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{{path('sgr_titulacion_index')}}">Titulaciones</a>
+                            <a class="dropdown-item" href="{{path('sgr_asignatura_index')}}">Asignaturas</a>
+                            <a class="dropdown-item" href="{{path('sgr_profesor_index')}}">Profesores</a>
+                        </div>
+                    </div>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{path('app_logout')}}" tabindex="-1">Logout ({{ app.user.nombre }} {{ app.user.apellidos }})</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+            
+                </div>
+</nav>
