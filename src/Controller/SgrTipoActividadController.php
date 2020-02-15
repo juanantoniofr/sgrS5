@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/sgr/tipo/actividad")
+ * @Route("/admin/sgr/tipo/actividad")
  */
 class SgrTipoActividadController extends AbstractController
 {

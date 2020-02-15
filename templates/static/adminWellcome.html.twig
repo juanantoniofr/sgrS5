@@ -25,17 +25,13 @@
 
 
 {% block content %}
+	<div class="row justify-content-md-center">
+   		<div class="col col-md-6 py-3">
+   			<h2>Bienvenido <i>{{ user.getNombre }}</i></h2>
+		</div>
+	</div>
 	<div id="font-lato">
 		<p> {{ site_name }} </p>
 		<p> {{ site_app }} </p>
-	</div>
-	<div class="row justify-content-md-center">
-   		<div class="col col-md-6 py-3">
-   			<h2>Bienvenido </h2>
-			<div class="alert alert-primary text-center" role="alert">
-				Página de inicio para {{ user.getNombre }}
-				
-			</div>
-		</div>
 	</div>
 {% endblock %}

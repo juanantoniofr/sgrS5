@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -97,6 +99,16 @@ class SgrEvento
      * @ORM\JoinColumn(nullable=false)
      */
     private $actividad;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrFechasEvento", mappedBy="evento", orphanRemoval=true)
+     */
+    private $fechas;
+
+    public function __construct()
+    {
+        $this->fechas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -291,6 +303,37 @@ class SgrEvento
     public function setActividad(?SgrTipoActividad $actividad): self
     {
         $this->actividad = $actividad;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SgrFechasEvento[]
+     */
+    public function getFechas(): Collection
+    {
+        return $this->fechas;
+    }
+
+    public function addFecha(SgrFechasEvento $fecha): self
+    {
+        if (!$this->fechas->contains($fecha)) {
+            $this->fechas[] = $fecha;
+            $fecha->setEvento($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFecha(SgrFechasEvento $fecha): self
+    {
+        if ($this->fechas->contains($fecha)) {
+            $this->fechas->removeElement($fecha);
+            // set the owning side to null (unless already changed)
+            if ($fecha->getEvento() === $this) {
+                $fecha->setEvento(null);
+            }
+        }
 
         return $this;
     }

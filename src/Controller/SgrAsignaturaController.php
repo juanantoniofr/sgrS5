@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/sgr/asignatura")
+ * @Route("/admin/sgr/asignatura")
  */
 class SgrAsignaturaController extends AbstractController
 {

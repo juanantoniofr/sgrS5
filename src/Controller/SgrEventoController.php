@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/sgr/evento")
+ * @Route("/admin/sgr/evento")
  */
 class SgrEventoController extends AbstractController
 {
