@@ -33,9 +33,15 @@ class SgrProfesor
      */
     private $grupos;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrEvento", mappedBy="profesor")
+     */
+    private $eventos;
+
     public function __construct()
     {
         $this->grupos = new ArrayCollection();
+        $this->eventos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,6 +94,37 @@ class SgrProfesor
     {
         if ($this->grupos->contains($grupo)) {
             $this->grupos->removeElement($grupo);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SgrEvento[]
+     */
+    public function getEventos(): Collection
+    {
+        return $this->eventos;
+    }
+
+    public function addEvento(SgrEvento $evento): self
+    {
+        if (!$this->eventos->contains($evento)) {
+            $this->eventos[] = $evento;
+            $evento->setProfesor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvento(SgrEvento $evento): self
+    {
+        if ($this->eventos->contains($evento)) {
+            $this->eventos->removeElement($evento);
+            // set the owning side to null (unless already changed)
+            if ($evento->getProfesor() === $this) {
+                $evento->setProfesor(null);
+            }
         }
 
         return $this;

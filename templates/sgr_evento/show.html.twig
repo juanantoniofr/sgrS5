@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrEvento{% endblock %}
+
+{% block body %}
+    <h1>SgrEvento</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sgr_evento.id }}</td>
+            </tr>
+            <tr>
+                <th>Titulo</th>
+                <td>{{ sgr_evento.titulo }}</td>
+            </tr>
+            <tr>
+                <th>Actividad</th>
+                <td>{{ sgr_evento.actividad }}</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>{{ sgr_evento.estado }}</td>
+            </tr>
+            <tr>
+                <th>Periodica</th>
+                <td>{{ sgr_evento.periodica ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>F_inicio</th>
+                <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>F_fin</th>
+                <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>H_inicio</th>
+                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>H_fin</th>
+                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_evento_index') }}">back to list</a>
+
+    <a href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}">edit</a>
+
+    {{ include('sgr_evento/_delete_form.html.twig') }}
+{% endblock %}

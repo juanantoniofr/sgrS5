@@ -50,9 +50,15 @@ class SgrEspacio
      */
     private $termino;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrEvento", mappedBy="espacio")
+     */
+    private $eventos;
+
     public function __construct()
     {
         $this->mediosDisponibles = new ArrayCollection();
+        $this->eventos = new ArrayCollection();
     }
 
 
@@ -150,6 +156,37 @@ class SgrEspacio
     public function setTermino(?SgrTermino $termino): self
     {
         $this->termino = $termino;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SgrEvento[]
+     */
+    public function getEventos(): Collection
+    {
+        return $this->eventos;
+    }
+
+    public function addEvento(SgrEvento $evento): self
+    {
+        if (!$this->eventos->contains($evento)) {
+            $this->eventos[] = $evento;
+            $evento->setEspacio($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvento(SgrEvento $evento): self
+    {
+        if ($this->eventos->contains($evento)) {
+            $this->eventos->removeElement($evento);
+            // set the owning side to null (unless already changed)
+            if ($evento->getEspacio() === $this) {
+                $evento->setEspacio(null);
+            }
+        }
 
         return $this;
     }

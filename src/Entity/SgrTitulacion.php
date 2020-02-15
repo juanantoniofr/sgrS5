@@ -38,9 +38,15 @@ class SgrTitulacion
      */
     private $asignaturas;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SgrEvento", mappedBy="titulacion")
+     */
+    private $eventos;
+
     public function __construct()
     {
         $this->asignaturas = new ArrayCollection();
+        $this->eventos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,5 +124,36 @@ class SgrTitulacion
     public function __toString(){
 
         return $this->nombre;
+    }
+
+    /**
+     * @return Collection|SgrEvento[]
+     */
+    public function getEventos(): Collection
+    {
+        return $this->eventos;
+    }
+
+    public function addEvento(SgrEvento $evento): self
+    {
+        if (!$this->eventos->contains($evento)) {
+            $this->eventos[] = $evento;
+            $evento->setTitulacion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvento(SgrEvento $evento): self
+    {
+        if ($this->eventos->contains($evento)) {
+            $this->eventos->removeElement($evento);
+            // set the owning side to null (unless already changed)
+            if ($evento->getTitulacion() === $this) {
+                $evento->setTitulacion(null);
+            }
+        }
+
+        return $this;
     }
 }
