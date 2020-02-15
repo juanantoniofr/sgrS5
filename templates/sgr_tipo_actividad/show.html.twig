@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrTipoActividad{% endblock %}
+
+{% block body %}
+    <h1>SgrTipoActividad</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sgr_tipo_actividad.id }}</td>
+            </tr>
+            <tr>
+                <th>Actividad</th>
+                <td>{{ sgr_tipo_actividad.actividad }}</td>
+            </tr>
+            <tr>
+                <th>Descripcion</th>
+                <td>{{ sgr_tipo_actividad.descripcion }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_tipo_actividad_index') }}">back to list</a>
+
+    <a href="{{ path('sgr_tipo_actividad_edit', {'id': sgr_tipo_actividad.id}) }}">edit</a>
+
+    {{ include('sgr_tipo_actividad/_delete_form.html.twig') }}
+{% endblock %}

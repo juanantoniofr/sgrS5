@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrTipoActividad index{% endblock %}
+
+{% block body %}
+    <h1>SgrTipoActividad index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Actividad</th>
+                <th>Descripcion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sgr_tipo_actividad in sgr_tipo_actividads %}
+            <tr>
+                <td>{{ sgr_tipo_actividad.id }}</td>
+                <td>{{ sgr_tipo_actividad.actividad }}</td>
+                <td>{{ sgr_tipo_actividad.descripcion }}</td>
+                <td>
+                    <a href="{{ path('sgr_tipo_actividad_show', {'id': sgr_tipo_actividad.id}) }}">show</a>
+                    <a href="{{ path('sgr_tipo_actividad_edit', {'id': sgr_tipo_actividad.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('sgr_tipo_actividad_new') }}">Create new</a>
+{% endblock %}

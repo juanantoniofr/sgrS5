@@ -24,11 +24,6 @@ class SgrEvento
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $actividad;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $estado;
 
     /**
@@ -97,6 +92,12 @@ class SgrEvento
      */
     private $titulacion;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\SgrTipoActividad", inversedBy="eventos")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $actividad;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,18 +111,6 @@ class SgrEvento
     public function setTitulo(string $titulo): self
     {
         $this->titulo = $titulo;
-
-        return $this;
-    }
-
-    public function getActividad(): ?string
-    {
-        return $this->actividad;
-    }
-
-    public function setActividad(string $actividad): self
-    {
-        $this->actividad = $actividad;
 
         return $this;
     }
@@ -290,6 +279,18 @@ class SgrEvento
     public function setTitulacion(?SgrTitulacion $titulacion): self
     {
         $this->titulacion = $titulacion;
+
+        return $this;
+    }
+
+    public function getActividad(): ?SgrTipoActividad
+    {
+        return $this->actividad;
+    }
+
+    public function setActividad(?SgrTipoActividad $actividad): self
+    {
+        $this->actividad = $actividad;
 
         return $this;
     }

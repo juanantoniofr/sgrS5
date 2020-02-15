@@ -10,7 +10,6 @@
             <tr>
                 <th>Id</th>
                 <th>Titulo</th>
-                <th>Actividad</th>
                 <th>Estado</th>
                 <th>Periodica</th>
                 <th>F_inicio</th>
@@ -27,7 +26,6 @@
             <tr>
                 <td>{{ sgr_evento.id }}</td>
                 <td>{{ sgr_evento.titulo }}</td>
-                <td>{{ sgr_evento.actividad }}</td>
                 <td>{{ sgr_evento.estado }}</td>
                 <td>{{ sgr_evento.periodica ? 'Yes' : 'No' }}</td>
                 <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('Y-m-d') : '' }}</td>
@@ -43,7 +41,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="12">no records found</td>
+                <td colspan="11">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

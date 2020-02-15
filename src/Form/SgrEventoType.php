@@ -13,7 +13,6 @@ class SgrEventoType extends AbstractType
     {
         $builder
             ->add('titulo')
-            ->add('actividad')
             ->add('estado')
             ->add('periodica')
             ->add('f_inicio')
@@ -28,6 +27,7 @@ class SgrEventoType extends AbstractType
             ->add('profesor')
             ->add('grupoAsignatura')
             ->add('titulacion')
+            ->add('actividad')
         ;
     }
 

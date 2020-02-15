@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SgrTipoActividad{% endblock %}
+
+{% block body %}
+    <h1>Create new SgrTipoActividad</h1>
+
+    {{ include('sgr_tipo_actividad/_form.html.twig') }}
+
+    <a href="{{ path('sgr_tipo_actividad_index') }}">back to list</a>
+{% endblock %}
