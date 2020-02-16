@@ -109,19 +109,16 @@ class SgrEvento
     private $fechas;
 
     /**
+     * @ORM\Column(type="array")
+     */
+    private $dias = [];
+
+    /**
      * @ORM\PrePersist
      */
     public function setCreatedAtValue()
     {
         $this->createdAt = new \DateTime();
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function setEstadoValue()
-    {
-        $this->estado = "aprobada";
     }
 
     public function __construct()
@@ -237,7 +234,7 @@ class SgrEvento
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    public function setUpdatedAt(): self
     {
         $this->updatedAt = new \DateTime("now");//$updatedAt;
 
@@ -355,6 +352,18 @@ class SgrEvento
                 $fecha->setEvento(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDias(): ?array
+    {
+        return $this->dias;
+    }
+
+    public function setDias(array $dias): self
+    {
+        $this->dias = $dias;
 
         return $this;
     }
