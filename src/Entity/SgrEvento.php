@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SgrEvento
 {
+    const H_INICIO_MIN = '08:30';
+    const H_FIN_MAX = '21:30';
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
