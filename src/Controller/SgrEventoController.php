@@ -36,6 +36,8 @@ class SgrEventoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+            //User relations: 
+            $sgrEvento->setUser($this->getUser());
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
 

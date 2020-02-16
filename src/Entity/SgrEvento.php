@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SgrEventoRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class SgrEvento
 {
@@ -106,6 +107,22 @@ class SgrEvento
      * @ORM\OneToMany(targetEntity="App\Entity\SgrFechasEvento", mappedBy="evento", orphanRemoval=true)
      */
     private $fechas;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setEstadoValue()
+    {
+        $this->estado = "aprobada";
+    }
 
     public function __construct()
     {
@@ -213,6 +230,8 @@ class SgrEvento
         return $this;
     }
 
+
+
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
@@ -220,7 +239,7 @@ class SgrEvento
 
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new \DateTime("now");//$updatedAt;
 
         return $this;
     }
