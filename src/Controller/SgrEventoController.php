@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\SgrEvento;
+use App\Entity\SgrFechasEvento;
 use App\Form\SgrEventoType;
 use App\Repository\SgrEventoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,17 +38,41 @@ class SgrEventoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             
-            //Set default values
+            dump($sgrEvento);
+            //exit;
             //user 
             $sgrEvento->setUser($this->getUser());
+            
             //estado
             $sgrEvento->setEstado('aprobado');
+            
             //updatedAt
             $sgrEvento->setUpdatedAt();
-
-
-            $entityManager->persist($sgrEvento);
-            $entityManager->flush();
+            
+                       
+            //Add fechas
+            $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
+            $end = new \DateTime( $sgrEvento->getFFin()->format('Y-m-d') );
+            dump($sgrEvento);
+            for($i = $begin; $i <= $end; $i->modify('+7 days')){
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($i);
+                $sgrFechasEvento->setEvento($sgrEvento);
+                $entityManager->persist($sgrFechasEvento);
+                $entityManager->flush();
+                //dump($i);
+                //dump($sgrFechasEvento);
+                
+                //$entityManager->flush();    
+                //$sgrEvento->addFecha($sgrFechasEvento);
+                //dump($sgrEvento);
+            }
+            
+            //$entityManager->persist($sgrEvento);
+            //$entityManager->flush();
+            //dump($sgrEvento);
+            
+            
 
             return $this->redirectToRoute('sgr_evento_index');
         }

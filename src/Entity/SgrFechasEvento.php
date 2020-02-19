@@ -22,7 +22,7 @@ class SgrFechasEvento
     private $fecha;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SgrEvento", inversedBy="fechas")
+     * @ORM\ManyToOne(targetEntity="App\Entity\SgrEvento", inversedBy="fechas",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $evento;
