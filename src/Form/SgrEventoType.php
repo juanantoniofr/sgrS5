@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class SgrEventoType extends AbstractType
 {
@@ -14,21 +15,15 @@ class SgrEventoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            //Requeridos
             ->add('titulo')
             ->add('actividad')
-            
-            ->add('titulacion')
-            ->add('asignatura')
-            ->add('grupoAsignatura')
-            ->add('profesor')
-
             ->add('espacio')
-
+            //Calendario
             ->add('f_inicio',null,['label' => 'Desde'])
             ->add('f_fin',null,['label' => 'Hasta'])
             ->add('h_inicio',null,['label' => 'De'])
             ->add('h_fin',null,['label' => 'Hasta'])
-            
             ->add('periodica',null,['label' => 'Repetir'])
             ->add('dias', ChoiceType::class, [
                             'choices' => [
@@ -47,6 +42,13 @@ class SgrEventoType extends AbstractType
                             'attr' => ['class' => 'form-check-inline'],
                             'label' => 'Días de la semana',
             ])
+            //Opcionales
+            ->add('titulacion')
+            ->add('asignatura')
+            ->add('grupoAsignatura')
+            ->add('profesor')
+
+            
 
             //->add('estado')
             //->add('createdAt')

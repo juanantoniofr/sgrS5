@@ -17,7 +17,7 @@ class SgrFechasEvento
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $fecha;
 
@@ -54,5 +54,10 @@ class SgrFechasEvento
         $this->evento = $evento;
 
         return $this;
+    }
+
+    public function __toString(){
+
+        return $this->fecha;
     }
 }

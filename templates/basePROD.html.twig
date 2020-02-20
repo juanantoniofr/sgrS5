@@ -11,8 +11,12 @@
         
         {# 'app' must match the first argument to addEntry() in webpack.config.js #}
             
-            {{ encore_entry_link_tags('app') }}
-		     <link rel="stylesheet" href="/build/sgr.css">             
+            <!--{{ encore_entry_link_tags('app') }}
+            -->
+
+            <link rel="stylesheet" href="/reservasfgh/public/build/vendors~app.css">
+            <link rel="stylesheet" href="/reservasfgh/public/build/app.css">
+		                  
         {% block stylesheets %}{% endblock %}
     </head>
     <body class="d-flex flex-column h-100">
@@ -44,14 +48,19 @@
         </footer>     
 
         {% block javascripts %}
-        	
+        	<!--
             {{ encore_entry_script_tags('app') }}
-            
+            -->
             <!-- Renders app.js & a webpack runtime.js file -->
                <!-- <script src="/build/runtime.js"></script>
                 <script src="/build/app.js"></script> -->
                
-               
+                
+                
+               <script src="/reservasfgh/public/build/runtime.js"></script>
+                <script src="/reservasfgh/public/build/vendors~app.js"></script>
+                <script src="/reservasfgh/public/build/app.js"></script>
+            
         {% endblock %}
     </body>
 </html>
