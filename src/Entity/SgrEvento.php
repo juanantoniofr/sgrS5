@@ -150,48 +150,48 @@ class SgrEvento
         return $this;
     }
 
-    public function getFInicio(): ?\DateTimeInterface
+    public function getFInicio(): ?\DateTime
     {
         return $this->f_inicio;
     }
 
-    public function setFInicio(\DateTimeInterface $f_inicio): self
+    public function setFInicio(\DateTime $f_inicio): self
     {
         $this->f_inicio = $f_inicio;
 
         return $this;
     }
 
-    public function getFFin(): ?\DateTimeInterface
+    public function getFFin(): ?\DateTime
     {
         return $this->f_fin;
     }
 
-    public function setFFin(\DateTimeInterface $f_fin): self
+    public function setFFin(\DateTime $f_fin): self
     {
         $this->f_fin = $f_fin;
 
         return $this;
     }
 
-    public function getHInicio(): ?\DateTimeInterface
+    public function getHInicio(): ?\DateTime
     {
         return $this->h_inicio;
     }
 
-    public function setHInicio(\DateTimeInterface $h_inicio): self
+    public function setHInicio(\DateTime $h_inicio): self
     {
         $this->h_inicio = $h_inicio;
 
         return $this;
     }
 
-    public function getHFin(): ?\DateTimeInterface
+    public function getHFin(): ?\DateTime
     {
         return $this->h_fin;
     }
 
-    public function setHFin(\DateTimeInterface $h_fin): self
+    public function setHFin(\DateTime $h_fin): self
     {
         $this->h_fin = $h_fin;
 

@@ -1,3 +1,21 @@
 body {
     background-color: #f8f8f8;
 }
+.h{
+	width: 20px;
+	max-width: 20px;
+}
+
+label.required:before {
+    content: "*";
+    color:red;
+   	margin-right: 5px;
+}
+
+fieldset {
+	margin-bottom: 20px;
+}
+legend {
+	margin: 10px 0;
+	border-bottom: 1px solid #aaa;
+}

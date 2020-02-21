@@ -3,14 +3,23 @@
 namespace App\Form;
 
 use App\Entity\SgrEvento;
+use App\Form\DataTransformer\DateTimeTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class SgrEventoType extends AbstractType
 {
+
+    private $transformer;
+
+    public function __construct(DateTimeTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -20,7 +29,18 @@ class SgrEventoType extends AbstractType
             ->add('actividad')
             ->add('espacio',null,['required' => true])
             //Calendario
-            ->add('f_inicio',null,['label' => 'Desde'])
+            ->add('f_inicio', TextType::class, array(
+                'required' => true,
+                'label' => 'Fecha inicio',
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'dd-mm-yyyy HH:ii',
+                ),
+            ))
+
+            //->add('f_inicio',null,['label' => 'Desde'])
             ->add('f_fin',null,['label' => 'Hasta'])
             ->add('h_inicio',null,['label' => 'De'])
             ->add('h_fin',null,['label' => 'Hasta'])
@@ -55,6 +75,9 @@ class SgrEventoType extends AbstractType
             //->add('user')
             
         ;
+
+        $builder->get('f_inicio')
+            ->addModelTransformer($this->transformer);
     }
 
     public function configureOptions(OptionsResolver $resolver)
