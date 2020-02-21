@@ -11,7 +11,6 @@
                 <th>Id</th>
                 <th>Titulo</th>
                 <th>Estado</th>
-                <th>Periodica</th>
                 <th>F_inicio</th>
                 <th>F_fin</th>
                 <th>H_inicio</th>
@@ -27,7 +26,6 @@
                 <td>{{ sgr_evento.id }}</td>
                 <td>{{ sgr_evento.titulo }}</td>
                 <td>{{ sgr_evento.estado }}</td>
-                <td>{{ sgr_evento.periodica ? 'Yes' : 'No' }}</td>
                 <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('Y-m-d') : '' }}</td>
                 <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('Y-m-d') : '' }}</td>
                 <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>

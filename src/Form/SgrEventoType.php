@@ -18,13 +18,12 @@ class SgrEventoType extends AbstractType
             //Requeridos
             ->add('titulo')
             ->add('actividad')
-            ->add('espacio')
+            ->add('espacio',null,['required' => true])
             //Calendario
             ->add('f_inicio',null,['label' => 'Desde'])
             ->add('f_fin',null,['label' => 'Hasta'])
             ->add('h_inicio',null,['label' => 'De'])
             ->add('h_fin',null,['label' => 'Hasta'])
-            ->add('periodica',null,['label' => 'Repetir'])
             ->add('dias', ChoiceType::class, [
                             'choices' => [
                                             'Lunes' => '0',
@@ -40,7 +39,7 @@ class SgrEventoType extends AbstractType
                                 return ['class' => 'tinymce'];
                             },
                             'attr' => ['class' => 'form-check-inline'],
-                            'label' => 'Días de la semana',
+                            'label' => 'Repetir todas las semanas los días',
             ])
             //Opcionales
             ->add('titulacion')

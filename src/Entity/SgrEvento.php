@@ -32,11 +32,6 @@ class SgrEvento
     private $estado;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $periodica;
-
-    /**
      * @ORM\Column(type="date")
      */
     private $f_inicio;
@@ -151,18 +146,6 @@ class SgrEvento
     public function setEstado(string $estado): self
     {
         $this->estado = $estado;
-
-        return $this;
-    }
-
-    public function getPeriodica(): ?bool
-    {
-        return $this->periodica;
-    }
-
-    public function setPeriodica(bool $periodica): self
-    {
-        $this->periodica = $periodica;
 
         return $this;
     }
