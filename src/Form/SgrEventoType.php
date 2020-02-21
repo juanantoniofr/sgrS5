@@ -36,12 +36,22 @@ class SgrEventoType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'dd-mm-yyyy HH:ii',
+                    'data-format' => 'dd-mm-yyyy',
+                ),
+            ))
+            ->add('f_fin', TextType::class, array(
+                'required' => false,
+                'label' => 'Hasta',
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'dd-mm-yyyy',
                 ),
             ))
 
             //->add('f_inicio',null,['label' => 'Desde'])
-            ->add('f_fin',null,['label' => 'Hasta'])
+            //->add('f_fin',null,['label' => 'Hasta'])
             ->add('h_inicio',null,['label' => 'De'])
             ->add('h_fin',null,['label' => 'Hasta'])
             ->add('dias', ChoiceType::class, [

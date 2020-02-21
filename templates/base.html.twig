@@ -60,9 +60,30 @@
         <script type="text/javascript">
             $('#datetimepicker').datetimepicker({
                 locale: 'es',
-                useCurrent: false,
+                //useCurrent: true,
                 sideBySide: true,
                 format: 'L',
+                daysOfWeekDisabled: [0],
+                minDate: moment().add(2, 'days'),
+                //date: moment().add(1, 'days'),
+            });
+            $('#datetimepicker-ff').datetimepicker({
+                locale: 'es',
+                useCurrent: false, /*Important!!*/
+                sideBySide: true,
+                format: 'L',
+                daysOfWeekDisabled: [0],
+                minDate: moment().add(2, 'days'),
+                //date: moment().add(1, 'days'),
+            });
+            $("#datetimepicker").on("dp.change", function (e) {
+                
+                e.date.add(7,'days');
+                $('#datetimepicker-ff').data("DateTimePicker").minDate(e.date);
+            });
+            $("#datetimepicker-ff").on("dp.change", function (e) {
+                
+                $('#datetimepicker').data("DateTimePicker").maxDate(e.date);
             });
         </script>
 
