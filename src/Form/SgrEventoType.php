@@ -50,10 +50,28 @@ class SgrEventoType extends AbstractType
                 ),
             ))
 
-            //->add('f_inicio',null,['label' => 'Desde'])
-            //->add('f_fin',null,['label' => 'Hasta'])
-            ->add('h_inicio',null,['label' => 'De'])
-            ->add('h_fin',null,['label' => 'Hasta'])
+            //->add('h_inicio',null,['label' => 'De'])
+            ->add('h_inicio', TextType::class, array(
+                'required' => true,
+                'label' => 'Hora inicio',
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'HH-mm',
+                ),
+            ))
+            //->add('h_fin',null,['label' => 'Hasta'])
+            ->add('h_fin', TextType::class, array(
+                'required' => true,
+                'label' => 'Hora fin',
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'HH:mm',
+                ),
+            ))
             ->add('dias', ChoiceType::class, [
                             'choices' => [
                                             'Lunes' => '0',
@@ -69,7 +87,7 @@ class SgrEventoType extends AbstractType
                                 return ['class' => 'tinymce'];
                             },
                             'attr' => ['class' => 'form-check-inline'],
-                            'label' => 'Repetir todas las semanas los días',
+                            'label' => 'Los',
             ])
             //Opcionales
             ->add('titulacion')
