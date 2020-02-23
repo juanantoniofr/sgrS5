@@ -23,7 +23,7 @@ class SgrFechasEvento
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\SgrEvento", inversedBy="fechas",cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="evento_id", referencedColumnName="id",nullable=false)
      */
     private $evento;
 
@@ -58,6 +58,6 @@ class SgrFechasEvento
 
     public function __toString(){
 
-        return $this->fecha;
+        return $this->fecha->format('d-m-Y');
     }
 }

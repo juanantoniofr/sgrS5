@@ -67,11 +67,12 @@ class SgrEventoController extends AbstractController
      */
     public function show(SgrEvento $sgrEvento): Response
     {
+        //Data transformer
         $dias = [ 'Domingo', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         foreach ($sgrEvento->getDias() as $i) {
             $d_es[] = $dias[$i];
         }
-
+        
         $sgrEvento->setDias($d_es);
         return $this->render('sgr_evento/show.html.twig', [
             'sgr_evento' => $sgrEvento,
@@ -87,6 +88,14 @@ class SgrEventoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            foreach ($sgrEvento->getFechas() as $fecha) {
+                $sgrEvento->removeFecha($fecha);
+            }
+            
+            $this->setSgrFechasEvento($sgrEvento,$entityManager);
+            
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('sgr_evento_index');
@@ -134,10 +143,12 @@ class SgrEventoController extends AbstractController
         $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
         $interval = new \DateInterval('P7D');
         $period = new \DatePeriod($begin, $interval, $end);
+        //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
         foreach ($period as $dt) {
 
+            //Para cada día de la semana elegido por el usuario
             foreach ($weekDays as $day) {
-
+                
                 $dtdw = clone $dt->modify($days[$day]. ' this week');
                 if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
                     $sgrFechasEvento = new sgrFechasEvento();
