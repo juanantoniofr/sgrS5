@@ -113,34 +113,42 @@ class SgrEventoController extends AbstractController
     */
     private function setSgrFechasEvento(SgrEvento $sgrEvento,$entityManager){
 
-        $weekdays = ['0' => 'Monday', '1' => 'Tuesday', '2' => 'Wednesday', '3' => 'Thursday', '4' => 'Friday', '5' => 'Saturday'];
+        //$weekdays = ['0' => 'Monday', '1' => 'Tuesday', '2' => 'Wednesday', '3' => 'Thursday', '4' => 'Friday', '5' => 'Saturday'];
         
         if ( empty($sgrEvento->getDias()) ){
-            $dias[] =  $sgrEvento->getFInicio()->format('w') - 1; // w=0 para domingo.
+            $weekDays[] =  $sgrEvento->getFInicio()->format('l'); // Monday,....
         }
         else {
-            $dias[] = $sgrEvento->getDias();
+            $weekDays = $sgrEvento->getDias();
         }
         
         
         $end = new \DateTime( $sgrEvento->getFFin()->format('Y-m-d') );
         $end->modify('+1 day'); //include last day in DatePeriod
         
-        foreach ($dias as $dia) {
+        //foreach ($weekDays as $day) {
 
             $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
-            $beginFromDayWeek = clone $begin->modify($weekdays[$dia].' this week');
+            //$beginFromDayWeek = clone $begin->modify($day.' this week');
             $interval = new \DateInterval('P7D');
-            $period = new \DatePeriod($beginFromDayWeek, $interval, $end);
-                     
+            $period = new \DatePeriod($begin, $interval, $end);
+            dump($period);
+            dump($weekDays);     
             foreach ($period as $dt) {
 
-                $sgrFechasEvento = new sgrFechasEvento();
-                $sgrFechasEvento->setFecha($dt);
-                $entityManager->persist($sgrFechasEvento);
-                $sgrEvento->addFecha($sgrFechasEvento);
+                foreach ($weekDays as $day) {
+                    # code...
+                    $dtdw = clone $dt->modify($day. ' this week');
+                    dump( (int) $dtdw->diff($end)->format('%d'));
+                    if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
+                        $sgrFechasEvento = new sgrFechasEvento();
+                        $sgrFechasEvento->setFecha($dtdw);
+                        $entityManager->persist($sgrFechasEvento);
+                        $sgrEvento->addFecha($sgrFechasEvento);
+                    }
+                }
             }
-        }
+        //}
         return;
     }
 }

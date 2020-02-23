@@ -77,11 +77,11 @@ class SgrEventoType extends AbstractType
             ))
             ->add('dias', ChoiceType::class, [
                             'choices' => [
-                                            'Lunes' => '0',
-                                            'Martes' => '1',
-                                            'Miércoles' => '2',
-                                            'Jueves' => '3',
-                                            'Viernes' => '4',
+                                            'Lunes' => 'Monday',
+                                            'Martes' => 'Tuesday',
+                                            'Miércoles' => 'Wednesday',
+                                            'Jueves' => 'Thursday',
+                                            'Viernes' => 'Friday',
                                         ],
                             'expanded'  => true,
                             'multiple'  => true,
