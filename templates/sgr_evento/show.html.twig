@@ -20,20 +20,24 @@
                 <td>{{ sgr_evento.estado }}</td>
             </tr>
             <tr>
-                <th>F_inicio</th>
-                <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('Y-m-d') : '' }}</td>
+                <th>Desde</th>
+                <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('d-m-Y') : '' }}</td>
             </tr>
             <tr>
-                <th>F_fin</th>
-                <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('Y-m-d') : '' }}</td>
+                <th>Hasta</th>
+                <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('d-m-Y') : '' }}</td>
             </tr>
             <tr>
-                <th>H_inicio</th>
-                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>
+                <th>De</th>
+                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i') : '' }}</td>
             </tr>
             <tr>
-                <th>H_fin</th>
-                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i:s') : '' }}</td>
+                <th>A</th>
+                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Todos los</th>
+                <td> {{ sgr_evento.dias|join(', ',' y ')}} </td>
             </tr>
             <tr>
                 <th>CreatedAt</th>

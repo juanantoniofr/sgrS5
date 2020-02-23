@@ -50,8 +50,6 @@ class SgrEventoController extends AbstractController
             //set Fechas, Add fechas to sgrEvento, sgrFechasEvento persists
             $this->setSgrFechasEvento($sgrEvento, $entityManager);
 
-            dump($sgrEvento);
-            exit;
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
             
@@ -69,6 +67,12 @@ class SgrEventoController extends AbstractController
      */
     public function show(SgrEvento $sgrEvento): Response
     {
+        $dias = [ 'Domingo', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        foreach ($sgrEvento->getDias() as $i) {
+            $d_es[] = $dias[$i];
+        }
+
+        $sgrEvento->setDias($d_es);
         return $this->render('sgr_evento/show.html.twig', [
             'sgr_evento' => $sgrEvento,
         ]);
@@ -109,12 +113,14 @@ class SgrEventoController extends AbstractController
     }
 
     /**
-    *
+        * Persist sgrFechasEvento for all days from f_inicio to f_fin 
+        * @param SgrEvento $sgrEvento
+        * @param $entityManager
+        *
+        * @return void 
     */
     private function setSgrFechasEvento(SgrEvento $sgrEvento,$entityManager){
 
-        //$weekdays = ['0' => 'Monday', '1' => 'Tuesday', '2' => 'Wednesday', '3' => 'Thursday', '4' => 'Friday', '5' => 'Saturday'];
-        
         if ( empty($sgrEvento->getDias()) ){
             $weekDays[] =  $sgrEvento->getFInicio()->format('l'); // Monday,....
         }
@@ -122,33 +128,25 @@ class SgrEventoController extends AbstractController
             $weekDays = $sgrEvento->getDias();
         }
         
-        
+        $days = [ 'Sunday', 'Monday', 'tuesday', 'wednesday', 'thursday', 'saturday'];
         $end = new \DateTime( $sgrEvento->getFFin()->format('Y-m-d') );
         $end->modify('+1 day'); //include last day in DatePeriod
-        
-        //foreach ($weekDays as $day) {
+        $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
+        $interval = new \DateInterval('P7D');
+        $period = new \DatePeriod($begin, $interval, $end);
+        foreach ($period as $dt) {
 
-            $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
-            //$beginFromDayWeek = clone $begin->modify($day.' this week');
-            $interval = new \DateInterval('P7D');
-            $period = new \DatePeriod($begin, $interval, $end);
-            dump($period);
-            dump($weekDays);     
-            foreach ($period as $dt) {
+            foreach ($weekDays as $day) {
 
-                foreach ($weekDays as $day) {
-                    # code...
-                    $dtdw = clone $dt->modify($day. ' this week');
-                    dump( (int) $dtdw->diff($end)->format('%d'));
-                    if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
-                        $sgrFechasEvento = new sgrFechasEvento();
-                        $sgrFechasEvento->setFecha($dtdw);
-                        $entityManager->persist($sgrFechasEvento);
-                        $sgrEvento->addFecha($sgrFechasEvento);
-                    }
+                $dtdw = clone $dt->modify($days[$day]. ' this week');
+                if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
+                    $sgrFechasEvento = new sgrFechasEvento();
+                    $sgrFechasEvento->setFecha($dtdw);
+                    $entityManager->persist($sgrFechasEvento);
+                    $sgrEvento->addFecha($sgrFechasEvento);
                 }
             }
-        //}
+        }
         return;
     }
 }
