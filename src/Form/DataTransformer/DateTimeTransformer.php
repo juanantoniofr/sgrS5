@@ -20,7 +20,7 @@ class DateTimeTransformer implements DataTransformerInterface
             return '';
         }
 
-        return $datetime->format('d/m/Y H:i');
+        return $datetime->format('d/m/Y');
     }
 
     /**
@@ -31,11 +31,11 @@ class DateTimeTransformer implements DataTransformerInterface
      */
     public function reverseTransform($datetime)
     {
-        // datetime optional
+        
         if (!$datetime) {
             return;
         }
 
-        return date_create_from_format('d/m/Y H:i', $datetime, new \DateTimeZone('Europe/Madrid'));
+        return date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid'));
     }
 }

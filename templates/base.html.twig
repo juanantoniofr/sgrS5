@@ -58,23 +58,22 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
         <script type="text/javascript">
+            //console.log($('#sgr_evento_f_inicio'));
             $('#datetimepicker-fi').datetimepicker({
                 locale: 'es',
-                //useCurrent: true,
-                sideBySide: true,
+                useCurrent: false,
                 format: 'L',
                 daysOfWeekDisabled: [0],
-                minDate: moment().add(2, 'days'),
-                //date: moment().add(1, 'days'),
+                keepInvalid: true,
+                minDate: moment().add(1, 'days'),
             });
             $('#datetimepicker-ff').datetimepicker({
                 locale: 'es',
                 useCurrent: false, /*Important!!*/
-                sideBySide: true,
                 format: 'L',
                 daysOfWeekDisabled: [0],
-                minDate: moment().add(2, 'days'),
-                //date: moment().add(1, 'days'),
+                keepInvalid: true,
+                minDate: moment().add(1, 'days'),
             });
             $("#datetimepicker-fi").on("dp.change", function (e) {
                 
@@ -83,18 +82,18 @@
             });
             $("#datetimepicker-ff").on("dp.change", function (e) {
                 
-                $('#datetimepicker').data("DateTimePicker").maxDate(e.date);
+                $('#datetimepicker-fi').data("DateTimePicker").maxDate(e.date);
             });
             $('#datetimepicker-hi').datetimepicker({
                 locale: 'es',
-                sideBySide: true,
+                useCurrent: false,
                 format: 'LT',
                 enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ],
                 stepping: 15,
             });
             $('#datetimepicker-hf').datetimepicker({
                 locale: 'es',
-                sideBySide: true,
+                useCurrent: false,
                 format: 'LT',
                 enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21 ],
                 stepping: 15,
@@ -106,7 +105,7 @@
             });
             $("#datetimepicker-hf").on("dp.change", function (e) {
                 
-                $('#datetimepicker').data("DateTimePicker").maxDate(e.date);
+                $('#datetimepicker-hi').data("DateTimePicker").maxDate(e.date);
             });
         </script>
 

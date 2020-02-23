@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\SgrEvento;
 use App\Form\DataTransformer\DateTimeTransformer;
+use App\Form\DataTransformer\TimeTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,11 +15,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 class SgrEventoType extends AbstractType
 {
 
-    private $transformer;
+    private $transformerDateTime;
+    private $transformerTime;
 
-    public function __construct(DateTimeTransformer $transformer)
+    public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime)
     {
-        $this->transformer = $transformer;
+        $this->transformerDateTime = $transformerDateTime;
+        $this->transformerTime = $transformerTime;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -105,7 +108,13 @@ class SgrEventoType extends AbstractType
         ;
 
         $builder->get('f_inicio')
-            ->addModelTransformer($this->transformer);
+            ->addModelTransformer($this->transformerDateTime);
+        $builder->get('f_fin')
+            ->addModelTransformer($this->transformerDateTime);
+        $builder->get('h_inicio')
+            ->addModelTransformer($this->transformerTime);
+        $builder->get('h_fin')
+            ->addModelTransformer($this->transformerTime);
     }
 
     public function configureOptions(OptionsResolver $resolver)

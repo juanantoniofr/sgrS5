@@ -47,20 +47,12 @@ class SgrEventoController extends AbstractController
             //updatedAt
             $sgrEvento->setUpdatedAt();
             
-            //Add fechas
-            $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
-            $end = new \DateTime( $sgrEvento->getFFin()->format('Y-m-d') );
-            $interval = \DateInterval::createFromDateString('+7 days');
-            $period = new \DatePeriod($begin, $interval, $end);
+            //set Fechas, Add fechas to sgrEvento, sgrFechasEvento persists
+            $this->setSgrFechasEvento($sgrEvento, $entityManager);
 
-            foreach ($period as $dt) {
-                $sgrFechasEvento = new sgrFechasEvento();
-                $sgrFechasEvento->setFecha($dt);
-                $entityManager->persist($sgrFechasEvento);
-                    
-                $sgrEvento->addFecha($sgrFechasEvento);
-            }
-            $entityManager->persist($sgrEvento);            
+            dump($sgrEvento);
+            exit;
+            $entityManager->persist($sgrEvento);
             $entityManager->flush();
             
             return $this->redirectToRoute('sgr_evento_index');
@@ -114,5 +106,41 @@ class SgrEventoController extends AbstractController
         }
 
         return $this->redirectToRoute('sgr_evento_index');
+    }
+
+    /**
+    *
+    */
+    private function setSgrFechasEvento(SgrEvento $sgrEvento,$entityManager){
+
+        $weekdays = ['0' => 'Monday', '1' => 'Tuesday', '2' => 'Wednesday', '3' => 'Thursday', '4' => 'Friday', '5' => 'Saturday'];
+        
+        if ( empty($sgrEvento->getDias()) ){
+            $dias[] =  $sgrEvento->getFInicio()->format('w') - 1; // w=0 para domingo.
+        }
+        else {
+            $dias[] = $sgrEvento->getDias();
+        }
+        
+        
+        $end = new \DateTime( $sgrEvento->getFFin()->format('Y-m-d') );
+        $end->modify('+1 day'); //include last day in DatePeriod
+        
+        foreach ($dias as $dia) {
+
+            $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
+            $beginFromDayWeek = clone $begin->modify($weekdays[$dia].' this week');
+            $interval = new \DateInterval('P7D');
+            $period = new \DatePeriod($beginFromDayWeek, $interval, $end);
+                     
+            foreach ($period as $dt) {
+
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dt);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
+        }
+        return;
     }
 }
