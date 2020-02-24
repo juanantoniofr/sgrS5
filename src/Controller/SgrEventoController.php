@@ -48,8 +48,16 @@ class SgrEventoController extends AbstractController
             $sgrEvento->setUpdatedAt();
             
             //set Fechas, Add fechas to sgrEvento, sgrFechasEvento persists
-            $this->setSgrFechasEvento($sgrEvento, $entityManager);
+            //$this->setSgrFechasEvento($sgrEvento, $entityManager);
 
+            //Array datetime fechasEventos from f_inicio to f_fin 
+            $dateTimeFechasEvento = $sgrEvento->getDateTimeFechasEvento();
+            foreach ($dateTimeFechasEvento as $dtFechaEvento) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dtFechaEvento);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
             
@@ -94,7 +102,14 @@ class SgrEventoController extends AbstractController
                 $sgrEvento->removeFecha($fecha);
             }
             
-            $this->setSgrFechasEvento($sgrEvento,$entityManager);
+            //$this->setSgrFechasEvento($sgrEvento,$entityManager);
+            $dateTimeFechasEvento = $sgrEvento->getDateTimeFechasEvento();
+            foreach ($dateTimeFechasEvento as $dtFechaEvento) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dtFechaEvento);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
             
             $this->getDoctrine()->getManager()->flush();
 
@@ -121,43 +136,5 @@ class SgrEventoController extends AbstractController
         return $this->redirectToRoute('sgr_evento_index');
     }
 
-    /**
-        * Persist sgrFechasEvento for all days from f_inicio to f_fin 
-        * @param SgrEvento $sgrEvento
-        * @param $entityManager
-        *
-        * @return void 
-    */
-    private function setSgrFechasEvento(SgrEvento $sgrEvento,$entityManager){
 
-        if ( empty($sgrEvento->getDias()) ){
-            $weekDays[] =  $sgrEvento->getFInicio()->format('l'); // Monday,....
-        }
-        else {
-            $weekDays = $sgrEvento->getDias();
-        }
-        
-        $days = [ 'Sunday', 'Monday', 'tuesday', 'wednesday', 'thursday', 'saturday'];
-        $end = new \DateTime( $sgrEvento->getFFin()->format('Y-m-d') );
-        $end->modify('+1 day'); //include last day in DatePeriod
-        $begin = new \DateTime( $sgrEvento->getFInicio()->format('Y-m-d') );
-        $interval = new \DateInterval('P7D');
-        $period = new \DatePeriod($begin, $interval, $end);
-        //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
-        foreach ($period as $dt) {
-
-            //Para cada día de la semana elegido por el usuario
-            foreach ($weekDays as $day) {
-                
-                $dtdw = clone $dt->modify($days[$day]. ' this week');
-                if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
-                    $sgrFechasEvento = new sgrFechasEvento();
-                    $sgrFechasEvento->setFecha($dtdw);
-                    $entityManager->persist($sgrFechasEvento);
-                    $sgrEvento->addFecha($sgrFechasEvento);
-                }
-            }
-        }
-        return;
-    }
 }

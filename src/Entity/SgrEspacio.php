@@ -64,16 +64,17 @@ class SgrEspacio
     /**
     * //Recibe una fecha (Object Date), y devuelve true si exitis en DB
     */
-    public function isOcupado(\DateTime $checkFecha){
+    public function isOcupado(\DateTime $checkFecha, $id_evento){
 
         foreach ($this->getEventos() as $sgrEvento) {
             
-            foreach ($sgrEvento->getFechas() as $sgrEventoFechas) {
-                //dump($sgrEventoFechas->getFecha() == $checkFecha);
-                if ( $sgrEventoFechas->getFecha() == $checkFecha )
-                    return true;
+            if ($sgrEvento->getId() != $id_evento)
+                foreach ($sgrEvento->getFechas() as $sgrEventoFechas) {
+                    //dump($sgrEventoFechas->getFecha() == $checkFecha);
+                    if ( $sgrEventoFechas->getFecha() == $checkFecha )
+                        return true;
+                }
             }
-        }
 
         return false;
     }

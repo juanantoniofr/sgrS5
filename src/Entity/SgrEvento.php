@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-//use App\Validator\Constraints as SgrAssert;
+//use App\Validator\Constraints as SgrAssert; (custom constrait)
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -366,9 +366,8 @@ class SgrEvento
     {
 
         foreach ($this->getDateTimeFechasEvento() as $dt_evento) {
-            dump($dt_evento);    
-
-            if ( $this->getEspacio()->isOcupado($dt_evento) )
+ 
+            if ( $this->getEspacio()->isOcupado($dt_evento,$this->getId()) )
 
                 $context->buildViolation('Espacio ocupado! ' .  $dt_evento->format('d-m-Y'))
                 ->atPath('titulo')
