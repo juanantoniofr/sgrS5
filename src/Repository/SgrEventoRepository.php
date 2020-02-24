@@ -19,6 +19,7 @@ class SgrEventoRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrEvento::class);
     }
 
+    
     // /**
     //  * @return SgrEvento[] Returns an array of SgrEvento objects
     //  */

@@ -6,6 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+//use App\Validator\Constraints as SgrAssert;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SgrEventoRepository")
  * @ORM\HasLifecycleCallbacks()
@@ -210,8 +214,6 @@ class SgrEvento
         return $this;
     }
 
-
-
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
@@ -316,6 +318,7 @@ class SgrEvento
         return $this->fechas;
     }
 
+    
     public function addFecha(SgrFechasEvento $fecha): self
     {
         if (!$this->fechas->contains($fecha)) {
@@ -355,4 +358,61 @@ class SgrEvento
 
         return $this->titulo;
     }
+    
+    /**
+      * @Assert\Callback
+    */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+
+        foreach ($this->getDateTimeFechasEvento() as $dt_evento) {
+            dump($dt_evento);    
+
+            if ( $this->getEspacio()->isOcupado($dt_evento) )
+
+                $context->buildViolation('Espacio ocupado! ' .  $dt_evento->format('d-m-Y'))
+                ->atPath('titulo')
+                ->addViolation();    
+        }
+        
+    }    
+    
+    /**
+        * Calcula un array de datetimes object para todos los días de dias[] desde f_inicio hasta f_fin 
+    */
+    
+    public function getDateTimeFechasEvento(){
+
+        $adt = [];
+
+        if ( !$this->getDias() ){
+            $weekDays[] =  $this->getFInicio()->format('l'); // Monday, Tuesday, ....
+        }
+        else {
+            $weekDays = $this->getDias(); //getDias devuelve el array dias
+        }
+        
+        $days = [ 'Sunday', 'Monday', 'tuesday', 'wednesday', 'thursday', 'saturday'];
+        $end = $this->getFFin();
+        $end->modify('+1 day'); //include last day in DatePeriod
+        $begin = $this->getFInicio();
+        $interval = new \DateInterval('P7D');
+        $period = new \DatePeriod($begin, $interval, $end);
+        //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
+        foreach ($period as $dt) {
+
+            //Para cada día de la semana elegido por el usuario
+            foreach ($weekDays as $day) {
+                
+                $dtdw = clone $dt->modify($days[$day]);
+                if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
+                    
+                    $adt[] = $dtdw;
+                }
+            }
+        }
+        return $adt;
+    }
+    
+
 }
