@@ -359,28 +359,29 @@ class SgrEvento
         return $this->titulo;
     }
     
-    /**
-      * @Assert\Callback
-    */
-    public function validate(ExecutionContextInterface $context, $payload)
+    /*public function validate(ExecutionContextInterface $context, $payload)
     {
 
-        foreach ($this->getDateTimeFechasEvento() as $dt_evento) {
- 
-            if ( $this->getEspacio()->isOcupado($dt_evento,$this->getId()) )
 
-                $context->buildViolation('Espacio ocupado! ' .  $dt_evento->format('d-m-Y'))
+        foreach ($this->calculateDates() as $date) {
+ 
+
+            if ( $this->getEspacio()->isOcupado($date, $this->getHInicio(), $this->getHFin() , $this->getId()) ){
+
+                $context->buildViolation('Espacio '.$this->getEspacio()->getNombre().' reservado el día ' .  $date->format('d-m-Y'))
                 ->atPath('titulo')
                 ->addViolation();    
+            }
         }
-        
+
     }    
-    
+    */
     /**
-        * Calcula un array de datetimes object para todos los días de dias[] desde f_inicio hasta f_fin 
+        * Obtiene la coleccion de fechas para cada uno de los dias en dias[] entre f_inicio y f_fin 
     */
     
-    public function getDateTimeFechasEvento(){
+    public function calculateDates()
+    {
 
         $adt = [];
 
@@ -391,7 +392,9 @@ class SgrEvento
             $weekDays = $this->getDias(); //getDias devuelve el array dias
         }
         
-        $days = [ 'Sunday', 'Monday', 'tuesday', 'wednesday', 'thursday', 'saturday'];
+        //dump($weekDays);
+        //exit;
+        $days = [ 'Sunday', 'Monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         $end = $this->getFFin();
         $end->modify('+1 day'); //include last day in DatePeriod
         $begin = $this->getFInicio();

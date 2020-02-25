@@ -22,8 +22,6 @@ class SgrEventoController extends AbstractController
     public function index(SgrEventoRepository $sgrEventoRepository): Response
     {
 
-        dump($sgrEventoRepository->getSgrEventosBetweenFInicioFFin(new \DateTime('2020-02-1'),new \DateTime('2020-02-23')));
-        exit;
         return $this->render('sgr_evento/index.html.twig', [
             'sgr_eventos' => $sgrEventoRepository->findAll(),
         ]);
@@ -50,17 +48,17 @@ class SgrEventoController extends AbstractController
             //updatedAt
             $sgrEvento->setUpdatedAt();
             
-            //set Fechas, Add fechas to sgrEvento, sgrFechasEvento persists
-            //$this->setSgrFechasEvento($sgrEvento, $entityManager);
+            
+            if ($this->solapa($sgrEvento))
+                return $this->render('sgr_evento/new.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'form' => $form->createView(),
+                ]);
 
-            //Array datetime fechasEventos from f_inicio to f_fin 
-            $dateTimeFechasEvento = $sgrEvento->getDateTimeFechasEvento();
-            foreach ($dateTimeFechasEvento as $dtFechaEvento) {
-                $sgrFechasEvento = new sgrFechasEvento();
-                $sgrFechasEvento->setFecha($dtFechaEvento);
-                $entityManager->persist($sgrFechasEvento);
-                $sgrEvento->addFecha($sgrFechasEvento);
-            }
+            $this->addDates($sgrEvento,$entityManager);
+            
+            //dump($sgrEvento);
+            //exit;
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
             
@@ -79,7 +77,7 @@ class SgrEventoController extends AbstractController
     public function show(SgrEvento $sgrEvento): Response
     {
         //Data transformer
-        $dias = [ 'Domingo', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        $dias = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         foreach ($sgrEvento->getDias() as $i) {
             $d_es[] = $dias[$i];
         }
@@ -99,14 +97,16 @@ class SgrEventoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //dump($sgrEvento->getDias());
+            //dump($form->getData());
             
             $entityManager = $this->getDoctrine()->getManager();
+            
             foreach ($sgrEvento->getFechas() as $fecha) {
                 $sgrEvento->removeFecha($fecha);
             }
             
-            //$this->setSgrFechasEvento($sgrEvento,$entityManager);
-            $dateTimeFechasEvento = $sgrEvento->getDateTimeFechasEvento();
+            $dateTimeFechasEvento = $sgrEvento->calculateDates();
             foreach ($dateTimeFechasEvento as $dtFechaEvento) {
                 $sgrFechasEvento = new sgrFechasEvento();
                 $sgrFechasEvento->setFecha($dtFechaEvento);
@@ -139,5 +139,37 @@ class SgrEventoController extends AbstractController
         return $this->redirectToRoute('sgr_evento_index');
     }
 
+    public function solapa(SgrEvento $sgrEvento){
 
+        //Array datetime fechasEventos from f_inicio to f_fin 
+        $dateTimeFechasEvento = $sgrEvento->calculateDates();
+        //dump($dateTimeFechasEvento);
+        $solape = false;
+        foreach ($dateTimeFechasEvento as $date)
+        {
+            if($this->getDoctrine()->getRepository(SgrEvento::class)->getEventosContains($date,$sgrEvento->getEspacio()->getId()))
+            {
+                $solape = true;
+                $this->addFlash(
+                        'danger',
+                        'Espacio ocupado el día ' . $date->format('d-m-Y')
+                );
+                //dump($solapa);
+            }
+        }
+    return $solape;
+    }
+
+    public function addDates(SgrEvento $sgrEvento, $entityManager){
+
+        //Array datetime fechasEventos from f_inicio to f_fin 
+        $dateTimeFechasEvento = $sgrEvento->calculateDates();
+
+        foreach ($dateTimeFechasEvento as $dtFechaEvento) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dtFechaEvento);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
+    }
 }

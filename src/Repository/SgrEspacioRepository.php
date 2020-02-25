@@ -19,7 +19,6 @@ class SgrEspacioRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrEspacio::class);
     }
 
-
     // /**
     //  * @return SgrEspacio[] Returns an array of SgrEspacio objects
     //  */
