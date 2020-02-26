@@ -98,7 +98,7 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/{id}/edit", name="sgr_evento_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, SgrEvento $sgrEvento): Response
+    public function edit(Request $request, SgrEvento $sgrEvento, EventoUtils $eventoUtils): Response
     {
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
@@ -113,13 +113,22 @@ class SgrEventoController extends AbstractController
                 $sgrEvento->removeFecha($fecha);
             }
             
-            $dateTimeFechasEvento = $sgrEvento->calculateDates();
+            if ($eventoUtils->setEvento($sgrEvento)->solapa())
+            
+                return $this->render('sgr_evento/new.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'form' => $form->createView(),
+                ]);
+            
+            $this->addDates($sgrEvento,$entityManager);
+
+            /*$dateTimeFechasEvento = $sgrEvento->calculateDates();
             foreach ($dateTimeFechasEvento as $dtFechaEvento) {
                 $sgrFechasEvento = new sgrFechasEvento();
                 $sgrFechasEvento->setFecha($dtFechaEvento);
                 $entityManager->persist($sgrFechasEvento);
                 $sgrEvento->addFecha($sgrFechasEvento);
-            }
+            }*/
             
             $this->getDoctrine()->getManager()->flush();
 
@@ -146,27 +155,7 @@ class SgrEventoController extends AbstractController
         return $this->redirectToRoute('sgr_evento_index');
     }
 
-    public function solapa(SgrEvento $sgrEvento){
-
-        //Array datetime fechasEventos from f_inicio to f_fin 
-        $dateTimeFechasEvento = $sgrEvento->calculateDates();
-        //dump($dateTimeFechasEvento);
-        $solape = false;
-        foreach ($dateTimeFechasEvento as $date)
-        {
-            if($this->getDoctrine()->getRepository(SgrEvento::class)->getEventosContains($date,$sgrEvento->getEspacio()->getId()))
-            {
-                $solape = true;
-                $this->addFlash(
-                        'danger',
-                        'Espacio ocupado el día ' . $date->format('d-m-Y')
-                );
-                //dump($solapa);
-            }
-        }
-    return $solape;
-    }
-
+  
     public function addDates(SgrEvento $sgrEvento, $entityManager){
 
         //Array datetime fechasEventos from f_inicio to f_fin 

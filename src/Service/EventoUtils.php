@@ -31,7 +31,7 @@ class EventoUtils extends AbstractController
 
         //Array datetime fechasEventos from f_inicio to f_fin 
         $dateTimeFechasEvento = $this->calculateDates();
-        //dump($dateTimeFechasEvento);
+        dump($dateTimeFechasEvento);
         //exit;
         $solape = false;
         foreach ($dateTimeFechasEvento as $date)
@@ -66,27 +66,52 @@ class EventoUtils extends AbstractController
             $weekDays = $this->evento->getDias(); //getDias devuelve el array dias
         }
         
-        //dump($weekDays);
-        //exit;
-        $days = [ 'Sunday', 'Monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        dump($weekDays);
+        
+        $days = [ 'Sunday', 'Monday', 'Tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         $end = $this->evento->getFFin();
         $end->modify('+1 day'); //include last day in DatePeriod
-        $begin = $this->evento->getFInicio();
         $interval = new \DateInterval('P7D');
-        $period = new \DatePeriod($begin, $interval, $end);
-        //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
-        foreach ($period as $dt) {
 
-            //Para cada día de la semana elegido por el usuario
-            foreach ($weekDays as $day) {
-                
-                $dtdw = clone $dt->modify($days[$day]);
-                if ( (int) ($dtdw->diff($end)->format('%d')) > 0 ){                
-                    
-                    $adt[] = $dtdw;
-                }
-            }
+        $start = $this->evento->getFInicio();
+        //dump($start->format('l'));
+        foreach ($weekDays as $day) {
+        	
+        	//dump($start->format('l'));
+        	//dump($days[$day]);
+        	//dump($start->format('l') ==  $days[$day]);
+        	if ( $start->format('l') ==  $days[$day] ){
+        	       		
+        		$aBegin[] = $start;
+        	}
+        	else {
+        	
+        		$newstart = clone $start;//->modify($days[$day]);
+        		$aBegin[] = $newstart->modify($days[$day]);
+        	}
+
         }
+        
+        foreach ($aBegin as $begin) {
+        	$aPeriod[] = new \DatePeriod($begin, $interval, $end);
+        }
+        
+        
+        dump($aPeriod);
+
+
+        //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
+        foreach ($aPeriod as $period) {
+        	
+            foreach ($period as $dt) {
+        		dump($dt);
+           		//if ( $dtdw <= $end )  $adt[] = $dtdw;
+           		$adt[] = $dt;
+        	}
+        }
+        //}
+        dump($adt);
+        exit;
         return $adt;
     }
 
