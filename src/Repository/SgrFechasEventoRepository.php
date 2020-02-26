@@ -19,6 +19,17 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrFechasEvento::class);
     }
 
+    public function exists(\Date $fecha){
+
+        $qb->createQueryBuilder('sgr_fe')
+                ->where('sgr_fe.fecha = :fecha')
+                ->setParameter('fecha', $fecha);
+
+        $qb->getQuery();
+
+        return $qb->execute();
+    }
+
     // /**
     //  * @return SgrFechasEvento[] Returns an array of SgrFechasEvento objects
     //  */

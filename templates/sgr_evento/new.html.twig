@@ -4,7 +4,14 @@
 
 {% block body %}
     <h1>Create new SgrEvento</h1>
-
+	{% for label, messages in app.flashes %}
+    	{% for message in messages %}
+        	<div class="alert alert-{{ label }}" role="alert">
+            	{{ message }}
+        	</div>
+    	{% endfor %}
+	{% endfor %}
+    
     {{ include('sgr_evento/_form.html.twig') }}
 
     <a href="{{ path('sgr_evento_index') }}">back to list</a>
