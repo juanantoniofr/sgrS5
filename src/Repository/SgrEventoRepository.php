@@ -38,7 +38,7 @@ class SgrEventoRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function getEventosContains(\DateTime $fecha, $espacio_id = null){
+    public function getEventosContains(\DateTime $fecha, $espacio_id = null, $evento_id = null){
 
         $qb = $this->createQueryBuilder('e')
                         ->where('e.f_inicio <= :fecha AND e.f_fin >= :fecha')
@@ -48,6 +48,10 @@ class SgrEventoRepository extends ServiceEntityRepository
             $qb->andWhere('e.espacio = :espacio_id')
                 ->setParameter('espacio_id', $espacio_id);
         
+        if($evento_id)
+            $qb->andWhere('e.id != :evento_id')
+                ->setParameter('evento_id', $evento_id);    
+
         $query = $qb->getQuery();
 
         return $query->execute();

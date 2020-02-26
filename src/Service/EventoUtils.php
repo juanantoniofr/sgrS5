@@ -31,27 +31,50 @@ class EventoUtils extends AbstractController
 
         //Array datetime fechasEventos from f_inicio to f_fin 
         $dateTimeFechasEvento = $this->calculateDates();
-        dump($dateTimeFechasEvento);
+        //dump($dateTimeFechasEvento);
         //exit;
         $solape = false;
         foreach ($dateTimeFechasEvento as $date)
         {
-            if($this->getDoctrine()->getRepository(SgrEvento::class)->getEventosContains($date,$this->evento->getEspacio()->getId()))
-            {
-                $solape = true;
-                $this->addFlash(
-                        'danger',
-                        'Espacio ocupado el día ' . $date->format('d-m-Y')
-                );
-            }
-            else {
-            	$this->addFlash(
-                        'success',
-                        'Espacio libre el día ' . $date->format('d-m-Y')
-                );
-            }
+        	//Array de object SgrEventos
+        	$result = $this->getDoctrine()->getRepository(SgrEvento::class)->getEventosContains($date,$this->evento->getEspacio()->getId(),$this->evento->getId());
+        	
+        	//dump($this->evento->getEspacio()->getId());
+        	//dump($this->evento->getId());
+        	dump($result);
+        	
+        	foreach ($result as $e) {
+        		//dump($e);
+        		//dump($e->getFechas());
+        		//exit;
+        		//dump($date);
+        		dump($e->getFechas()->toArray());
+        		
+        		foreach ($e->getFechas()->toArray() as $sgrFechasEvento) {
+        			# code...
+        			dump($sgrFechasEvento->getFecha());
+        			//dump($date);
+        			exit;
+        			if ($sgrFechasEvento->getFecha() == $date){
+        				$solape = true;
+                		$this->addFlash(
+                        	'danger',
+                        	'Espacio ocupado el día ' . $date->format('d-m-Y')
+                		);	
+        			}
+        			/*else {
+        				$this->addFlash(
+                  	      'success',
+                    	    'Espacio libre el día ' . $date->format('d-m-Y')
+                		);	
+        			}*/
+        		}
+        	}
+            
         }
-    return $solape;
+        //exit;
+    
+    	return $solape;
     }
 
     public function calculateDates()
@@ -66,7 +89,7 @@ class EventoUtils extends AbstractController
             $weekDays = $this->evento->getDias(); //getDias devuelve el array dias
         }
         
-        dump($weekDays);
+        //dump($weekDays);
         
         $days = [ 'Sunday', 'Monday', 'Tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         $end = $this->evento->getFFin();
@@ -97,21 +120,21 @@ class EventoUtils extends AbstractController
         }
         
         
-        dump($aPeriod);
+        //dump($aPeriod);
 
 
         //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
         foreach ($aPeriod as $period) {
         	
             foreach ($period as $dt) {
-        		dump($dt);
+        //		dump($dt);
            		//if ( $dtdw <= $end )  $adt[] = $dtdw;
            		$adt[] = $dt;
         	}
         }
         //}
-        dump($adt);
-        exit;
+       // dump($adt);
+       // exit;
         return $adt;
     }
 

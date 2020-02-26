@@ -63,4 +63,5 @@ class SgrFechasEvento
 
         return $this->fecha->format('d-m-Y');
     }
+
 }

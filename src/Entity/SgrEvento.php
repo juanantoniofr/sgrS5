@@ -342,6 +342,11 @@ class SgrEvento
         return $this;
     }
 
+    public function contains(\DateTime $date){
+
+        return $this->fechas->contains($date);
+    }
+
     public function getDias(): ?array
     {
         return $this->dias;

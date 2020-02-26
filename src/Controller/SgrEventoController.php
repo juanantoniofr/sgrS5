@@ -62,7 +62,7 @@ class SgrEventoController extends AbstractController
                         'form' => $form->createView(),
                 ]);
             
-            $this->addDates($sgrEvento,$entityManager);
+            $this->addDates($sgrEvento,$entityManager,$eventoUtils);
             
             //dump($sgrEvento);
             //exit;
@@ -120,15 +120,7 @@ class SgrEventoController extends AbstractController
                         'form' => $form->createView(),
                 ]);
             
-            $this->addDates($sgrEvento,$entityManager);
-
-            /*$dateTimeFechasEvento = $sgrEvento->calculateDates();
-            foreach ($dateTimeFechasEvento as $dtFechaEvento) {
-                $sgrFechasEvento = new sgrFechasEvento();
-                $sgrFechasEvento->setFecha($dtFechaEvento);
-                $entityManager->persist($sgrFechasEvento);
-                $sgrEvento->addFecha($sgrFechasEvento);
-            }*/
+            $this->addDates($sgrEvento,$entityManager,$eventoUtils);
             
             $this->getDoctrine()->getManager()->flush();
 
@@ -156,10 +148,10 @@ class SgrEventoController extends AbstractController
     }
 
   
-    public function addDates(SgrEvento $sgrEvento, $entityManager){
+    public function addDates(SgrEvento $sgrEvento, $entityManager, EventoUtils $eventoUtils){
 
         //Array datetime fechasEventos from f_inicio to f_fin 
-        $dateTimeFechasEvento = $sgrEvento->calculateDates();
+        $dateTimeFechasEvento = $eventoUtils->calculateDates();
 
         foreach ($dateTimeFechasEvento as $dtFechaEvento) {
                 $sgrFechasEvento = new sgrFechasEvento();
