@@ -22,7 +22,7 @@ class SgrEventoController extends AbstractController
     public function index(SgrEventoRepository $sgrEventoRepository): Response
     {
 
-        dump($sgrEventoRepository->getSgrEventosBetweenFInicioFFin(new \DateTime('2020-02-1'),new \DateTime('2020-02-23')));
+        dump($sgrEventoRepository->getSgrEventosIntersectionIntervalWith(new \DateTime('2020-02-1'),new \DateTime('2020-02-23')));
         exit;
         return $this->render('sgr_evento/index.html.twig', [
             'sgr_eventos' => $sgrEventoRepository->findAll(),

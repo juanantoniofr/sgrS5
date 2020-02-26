@@ -19,7 +19,7 @@ class SgrEventoRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrEvento::class);
     }
 
-    public function getSgrEventosBetweenFInicioFFin(\DateTime $f_inicio, \DateTime $f_fin, sgrEspacio $sgrEspacio = null){
+    public function getSgrEventosIntersectionIntervalWith(\DateTime $f_inicio, \DateTime $f_fin, sgrEspacio $sgrEspacio = null){
 
         $qb = $this->createQueryBuilder('sgr_e')
                         ->where('sgr_e.f_inicio <= :f_inicio AND sgr_e.f_fin >= :f_inicio')
