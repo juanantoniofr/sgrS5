@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\EventoUtils;
+
 
 /**
  * @Route("/admin/sgr/evento")
@@ -22,11 +24,6 @@ class SgrEventoController extends AbstractController
     public function index(SgrEventoRepository $sgrEventoRepository): Response
     {
 
-<<<<<<< HEAD
-        dump($sgrEventoRepository->getSgrEventosIntersectionIntervalWith(new \DateTime('2020-02-1'),new \DateTime('2020-02-23')));
-        exit;
-=======
->>>>>>> d21b401a3b2195c47593cb1318fb0979ad0106ba
         return $this->render('sgr_evento/index.html.twig', [
             'sgr_eventos' => $sgrEventoRepository->findAll(),
         ]);
@@ -35,7 +32,7 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/new", name="sgr_evento_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, EventoUtils $eventoUtils): Response
     {
         $sgrEvento = new SgrEvento();
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
@@ -53,13 +50,18 @@ class SgrEventoController extends AbstractController
             //updatedAt
             $sgrEvento->setUpdatedAt();
             
+            //dump($evento->setEvento($sgrEvento));
+            //$evento = $evento->setEvento($sgrEvento);
+            //dump($evento->solapa());
+            //exit;
             
-            if ($this->solapa($sgrEvento))
+            if ($eventoUtils->setEvento($sgrEvento)->solapa())
+            
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
                         'form' => $form->createView(),
                 ]);
-
+            
             $this->addDates($sgrEvento,$entityManager);
             
             //dump($sgrEvento);
