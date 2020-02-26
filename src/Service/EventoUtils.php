@@ -29,11 +29,12 @@ class EventoUtils extends AbstractController
 
     public function solapa(){
 
-        //Array datetime fechasEventos from f_inicio to f_fin 
+        //Array de objetos DateTime entre from f_inicio to f_fin 
+        //26-02(martes) hasta 06-03(jueves) todos los martes y miércoles
         $dateTimeFechasEvento = $this->calculateDates();
         //dump($dateTimeFechasEvento);
-        //exit;
-        $solape = false;
+        
+        $solapa = false;
         foreach ($dateTimeFechasEvento as $date)
         {
         	//Array de object SgrEventos
@@ -41,20 +42,20 @@ class EventoUtils extends AbstractController
         	
         	//dump($this->evento->getEspacio()->getId());
         	//dump($this->evento->getId());
-        	dump($result);
+        	//dump($result);
         	
         	foreach ($result as $e) {
         		//dump($e);
         		//dump($e->getFechas());
         		//exit;
         		//dump($date);
-        		dump($e->getFechas()->toArray());
+        		//dump($e->getFechas()->toArray());
         		
         		foreach ($e->getFechas()->toArray() as $sgrFechasEvento) {
         			# code...
-        			dump($sgrFechasEvento->getFecha());
+        			//dump($sgrFechasEvento->getFecha());
         			//dump($date);
-        			exit;
+                    //dump($sgrFechasEvento->getFecha() == $date);
         			if ($sgrFechasEvento->getFecha() == $date){
         				$solape = true;
                 		$this->addFlash(
@@ -74,7 +75,7 @@ class EventoUtils extends AbstractController
         }
         //exit;
     
-    	return $solape;
+    	return $solapa;
     }
 
     public function calculateDates()

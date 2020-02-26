@@ -4,6 +4,13 @@
 
 {% block body %}
     <h1>Edit SgrEvento</h1>
+    {% for label, messages in app.flashes %}
+    	{% for message in messages %}
+        	<div class="alert alert-{{ label }}" role="alert">
+            	{{ message }}
+        	</div>
+    	{% endfor %}
+	{% endfor %}
 
     {{ include('sgr_evento/_form.html.twig', {'button_label': 'Update'}) }}
 
