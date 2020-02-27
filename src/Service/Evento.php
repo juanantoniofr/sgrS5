@@ -1,12 +1,12 @@
 <?php
-//src/Service/evento.php
+//src/Service/Evento.php
 namespace App\Service;
 
 use App\Entity\SgrEvento;
 use App\Entity\SgrFechasEvento;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class EventoUtils extends AbstractController
+class Evento extends AbstractController
 {
 
 	private $sgrEvento;
@@ -32,11 +32,11 @@ class EventoUtils extends AbstractController
 
         $solapa = false;
         //Array de objetos DateTime entre from f_inicio to f_fin 
-        $dateTimeFechasEvento = $this->ToArray($this->calculateDates());
+        $dateTimeFechasEvento = $this->ToArray($this->calculateFechasEvento());
         dump($dateTimeFechasEvento);
         
         //Array de object SgrFechaEventos
-        $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->finByFechas($dateTimeFechasEvento,$this->sgrEvento->getId());
+        $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
         dump($this->sgrEvento->getId());
         dump($result);
         //$result -> array con las fechas que coincide con alguna de las fechas del evento $this->sgrEvento
@@ -68,18 +68,12 @@ class EventoUtils extends AbstractController
         return $solapa;
     }
 
-
-                //$fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio()
-                //&&
-                //$fecha->getEvento()->getHInicio() <= $this->sgrEvento->getHInicio()
-                //&&
-                //$fecha->getEvento()->getHFin() > $this->sgrEvento->getHInicio()
     /**
      * Calcula las fechas entre f_inicio y f_fin para cada día de la semana en el array días
      *
      * @return Array Object DateTime 
     */
-    public function calculateDates()
+    public function calculateFechasEvento()
     {
 
         $adt = [];
@@ -141,15 +135,13 @@ class EventoUtils extends AbstractController
     }
 
     public function ToArray(Array $fechas){
-        //dump($sgrFechasEvento);
-        //exit;
+        
         $result = [];
         foreach ($fechas as $fecha) {
             $result[] = $fecha->format('Y-m-d');
         }
 
         return $result;
-
-    }
+    }   
 
 }

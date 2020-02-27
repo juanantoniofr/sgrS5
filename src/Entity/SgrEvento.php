@@ -364,4 +364,15 @@ class SgrEvento
         return $this->titulo;
     }
 
+    public function getDiasStringFormat(){
+        
+        $dias = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        
+        foreach ($this->getDias() as $i) {
+            $d_es[] = $dias[$i];
+        }
+        
+        return $d_es;
+    }    
+
 }

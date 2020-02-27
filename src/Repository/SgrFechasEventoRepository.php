@@ -19,30 +19,18 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrFechasEvento::class);
     }
 
-    public function exists(\Date $fecha){
 
-        $qb = $this->createQueryBuilder('sgr_fe')
-                ->where('sgr_fe.fecha = :fecha')
-                ->setParameter('fecha', $fecha);
-
-        $query = $qb->getQuery();
-
-        return $query->execute();
-    }
-
-    public function finByFechas(Array $aDateTime,$excludeFechasByIdEvento){
+    public function findFechasWithOutEventoId(Array $aDateTime,Int $excludeEventoId){
         dump($aDateTime);
         $qb = $this->createQueryBuilder('sgr_fe')
             ->where('sgr_fe.fecha IN (:aDateTime)')
             ->setParameter('aDateTime', $aDateTime);
 
-        if($excludeFechasByIdEvento)
+        if($excludeEventoId)
             $qb->andWhere('sgr_fe.evento != :id')
-                ->setParameter('id',$excludeFechasByIdEvento);
+                ->setParameter('id',$excludeEventoId);
 
         $query = $qb->getQuery();
-        //dump($query);
-        //exit;
 
         return $query->execute();
     }

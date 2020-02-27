@@ -19,7 +19,7 @@
                 <th>Estado</th>
                 <th>F_inicio</th>
                 <th>F_fin</th>
-                <th>Días</th>
+                <th>Todos los</th>
                 <th>H_inicio</th>
                 <th>H_fin</th>
                 <th>CreatedAt</th>
@@ -35,7 +35,7 @@
                 <td>{{ sgr_evento.estado }}</td>
                 <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('Y-m-d') : '' }}</td>
                 <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('Y-m-d') : '' }}</td>
-                <td>{{ sgr_evento.dias|join(', ',' y ')}} </td>
+                <td>{{ sgr_evento.getDiasStringFormat|join(', ',' y ')}} </td>
                 <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>
                 <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i:s') : '' }}</td>
                 <td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>

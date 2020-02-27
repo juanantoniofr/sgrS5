@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\EventoUtils;
+use App\Service\Evento;
 
 
 /**
@@ -21,7 +21,7 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/", name="sgr_evento_index", methods={"GET"})
      */
-    public function index(SgrEventoRepository $sgrEventoRepository): Response
+    public function index(SgrEventoRepository $sgrEventoRepository /*, Evento $evento */): Response
     {
 
         return $this->render('sgr_evento/index.html.twig', [
@@ -32,7 +32,7 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/new", name="sgr_evento_new", methods={"GET","POST"})
      */
-    public function new(Request $request, EventoUtils $eventoUtils): Response
+    public function new(Request $request, Evento $evento): Response
     {
         $sgrEvento = new SgrEvento();
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
@@ -41,31 +41,32 @@ class SgrEventoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             
-            //user 
+            //setUser 
             $sgrEvento->setUser($this->getUser());
             
-            //estado
+            //setEstado
             $sgrEvento->setEstado('aprobado');
             
-            //updatedAt
+            //setUpdatedAt
             $sgrEvento->setUpdatedAt();
             
-            //dump($evento->setEvento($sgrEvento));
-            //$evento = $evento->setEvento($sgrEvento);
-            //dump($evento->solapa());
-            //exit;
-            
-            if ($eventoUtils->setEvento($sgrEvento)->solapa())
+            $evento->setEvento($form->getData());
+            $fechasEvento = $evento->calculateFechasEvento();
+            //Si hay solapamiento, volvemos al formulario
+            if ($evento->solapa())
             
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
                         'form' => $form->createView(),
                 ]);
             
-            $this->addDates($sgrEvento,$entityManager,$eventoUtils);
-            
-            //dump($sgrEvento);
-            //exit;
+            foreach ($fechasEvento as $dt) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dt);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
+
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
 
@@ -88,13 +89,7 @@ class SgrEventoController extends AbstractController
      */
     public function show(SgrEvento $sgrEvento): Response
     {
-        //Data transformer
-        $dias = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        foreach ($sgrEvento->getDias() as $i) {
-            $d_es[] = $dias[$i];
-        }
         
-        $sgrEvento->setDias($d_es);
         return $this->render('sgr_evento/show.html.twig', [
             'sgr_evento' => $sgrEvento,
         ]);
@@ -103,7 +98,7 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/{id}/edit", name="sgr_evento_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, SgrEvento $sgrEvento, EventoUtils $eventoUtils): Response
+    public function edit(Request $request, SgrEvento $sgrEvento, Evento $evento): Response
     {
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
@@ -118,15 +113,22 @@ class SgrEventoController extends AbstractController
                 $sgrEvento->removeFecha($fecha);
             }
             
-            if ($eventoUtils->setEvento($sgrEvento)->solapa())
+            $evento->setEvento($form->getData());
+            $fechasEvento = $evento->calculateFechasEvento();
+            //Si hay solapamiento, volvemos al formulario
+            if ($evento->solapa())
             
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
                         'form' => $form->createView(),
                 ]);
-            
-            $this->addDates($sgrEvento,$entityManager,$eventoUtils);
-            
+        
+            foreach ($fechasEvento as $dt) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dt);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }            
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash(
@@ -157,17 +159,4 @@ class SgrEventoController extends AbstractController
         return $this->redirectToRoute('sgr_evento_index');
     }
 
-  
-    public function addDates(SgrEvento $sgrEvento, $entityManager, EventoUtils $eventoUtils){
-
-        //Array datetime fechasEventos from f_inicio to f_fin 
-        $dateTimeFechasEvento = $eventoUtils->calculateDates();
-
-        foreach ($dateTimeFechasEvento as $dtFechaEvento) {
-                $sgrFechasEvento = new sgrFechasEvento();
-                $sgrFechasEvento->setFecha($dtFechaEvento);
-                $entityManager->persist($sgrFechasEvento);
-                $sgrEvento->addFecha($sgrFechasEvento);
-            }
-    }
 }
