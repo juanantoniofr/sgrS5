@@ -33,22 +33,13 @@ class Evento extends AbstractController
         $solapa = false;
         //Array de objetos DateTime entre from f_inicio to f_fin 
         $dateTimeFechasEvento = $this->ToArray($this->calculateFechasEvento());
-        //dump($dateTimeFechasEvento);
         
         //Array de object SgrFechaEventos
-        dump($this->sgrEvento);
-        //exit;
         $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
-        dump($this->sgrEvento->getId());
-        dump($result);
+        
         //$result -> array con las fechas que coincide con alguna de las fechas del evento $this->sgrEvento
         foreach ($result as $fecha) {
-            dump($fecha->getEvento()->getEspacio());
-            //coincide el espacio??
-            dump($this->sgrEvento->getHInicio());
-            dump($this->sgrEvento->getHFin());
-            dump($this->sgrEvento->getHInicio() == $this->sgrEvento->getHFin());
-            dump($this->sgrEvento);
+        
             if ($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio() &&
                 $fecha->getEvento()->getHInicio()->format('H:i') <= $this->sgrEvento->getHInicio()->format('H:i') &&
                 $fecha->getEvento()->getHFin()->format('H:i') > $this->sgrEvento->getHInicio()->format('H:i') ){
@@ -59,14 +50,8 @@ class Evento extends AbstractController
                         );
 
             }
-                dump($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio());
-                dump($fecha->getEvento()->getHInicio() <= $this->sgrEvento->getHInicio());
-                dump($fecha->getEvento()->getHFin()->format('H:i') > $this->sgrEvento->getHInicio()->format('H:i'));
-                dump($fecha->getEvento());
                 
         }
-        dump($solapa);
-        //exit;
         return $solapa;
     }
 
@@ -89,16 +74,20 @@ class Evento extends AbstractController
         
         $days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         $start = $this->sgrEvento->getFInicio();
+        dump($start->format('l') );
         $end = $this->sgrEvento->getFFin();
-        if (!$end)
-            $end = clone $start;
-        $end->modify('+1 day'); //include last day in DatePeriod
+        
+        //reserva puntual sin repetición
+        if (!$end || $start == $end){
+            $adt[] = $start;
+            return $adt;
+        }
         
         $interval = new \DateInterval('P7D');
 
         foreach ($weekDays as $day) {
 
-        	if ( $start->format('l') ==  $days[$day] ){
+            if ( $start->format('l') ==  $days[$day] ){
         	       		
         		$aBegin[] = $start;
         	}
@@ -114,16 +103,13 @@ class Evento extends AbstractController
         	$aPeriod[] = new \DatePeriod($begin, $interval, $end);
         }
         
+        
         //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
         foreach ($aPeriod as $period) {
-        	
             foreach ($period as $dt) {
            		$adt[] = $dt;
         	}
         }
-        //}
-       // dump($adt);
-       // exit;
         return $adt;
     }
 

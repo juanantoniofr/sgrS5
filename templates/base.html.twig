@@ -65,7 +65,7 @@
                 format: 'L',
                 daysOfWeekDisabled: [0],
                 keepInvalid: true,
-                minDate: moment().add(1, 'days'),
+                //minDate: moment().add(1, 'days'),
             });
             $('#datetimepicker-ff').datetimepicker({
                 locale: 'es',
@@ -73,16 +73,22 @@
                 format: 'L',
                 daysOfWeekDisabled: [0],
                 keepInvalid: true,
-                minDate: moment().add(1, 'days'),
+                //inline: true,
+                //minDate: moment().add(1, 'days'),
             });
             $("#datetimepicker-fi").on("dp.change", function (e) {
                 
-                e.date.add(7,'days');
-                $('#datetimepicker-ff').data("DateTimePicker").minDate(e.date);
+                //e.date.add(7,'days');
+                if (e.date > $('#datetimepicker-ff').data("DateTimePicker").date())
+                    $('#datetimepicker-ff').data("DateTimePicker").date(e.date);
+
+                //$('#datetimepicker-ff').data("DateTimePicker").minDate(e.date);
             });
             $("#datetimepicker-ff").on("dp.change", function (e) {
                 
-                $('#datetimepicker-fi').data("DateTimePicker").maxDate(e.date);
+                if (e.date < $('#datetimepicker-fi').data("DateTimePicker").date())
+                    $('#datetimepicker-fi').data("DateTimePicker").date(e.date);
+                //$('#datetimepicker-fi').data("DateTimePicker").maxDate(e.date);
             });
             $('#datetimepicker-hi').datetimepicker({
                 locale: 'es',

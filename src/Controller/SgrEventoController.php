@@ -76,11 +76,6 @@ class SgrEventoController extends AbstractController
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
 
-            //$this->addFlash(
-            //              'success',
-            //                'Espacio libre el día ' . $date->format('d-m-Y')
-            //            );
-            
             return $this->redirectToRoute('sgr_evento_index');
         }
 
@@ -110,8 +105,6 @@ class SgrEventoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //dump($sgrEvento->getDias());
-            //dump($form->getData());
             
             $entityManager = $this->getDoctrine()->getManager();
             
@@ -119,6 +112,14 @@ class SgrEventoController extends AbstractController
                 $sgrEvento->removeFecha($fecha);
             }
             
+            //setFfin y setDias para eventos no periódicos (sin repetición)
+            if($sgrEvento->getFFin() 
+                != $sgrEvento->getFInicio()) {
+            
+                $sgrEvento->setFFin($sgrEvento->getFInicio());
+                $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+            }
+
             $evento->setEvento($form->getData());
             $fechasEvento = $evento->calculateFechasEvento();
             //Si hay solapamiento, volvemos al formulario

@@ -37,7 +37,11 @@ class SgrEvento
 
     /**
      * @ORM\Column(type="date")
-     */
+     * @Assert\Expression(
+     *     "this.getFInicio() <= this.getFFin()",
+     *     message="Fecha inicio debe ser menor que fecha fin"
+     * )
+    */
     private $f_inicio;
 
     /**
@@ -47,6 +51,10 @@ class SgrEvento
 
     /**
      * @ORM\Column(type="time")
+     * @Assert\Expression(
+     *     "this.getHInicio() < this.getHFin()",
+     *     message="Hora inicio debe ser menor que hora fin"
+     * )
      */
     private $h_inicio;
 
@@ -366,6 +374,7 @@ class SgrEvento
 
     public function getDiasStringFormat(){
         
+        $d_es = [ ];
         $dias = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         
         foreach ($this->getDias() as $i) {
