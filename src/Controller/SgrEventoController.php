@@ -23,7 +23,7 @@ class SgrEventoController extends AbstractController
      */
     public function index(SgrEventoRepository $sgrEventoRepository): Response
     {
-        
+
         return $this->render('sgr_evento/index.html.twig', [
             'sgr_eventos' => $sgrEventoRepository->findAll(),
         ]);
@@ -69,10 +69,10 @@ class SgrEventoController extends AbstractController
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
 
-            $this->addFlash(
-                          'success',
-                            'Espacio libre el día ' . $date->format('d-m-Y')
-                        );
+            //$this->addFlash(
+            //              'success',
+            //                'Espacio libre el día ' . $date->format('d-m-Y')
+            //            );
             
             return $this->redirectToRoute('sgr_evento_index');
         }
