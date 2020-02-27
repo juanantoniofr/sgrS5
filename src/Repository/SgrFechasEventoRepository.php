@@ -20,7 +20,7 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
     }
 
 
-    public function findFechasWithOutEventoId(Array $aDateTime,Int $excludeEventoId){
+    public function findFechasWithOutEventoId(Array $aDateTime,$excludeEventoId = null){
         dump($aDateTime);
         $qb = $this->createQueryBuilder('sgr_fe')
             ->where('sgr_fe.fecha IN (:aDateTime)')

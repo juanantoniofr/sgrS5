@@ -33,9 +33,11 @@ class Evento extends AbstractController
         $solapa = false;
         //Array de objetos DateTime entre from f_inicio to f_fin 
         $dateTimeFechasEvento = $this->ToArray($this->calculateFechasEvento());
-        dump($dateTimeFechasEvento);
+        //dump($dateTimeFechasEvento);
         
         //Array de object SgrFechaEventos
+        dump($this->sgrEvento);
+        //exit;
         $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
         dump($this->sgrEvento->getId());
         dump($result);
@@ -79,26 +81,23 @@ class Evento extends AbstractController
         $adt = [];
 
         if ( !$this->sgrEvento->getDias() ){
-            $weekDays[] =  $this->sgrEvento->getFInicio()->format('l'); // Monday, Tuesday, ....
+            $weekDays[] =  $this->sgrEvento->getFInicio()->format('w'); // 0=sunday, 1=Monday, 2=Tuesday, ....
         }
         else {
             $weekDays = $this->sgrEvento->getDias(); //getDias devuelve el array dias
         }
         
-        //dump($weekDays);
-        
-        $days = [ 'Sunday', 'Monday', 'Tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        $days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        $start = $this->sgrEvento->getFInicio();
         $end = $this->sgrEvento->getFFin();
+        if (!$end)
+            $end = clone $start;
         $end->modify('+1 day'); //include last day in DatePeriod
+        
         $interval = new \DateInterval('P7D');
 
-        $start = $this->sgrEvento->getFInicio();
-        //dump($start->format('l'));
         foreach ($weekDays as $day) {
-        	
-        	//dump($start->format('l'));
-        	//dump($days[$day]);
-        	//dump($start->format('l') ==  $days[$day]);
+
         	if ( $start->format('l') ==  $days[$day] ){
         	       		
         		$aBegin[] = $start;
@@ -115,17 +114,11 @@ class Evento extends AbstractController
         	$aPeriod[] = new \DatePeriod($begin, $interval, $end);
         }
         
-        
-        //dump($aPeriod);
-
-
         //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
         foreach ($aPeriod as $period) {
         	
             foreach ($period as $dt) {
-        //		dump($dt);
-           		//if ( $dtdw <= $end )  $adt[] = $dtdw;
-           		$adt[] = $dt;//->format('Y-m-d');
+           		$adt[] = $dt;
         	}
         }
         //}

@@ -49,7 +49,13 @@ class SgrEventoController extends AbstractController
             
             //setUpdatedAt
             $sgrEvento->setUpdatedAt();
+
+            //setFfin para eventos no periódicos (sin repetición)
+            if(!$sgrEvento->getFFin()) $sgrEvento->setFFin($sgrEvento->getFInicio());
             
+            //setDias para eventos no periódicos (sin repetición)
+            if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+
             $evento->setEvento($form->getData());
             $fechasEvento = $evento->calculateFechasEvento();
             //Si hay solapamiento, volvemos al formulario
