@@ -19,6 +19,12 @@
                         <a class="nav-link" href="{{path('app_login')}}" tabindex="-1">Login</a>
                     </li>
                 {% else %}
+
+                    
+                    <li>
+                        <a class="btn btn-secondary mx-3" href="{{path('sgr_uploadCSV_index')}}"> <i class="fas fa-upload mr-1"></i>Upload CSV</a>
+                    </li>
+                
                     <div class="dropdown mx-3">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="far fa-calendar-check mr-1"></i>Eventos
