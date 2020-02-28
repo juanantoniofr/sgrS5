@@ -52,7 +52,7 @@
             <!-- Renders app.js & a webpack runtime.js file -->
                <!-- <script src="/build/runtime.js"></script>
                 <script src="/build/app.js"></script> -->
-               
+        {# datepicker boostrap #}       
         <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
@@ -113,8 +113,17 @@
                 
                 $('#datetimepicker-hi').data("DateTimePicker").maxDate(e.date);
             });
+
+            {# bosstrap file input #}
         </script>
 
+        {# Dinamyc file input bootstrap #}
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                bsCustomFileInput.init()
+            });
+        </script>
         {% endblock %}
     </body>
 </html>

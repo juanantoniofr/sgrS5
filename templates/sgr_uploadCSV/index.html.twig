@@ -6,6 +6,16 @@
     <h1>Upload CSV</h1>
 
     {# include('sgr_tipo_actividad/_form.html.twig') #}
-    {{ form(form) }}
-
+	{{ form_start(form) }}
+    	<fieldset>
+			<legend class="col-md-6">CSV file formulario</legend>
+			<div class="form-row p-3">
+			<div class="form-group col-md-4">
+    			{{ form_label(form.fileCsv) }}
+    			{{ form_widget(form.fileCsv) }}
+    		</div>
+    		</div>
+  		</fieldset>
+  		<button class="btn btn-primary m-3">{{ button_label|default('Upload') }}</button>
+    {{ form_end(form) }}
 {% endblock %}

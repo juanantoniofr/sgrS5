@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+//use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * @Route("/admin/sgr/uploadCSV")
@@ -21,7 +22,8 @@ class SgrUploadCSVController extends AbstractController
     {
 
         $form = $this->createFormBuilder()
-            ->add('attachment', FileType::class)
+            ->add('fileCsv', FileType::class,['label' => 'Campo requerido','label_attr' => ["data-browse" => "Elegir"] ])
+            //->add('save', SubmitType::class, ['label' => 'Upload'])
             ->getForm();
 
         //$form = $this->createForm(Request $request);
@@ -30,6 +32,9 @@ class SgrUploadCSVController extends AbstractController
         if ( $form->isSubmitted() && $form->isValid() ) {
 
             //Proceso el csv
+            $file = $form['fileCsv']->getData();
+            dump($file);
+            exit;
 
             return $this->redirectToRoute('sgr_uploadCSV_index');
         }
