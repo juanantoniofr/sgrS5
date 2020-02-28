@@ -20,10 +20,15 @@
     {{ form_end(form) }}
 
     {% if msg is defined %}
-    <div class="row">
-    	<div class="success alert-success">
-    		<p>{{ msg ? msg : ''}}</p>
+       	<div class="alert alert-success" role="alert">
+    		{{ msg ? msg : ''}}
     	</div>
-    </div>
+    	{% if filas is defined %}
+    		<table>
+    		{% for fila in filas %}
+    			<td>{{ fila }}</td>
+    		{% endfor %}
+    		</table>
+    	{% endif %}
     {% endif %}
 {% endblock %}
