@@ -44,6 +44,7 @@ class SgrUploadCSVController extends AbstractController
             $msg = "Procesando cabeccera";
             
             dump($csv->isValidCabecera($file,$aColumnasValidas));
+            $csv->getRowsForColumns($file,$aColumnasValidas);
             exit;
 
             //return $this->redirectToRoute('sgr_uploadCSV_index', [ 'msg' => $fileName ]);

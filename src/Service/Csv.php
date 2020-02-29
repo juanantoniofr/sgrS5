@@ -33,7 +33,9 @@ class Csv extends AbstractController{
 		
         return fclose($this->f);
 	}
-
+    /**
+     * bueno
+    */
 	public function isValidCabecera($file,$columnas){
         
         $manejador = fopen($file,"r");
@@ -52,7 +54,47 @@ class Csv extends AbstractController{
         
         return $keyError;
 	}
+    /*
+     * Bueno
+    */
+    public function getRowsForColumns($file,$columnas){
 
+        $rows = array();
+        $manejador = fopen($file,"r");
+
+        //Primera fila del Csv: contiene las caabeceras.
+        if ( ( $columnasCsv = fgetcsv($manejador,0,',','"') ) == NULL) return false;
+        //dump($columnasCsv);
+        //dump($columnas);
+        //exit;
+        //$aIndices, contine las posiciones de las columnas con valores válidos. Se pasan por parámetro $columnas
+        $aIndices = array();
+        foreach ($columnas as $columna) {
+
+            $indice = array_search($columna, $columnasCsv);
+            if ($indice)
+                $aIndices[] = $indice;
+        }
+
+        //dump($aIndices);
+        while ( ($fila = fgetcsv($manejador,0,',','"')) != NULL) {
+            
+            $filas[] = $fila;
+            
+            //Guardar en $row las columnas validas de la fila leida
+            foreach ($aIndices as $indice) {
+                $row[] = $fila[$indice];
+            }
+            $rows[] = $row;
+        }
+        
+        //dump($filas);
+        //dump($rows);
+        //fclose($manejador);
+        //exit;
+        return $rows;
+
+    }
 	public function leeFila() {
 		
         if ( ( $this->fila = fgetcsv($this->f,0,',','"') ) == NULL) return false;
