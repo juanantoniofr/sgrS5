@@ -39,14 +39,39 @@ class SgrUploadCSVController extends AbstractController
             $file = $form['fileCsv']->getData();
 
             $aKeysValid = [ 'ES','C.ASIG.','ASIGNATURA','DUR.','GRP.','PROFESOR','F_DESDE','F_HASTA','C.DIA','H_INICIO','H_FIN','AULA'];
-            $msg = "Procesando cabeccera";
             
-            if ( !$csv->isValidHeader($file,$aKeysValid) ){
-                //guardar errro y volve al formulario upload file;
+            
+            $keysInvalid = $csv->isValidHeader($file,$aKeysValid);
+            //dump($keysInvalid);
+            //exit;
+            if ( !empty($keysInvalid) ){
+                
+                $errors[] = 'Error al procesar las cabeceras del archivo ' . $file->getClientOriginalName();
+                
+                foreach ($keysInvalid as $key) {
+                    $errors[] = 'Columna '. $key . ' no encontrada';
+                }
+
+                return $this->render('sgr_uploadCSV/index.html.twig', [ 
+                    'errors' => $errors,
+                    'form' => $form->createView()
+                ]);
             }
             
             $rowsCsv = $csv->getRowsFilterByKeys($file,$aKeysValid);
             //dump($rowsCsv);
+
+            //Solapa en csv
+            $testRows = $rowsCsv;
+            foreach ($rowsCsv as $key => $row) {
+                
+                array_shift($testRows);
+                $solapesCsv = $csv->solapaCsv($testRows,$row);
+                if (!empty($solapesCsv))
+                    $row['validations']['solapaCsv'] = $solapesCsv;
+
+                $solapesCsv = array();
+            }
             
             //Validation existAula
             $repository = $this->getDoctrine()->getRepository(SgrEspacio::class);
@@ -71,31 +96,34 @@ class SgrUploadCSVController extends AbstractController
                     $row['validations']['existAula'] = false;
                 }
                 else {
+                    //set Espacio                    
                     $sgrEvento->setEspacio($sgrEspacio);
 
-
-                    //$sgrEvento->setEspacio($sgrEspacio->setNombre( $row['AULA'] ) );
-                    //$sgrEvento->setEspacio($sgrEspacio->setNombre( $row['AULA'] ) );
-
+                    //set f_inicio, f_fin, h_inicio, h_fin
                     $sgrEvento->setFInicio( date_create_from_format('d/m/Y', $row['F_DESDE'], new \DateTimeZone('Europe/Madrid')) );
                     $sgrEvento->setFFin( date_create_from_format('d/m/Y', $row['F_HASTA'], new \DateTimeZone('Europe/Madrid')) );
                     $sgrEvento->setHInicio( date_create_from_format('H:i', $row['H_INICIO'], new \DateTimeZone('Europe/Madrid')) );
                     $sgrEvento->setHFin( date_create_from_format('H:i', $row['H_FIN'], new \DateTimeZone('Europe/Madrid')) );
                     $sgrEvento->setDias([ $row['C.DIA'] ]);
                     
+                    //set validation solapa
                     $row['validations']['solapa'] = $evento->setEvento($sgrEvento)->solapa();
+                    
+                    //update rowsCsv
                     $rowsCsv[$key]=$row;
-                    $rowsSgrEventos[] = $sgrEvento;
+
+                    //update rowsSgrEventos
+                    if (!$row['validations']['solapa']) $rowsSgrEventos[] = $sgrEvento;
                 }
             }
             
             //dump($rowsSgrEventos);
-            //dump($rowsCsv);
-            //exit;
+            dump($rowsCsv);
+            exit;
             //return $this->redirectToRoute('sgr_uploadCSV_index', [ 'msg' => $fileName ]);
             return $this->render('sgr_uploadCSV/index.html.twig', [ 
-                'msg' => $msg,
-                'filas' => $arrayFila,
+                'eventos' => $rowsSgrEventos,
+                'filas' => $rowsCsv,
                 'form' => $form->createView()
                 ]);
         }

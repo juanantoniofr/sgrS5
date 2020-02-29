@@ -6,41 +6,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Csv extends AbstractController{
 
-	private $columnas; //Keys columnas a leer del csv
-	private $columnasCsv; //Keys todas las columnas del CSV
-	private $file; //nombre del archivo csv
-	private $fila; //fila leida csv
-	private $datos; //asociativo donde key=nombreColumnaCSV, Value=valorDeColumnaEnUnaFila
-	private $f; //puntero de lectura
 
-	public function __construct($columnasCsv = [],$columnasValidas = [],$file = '' ){
-
-		$this->columnasCsv = $columnasCsv;
-		$this->columnas = $columnasValidas;
-		$this->file = $file;
-	
-    }
-
-	public function open(){
-
-        if (!$this->file)
-            return null;
-		
-        return ($this->f = fopen($this->file,"r"));
-	}
-
-	public function close(){
-		
-        return fclose($this->f);
-	}
     /**
-     * bueno
+     * @param $file //archivo csv
+     * @param $columnas //columnas que debe tener el archivo csv
+     *
+     * @return $keyError //array con columnas no encontradas
     */
 	public function isValidHeader($file,$columnas){
         
         $manejador = fopen($file,"r");
 
-        if ( ( $fila = fgetcsv($manejador,0,',','"') ) == NULL) return false;
+        if ( ( $fila = fgetcsv($manejador,0,',','"') ) == NULL) return array();// Pendiente: --> lanzar exception
 
         $keyError = array();
         foreach ($columnas as $columna) {
@@ -49,13 +26,14 @@ class Csv extends AbstractController{
         
         fclose($manejador);
         
-        if (!$keyError)
-            return true;
-        
         return $keyError;
 	}
-    /*
-     * Bueno
+    
+    /**
+     * @param $file //archivo csv
+     * @param $keys //columnas a leer del archivo csv
+     *
+     * @return $rows //array con los valores de las columnas $keys  
     */
     public function getRowsFilterByKeys($file,$keys){
 
@@ -93,90 +71,58 @@ class Csv extends AbstractController{
                 
                 $row[$key] = $fila[$positionCsvFila];
             }
-            $rows[] = $row;
             $row['numfilaCsv'] = $numfila;
-            $row['validaciones'] = array('existeEspacio' => false);
+            $rows[] = $row;
+            
+            //$row['validaciones'] = array('existeEspacio' => false);
             
         }
         
         //dump($filas);
-        //dump($rows);
+        dump($rows);
         fclose($manejador);
-        //exit;
+        exit;
         return $rows;
-
     }
-	public function leeFila() {
-		
-        if ( ( $this->fila = fgetcsv($this->f,0,',','"') ) == NULL) return false;
-		$indice = 0;
-		foreach ($this->columnasCsv as $columna) {
-			$this->datos[$columna] = $this->fila[$indice];
-			$indice++;
-		}
-		return true;
-	}
 
 
-	/**
-        * 
-        * Comprueba que el fichero CSV no es vacío, y al mneos, contiene las columnas a leer
-        * 
-        * @param $file :file
-        *
-        * @return $resultado :array ('error' => true|false, 'columnasNoValida' => 'vacio|columnas no validas')  
-        *
-        *
-    */
+    public function solapaCsv($rowsCsv,$row){
 
-	public function isValidCsv(){
+
+        $aIndicesSolapes = array();
+        foreach ($rowsCsv as $key => $r) {
+                            
+            if ($r['AULA'] == $row['AULA'] && $r['C.DIA'] == $row['C.DIA']){
+                //posible solapamiento
+                if ( 
+                    (
+                        ($r['F_DESDE'] <= $row['F_HASTA'] && $row['F_HASTA'] <= $r['F_HASTA'])
+                        
+                        || 
+                        
+                        ($r['F_DESDE'] <= $row['F_DESDE'] && $row['F_DESDE'] <= $r['F_HASTA'])
+ 
+                    )
+
+                    &&
+
+                    (
+                        ($r['H_INICIO'] <= $row['H_INICIO'] && $r['H_FIN'] > $row['H_INICIO'])
+                    
+                        ||
+
+                        ($r['H_INICIO'] < $row['H_FIN'] && $r['H_FIN'] >= $row['H_FIN'])
+                    )   
+                     ){
+                     //hay solapamiento
+                        $aIndicesSolapes[] = $r['numfilaCsv'];
+                        //return true;
+                }//segundo if
+            } //primer if
+                
+        }//fin del foreach
         
-        $resultado = array( 'error' => false,
-                            'columnasNoValidas' => array(),
-                            'msg-error' => 'Fichero no válido: <br />',
-                        );
-        
-        if (empty($this->file)){
-            $resultado['error'] = true;
-            $resultado['msg-error'] = 'No se ha seleccionado ningún archivo *.csv';
-            return $resultado;
-        }
-
-        $columnasValidas = $this->columnas;
-        $f = fopen($this->file,"r");
-        //Lee nombres de las columnas
-        $columnasCSV = fgetcsv($f,0,',','"');
-        foreach($columnasValidas as $columna){
-            if (in_array($columna, $columnasCSV) === false) {
-                $resultado['error'] = true;
-                $resultado['msg-error'] = $resultado['msg-error'] . 'columna ' . $columna . 'no encontrada <br />';
-                $resultado['columnasNoValidas'][] = $columna;    
-            } 
-        }
-        fclose($f);
-        return $resultado;
+        return $aIndicesSolapes;
     }
-
-    
-
-    /**
-        * 
-        * Devuelve el valor de la Key=$columna del array $fila
-        * 
-        * @param $fila :array
-        * @param $columna :string
-        * 
-        * @return $fila :array   
-        *
-        *
-    */
-
-    public function getValue($columna){
-
-        return $this->datos[$columna];
-    }
-
-
-}
-
+}    
 ?>

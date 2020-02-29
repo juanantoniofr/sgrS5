@@ -19,16 +19,55 @@
   		<button class="btn btn-primary m-3">{{ button_label|default('Upload') }}</button>
     {{ form_end(form) }}
 
-    {% if msg is defined %}
-       	<div class="alert alert-success" role="alert">
-    		{{ msg ? msg : ''}}
+    {% if errors is defined %}
+       	<div class="alert alert-danger" role="alert">
+    		{% for error in errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
     	</div>
-    	{% if filas is defined %}
-    		<table>
-    		{% for fila in filas %}
-    			<td>{{ fila }}</td>
-    		{% endfor %}
-    		</table>
-    	{% endif %}
     {% endif %}
+    
+    {% if filas is defined %}
+    	<table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ES</th>
+                <th>C.ASIG.</th>
+                <th>ASIGNATURA</th>
+                <th>DUR.</th>
+                <th>GRP.</th>
+                <th>PROFESOR</th>
+                <th>F_DESDE</th>
+                <th>F_HASTA</th>
+                <th>C.DIA</th>
+                <th>H_INICIO</th>
+                <th>H_FIN</th>
+                <th>AULA</th>
+                <th>Validations</th>
+            </tr>
+        </thead>
+        <tbody>
+    	{% for fila in filas %}
+        <tr {% if fila.validations.solapa %} class="alert alert-danger" {% endif %} >
+    		<td>{{ fila.ES }}</td>
+            <td>{{ fila['C.ASIG.'] }}</td>
+            <td>{{ fila.ASIGNATURA }}</td>
+            <td>{{ fila['DUR.'] }}</td>
+            <td>{{ fila['GRP.'] }}</td>
+            <td>{{ fila.PROFESOR }}</td>
+            <td>{{ fila.F_DESDE }}</td>
+            <td>{{ fila.F_HASTA }}</td>
+            <td>{{ fila['C.DIA'] }}</td>
+            <td>{{ fila.H_INICIO }}</td>
+            <td>{{ fila.H_FIN }}</td>
+            <td>{{ fila.AULA }}</td>
+            <td>{{ dump(fila.validations) }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    	</table>
+    {% endif %}
+{% if eventos is defined %}
+    {{ dump(eventos) }}
+{% endif %}
 {% endblock %}
