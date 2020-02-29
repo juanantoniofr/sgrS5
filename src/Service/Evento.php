@@ -33,13 +33,17 @@ class Evento extends AbstractController
         $solapa = false;
         //Array de objetos DateTime entre from f_inicio to f_fin 
         $dateTimeFechasEvento = $this->ToArray($this->calculateFechasEvento());
-        
+        //dump($this);
+        //dump($dateTimeFechasEvento);
         //Array de object SgrFechaEventos
         $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
-        
+        //dump($result);
         //$result -> array con las fechas que coincide con alguna de las fechas del evento $this->sgrEvento
         foreach ($result as $fecha) {
-        
+            //dump($this->sgrEvento->getHInicio()->format('H:i'));
+            //dump($this->sgrEvento->getEspacio());
+            //dump($fecha->getEvento()->getEspacio());
+            //dump($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio());
             if ($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio() &&
                 $fecha->getEvento()->getHInicio()->format('H:i') <= $this->sgrEvento->getHInicio()->format('H:i') &&
                 $fecha->getEvento()->getHFin()->format('H:i') > $this->sgrEvento->getHInicio()->format('H:i') ){
@@ -74,7 +78,7 @@ class Evento extends AbstractController
         
         $days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         $start = $this->sgrEvento->getFInicio();
-        dump($start->format('l') );
+        //dump($start->format('l') );
         $end = $this->sgrEvento->getFFin();
         
         //reserva puntual sin repetición
