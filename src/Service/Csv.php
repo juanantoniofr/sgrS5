@@ -36,7 +36,7 @@ class Csv extends AbstractController{
     /**
      * bueno
     */
-	public function isValidCabecera($file,$columnas){
+	public function isValidHeader($file,$columnas){
         
         $manejador = fopen($file,"r");
 
@@ -57,40 +57,51 @@ class Csv extends AbstractController{
     /*
      * Bueno
     */
-    public function getRowsForColumns($file,$columnas){
+    public function getRowsFilterByKeys($file,$keys){
 
         $rows = array();
         $manejador = fopen($file,"r");
 
         //Primera fila del Csv: contiene las caabeceras.
-        if ( ( $columnasCsv = fgetcsv($manejador,0,',','"') ) == NULL) return false;
-        //dump($columnasCsv);
-        //dump($columnas);
-        //exit;
+        if ( ( $keysCsv = fgetcsv($manejador,0,',','"') ) == NULL) return false;
+        
         //$aIndices, contine las posiciones de las columnas con valores válidos. Se pasan por parámetro $columnas
-        $aIndices = array();
-        foreach ($columnas as $columna) {
+        //$aIndices = array();
+        foreach ($keys as $key) {
 
-            $indice = array_search($columna, $columnasCsv);
-            if ($indice)
-                $aIndices[] = $indice;
+            $position = array_search($key, $keysCsv);
+            if ($position){
+                $positions[] = $position;
+                $mappedKeys[$key] = $position;
+            }
         }
 
-        //dump($aIndices);
+        //dump($keysCsv);
+        //dump($keys);
+        //dump($positions);
+        //dump($mappedKeys);
+        //exit;
+        $numfila = 0;
         while ( ($fila = fgetcsv($manejador,0,',','"')) != NULL) {
             
-            $filas[] = $fila;
+            $filasCsv[] = $fila;
             
             //Guardar en $row las columnas validas de la fila leida
-            foreach ($aIndices as $indice) {
-                $row[] = $fila[$indice];
+            $row = array();
+            $numfila = $numfila + 1;
+            foreach ($mappedKeys as $key => $positionCsvFila) {
+                
+                $row[$key] = $fila[$positionCsvFila];
             }
             $rows[] = $row;
+            $row['numfilaCsv'] = $numfila;
+            $row['validaciones'] = array('existeEspacio' => false);
+            
         }
         
         //dump($filas);
         //dump($rows);
-        //fclose($manejador);
+        fclose($manejador);
         //exit;
         return $rows;
 
