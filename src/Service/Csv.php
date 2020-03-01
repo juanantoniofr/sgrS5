@@ -79,9 +79,9 @@ class Csv extends AbstractController{
         }
         
         //dump($filas);
-        dump($rows);
+        //dump($rows);
         fclose($manejador);
-        exit;
+        //exit;
         return $rows;
     }
 
@@ -89,40 +89,54 @@ class Csv extends AbstractController{
     public function solapaCsv($rowsCsv,$row){
 
 
-        $aIndicesSolapes = array();
+        $aNumfilas = array();
+        //dump($rowsCsv);
+        //dump($row);
+        
         foreach ($rowsCsv as $key => $r) {
-                            
+            //dump($r['AULA'] == $row['AULA']);
+            //dump($r['C.DIA'] == $row['C.DIA']);
+            //dump($r['F_DESDE'] <= $row['F_HASTA']);
+            //dump($row['F_HASTA'] <= $r['F_HASTA']);
+            //exit;
+            $row_f_desde = date_create_from_format('d/m/Y', $row['F_DESDE'], new \DateTimeZone('Europe/Madrid'));
+            $row_f_hasta = date_create_from_format('d/m/Y', $row['F_HASTA'], new \DateTimeZone('Europe/Madrid'));
+
+            $r_f_desde = date_create_from_format('d/m/Y', $r['F_DESDE'], new \DateTimeZone('Europe/Madrid'));
+            $r_f_hasta = date_create_from_format('d/m/Y', $r['F_HASTA'], new \DateTimeZone('Europe/Madrid'));
             if ($r['AULA'] == $row['AULA'] && $r['C.DIA'] == $row['C.DIA']){
                 //posible solapamiento
+                
                 if ( 
                     (
-                        ($r['F_DESDE'] <= $row['F_HASTA'] && $row['F_HASTA'] <= $r['F_HASTA'])
+                        ($row_f_desde <= $r_f_desde && $row_f_hasta >= $r_f_desde)
                         
                         || 
                         
-                        ($r['F_DESDE'] <= $row['F_DESDE'] && $row['F_DESDE'] <= $r['F_HASTA'])
+                        ($row_f_desde >= $r_f_desde && $row_f_desde <= $r_f_hasta)
  
                     )
 
                     &&
 
                     (
-                        ($r['H_INICIO'] <= $row['H_INICIO'] && $r['H_FIN'] > $row['H_INICIO'])
+                        ($row['H_INICIO'] <= $r['H_INICIO'] && $row['H_FIN'] > $r['H_INICIO'])
                     
                         ||
 
-                        ($r['H_INICIO'] < $row['H_FIN'] && $r['H_FIN'] >= $row['H_FIN'])
+                        ($row['H_INICIO'] >= $r['H_INICIO'] && $row['H_INICIO'] < $r['H_FIN'])
                     )   
                      ){
                      //hay solapamiento
-                        $aIndicesSolapes[] = $r['numfilaCsv'];
+                        $aNumfilas[] = $r['numfilaCsv'];
                         //return true;
                 }//segundo if
             } //primer if
                 
         }//fin del foreach
-        
-        return $aIndicesSolapes;
+        //dump($aNumfilas);
+        //exit;
+        return $aNumfilas;
     }
 }    
 ?>

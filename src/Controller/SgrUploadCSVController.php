@@ -15,6 +15,10 @@ use App\Service\Evento;
 use App\Entity\SgrEspacio;
 use App\Entity\SgrEvento;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
+
 /**
  * @Route("/admin/sgr/uploadCSV")
  */
@@ -58,36 +62,61 @@ class SgrUploadCSVController extends AbstractController
                 ]);
             }
             
-            $rowsCsv = $csv->getRowsFilterByKeys($file,$aKeysValid);
+            //$rowsCsv = $csv->getRowsFilterByKeys($file,$aKeysValid);
             //dump($rowsCsv);
-
+            $rowsCsv = new ArrayCollection($csv->getRowsFilterByKeys($file,$aKeysValid));
+            //dump($rowsCsv);
+            //dump($rowsColletion);
+            
             //Solapa en csv
-            $testRows = $rowsCsv;
-            foreach ($rowsCsv as $key => $row) {
-                
-                array_shift($testRows);
-                $solapesCsv = $csv->solapaCsv($testRows,$row);
-                if (!empty($solapesCsv))
-                    $row['validations']['solapaCsv'] = $solapesCsv;
+            //Todas las filas del csv que tiene solapammiento
+            $filasConSolape = new ArrayCollection();
+            //dump($filasConSolape);
+            //dump($rowsCsv->current());
 
-                $solapesCsv = array();
+            
+            //
+            $auxRowsCsv = clone $rowsCsv;
+            foreach ($rowsCsv as $key => $row) {    
+                
+                $solapesCsv = new ArrayCollection();//array();
+
+                //Evitar solapamientos consigo mismo
+                $auxRowsCsv->removeElement($row);
+                //dump($auxRowsCsv);
+                //dump($rowsCsv);
+                //exit;
+                //dump($rowsCsv);
+                //exit;
+                $solapesCsv = $csv->solapaCsv($auxRowsCsv,$row);
+                if (!empty($solapesCsv)){
+                    $filasConSolape->add($row['numfilaCsv']);
+                    //Para cada fila del csv se añade array con los números de filas con los que solapa
+                    $row['validations']['solapaCsv'] = $solapesCsv;
+                }
+                
+                //Se vuelve a añadir para seguir testando solapamientos
+                $auxRowsCsv->add($row);
+                
+                $rowsCsv->set($key,$row);
             }
+            //dump($rowsCsv);
+            //dump($filasConSolape);
             
             //Validation existAula
             $repository = $this->getDoctrine()->getRepository(SgrEspacio::class);
-            foreach ($rowsCsv as $key => $row) {
+            /*foreach ($rowsCsv as $key => $row) {
                 
                 $row['validations']['existAula'] = false;
-                //dump($repository->exist($row['AULA']));
                 if ($repository->exist($row['AULA']))
                     $row['validations']['existAula'] = true;
 
-                $rowsCsv[$key] = $row;
-            }
+                $rowsCsv->set($key,$row);
+            }*/
 
             //dump($rowsCsv);
             
-            //Validation espacio ocupado (solapa)
+            //Validation espacio ocupado (solapa), si existe Aula
             foreach ($rowsCsv as $key => $row) {
                 
                 $sgrEvento = new SgrEvento;
@@ -117,7 +146,7 @@ class SgrUploadCSVController extends AbstractController
                 }
             }
             
-            //dump($rowsSgrEventos);
+            dump($rowsSgrEventos);
             dump($rowsCsv);
             exit;
             //return $this->redirectToRoute('sgr_uploadCSV_index', [ 'msg' => $fileName ]);
