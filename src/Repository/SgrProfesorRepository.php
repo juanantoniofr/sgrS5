@@ -19,22 +19,18 @@ class SgrProfesorRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrProfesor::class);
     }
 
-    // /**
-    //  * @return SgrProfesor[] Returns an array of SgrProfesor objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
+    /**
+      * @return SgrProfesor[] Returns an array of SgrProfesor objects
     */
+    public function findByNombre(string $nombre)
+    {
+        return $this->createQueryBuilder('sgr_p')
+            ->where('sgr_p.nombre = :nombre')
+            ->setParameter('nombre', $nombre)
+            ->getQuery()
+            ->getResult();
+    }
+    
 
     /*
     public function findOneBySomeField($value): ?SgrProfesor

@@ -12,8 +12,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use App\Service\Csv;
 use App\Service\Evento;
+
 use App\Entity\SgrEspacio;
 use App\Entity\SgrEvento;
+use App\Entity\SgrProfesor;
+use App\Entity\SgrAsignatura;
+use App\Entity\SgrTitulacion;
+use App\Entity\SgrTipoActividad;
+use App\Entity\SgrGrupoAsignatura;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -117,6 +123,13 @@ class SgrUploadCSVController extends AbstractController
             //dump($rowsCsv);
             
             //Validation espacio ocupado (solapa), si existe Aula
+            //set titulacion //  asignatura // grupo_asignatura // profesor // 
+            $entityManager = $this->getDoctrine()->getManager();
+            $repositoryProfesor = $this->getDoctrine()->getRepository(SgrProfesor::class);
+            $repositoryAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
+            $repositoryTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
+            $repositoryActividad = $this->getDoctrine()->getRepository(SgrTipoActividad::class);
+            $repositoryGrupoAsignatura = $this->getDoctrine()->getRepository(SgrGrupoAsignatura::class);
             foreach ($rowsCsv as $key => $row) {
                 
                 $sgrEvento = new SgrEvento;
@@ -140,14 +153,93 @@ class SgrUploadCSVController extends AbstractController
                     
                     //update rowsCsv
                     $rowsCsv[$key]=$row;
+                    if (!$row['validations']['solapa']){
+                        
+                        //set Profesor
+                        $profesor = $repositoryProfesor->findOneBy([ 'nombre' => $row['PROFESOR'] ]);
+                        if($profesor)
+                            $sgrEvento->setProfesor($profesor);
+                        else
+                        {
+                            $profesor = new SgrProfesor;
+                            $profesor->setNombre($row['PROFESOR']);
+                            $entityManager->persist($profesor);
+                            $entityManager->flush();
 
-                    //update rowsSgrEventos
-                    if (!$row['validations']['solapa']) $rowsSgrEventos[] = $sgrEvento;
+                            $gerEvento->setProfesor($profesor);
+                        }
+
+                        
+                        //set asignatura && titulacion
+                        $asignatura = $repositoryAsignatura->findOneBy([ 'codigo' => $row['C.ASIG.'] ]);
+                        
+                        if($asignatura){
+                            $sgrEvento->setAsignatura($asignatura);
+                            $sgrEvento->setTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ]));
+                            //dump($asignatura->getSgrTitulacion());
+                        }
+
+                        else
+                        {
+                            $asignatura = new SgrAsignatura;
+                            $asignatura->setCodigo($row['C.ASIG.']);
+                            $asignatura->setNombre($row['ASIGNATURA']);
+                            $asignatura->setCuatrimestre($row['DUR.']);
+                            $asignatura->setSgrTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ])); //LANZAR EXCEPTION SI NO EXISTE TITULACIÓN
+                            $entityManager->persist($asignatura);
+                            $entityManager->flush();
+
+                            $sgrEvento->setAsignatura($asignatura);
+                            $sgrEvento->setTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ]));
+                        }                        
+                        
+                        //set Grupo
+                        $grupo = $repositoryGrupoAsignatura->findOneBy([ 'sgrAsignatura' => $asignatura->getId() ]);
+                        if($grupo){
+                            $sgrEvento->setGrupoAsignatura($grupo);
+                            $asignatura->addGrupo($grupo);
+                            $entityManager->persist($asignatura);
+                            $entityManager->flush();   
+                        }
+                        else{
+                            //
+                            $grupo = new SgrGrupoAsignatura;
+                            $grupo->setNombre($row['GRP.']);
+                            $grupo->setSgrAsignatura($asignatura);
+                            $grupo->addSgrProfesor($profesor);
+                            $entityManager->persist($grupo);
+                            $entityManager->flush();
+                        }
+
+
+                        //dump($grupo); 
+                        //dump($asignatura->getGrupos()->contains($grupo));
+                        //set Actividad
+
+                        $actividad = $repositoryActividad->findOneBy([ 'actividad' => 'Docencia Reglada POD' ]);
+                        if($actividad)
+                            $sgrEvento->setActividad($actividad);
+                        else{
+                            //exception 
+                        }
+
+                        //dump(substr($row['C.ASIG.'],0,3));
+                        //dump($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ]));
+                        
+
+                        //update rowsSgrEventos
+                        $rowsSgrEventos[] = $sgrEvento;
+                    }
+                    
                 }
             }
             
+            
+            
+            dump($filasConSolape);
             dump($rowsSgrEventos);
             dump($rowsCsv);
+
             exit;
             //return $this->redirectToRoute('sgr_uploadCSV_index', [ 'msg' => $fileName ]);
             return $this->render('sgr_uploadCSV/index.html.twig', [ 
