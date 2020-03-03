@@ -24,6 +24,114 @@ class Evento extends AbstractController
     	return $this->sgrEvento;
     }
 
+    public function setFechaDesde($f_desde)
+    {
+        $this->sgrEvento->setFInicio( date_create_from_format('d/m/Y', $f_desde, new \DateTimeZone('Europe/Madrid')) );
+
+        return $this;
+    }
+
+    public function setFechaHasta($f_hasta)
+    {
+
+        $this->sgrEvento->setFFin( date_create_from_format('d/m/Y', $f_hasta, new \DateTimeZone('Europe/Madrid')) );
+
+        return $this;
+    }
+
+    public function setHoraInicio($h_inicio)
+    {
+
+        $this->sgrEvento->setHInicio( date_create_from_format('H:i', $h_inicio, new \DateTimeZone('Europe/Madrid')) );
+        return $this;
+    }
+
+    public function setHoraFin($h_fin)
+    {
+
+        $this->sgrEvento->setHFin( date_create_from_format('H:i', $h_fin, new \DateTimeZone('Europe/Madrid')) );
+        return $this;
+    }
+
+    public function setDias($dia)
+    {
+        $this->sgrEvento->setDias([ $dia ]);
+        return $this;
+    }
+
+    public function setProfesor($nombreProfesor, $entityManager, $repositoryProfesor){
+
+        $profesor = $repositoryProfesor->findOneBy([ 'nombre' => $nombreProfesor ]);
+        if($profesor)
+            $this->sgrEvento->setProfesor($profesor);
+        else
+        {
+            $profesor = new SgrProfesor;
+            $profesor->setNombre($nombreProfesor);
+            $entityManager->persist($profesor);
+            $entityManager->flush();
+            $this->sgrEvento->setProfesor($profesor);
+        }
+        return $this;
+    }
+
+    public function setTitulacion ($codigoAsignatura, $repositoryTitulacion)
+    {
+
+        $this->sgrEvento->setTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($codigoAsignatura,0,3) ]));
+
+        return $this;
+    }
+
+    public function setAsignatura($codigoAsignatura, $nombreAsignatura, $cuatrimestre, $entityManager, $repositoryAsignatura, $repositoryTitulacion)
+    {
+
+        $asignatura = $repositoryAsignatura->findOneBy([ 'codigo' => $codigoAsignatura ]);
+        if($asignatura){
+            
+            $this->sgrEvento->setAsignatura($asignatura);
+        }
+        else
+        {
+            $asignatura = new SgrAsignatura;
+            $asignatura->setCodigo($codigoAsignatura);
+            $asignatura->setNombre($nombreAsignatura);
+            $asignatura->setCuatrimestre($cuatrimestre);
+            $asignatura->setSgrTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($codigoAsignatura,0,3) ])); //LANZAR EXCEPTION SI NO EXISTE TITULACIÓN
+            $entityManager->persist($asignatura);
+            $entityManager->flush();
+
+            $this->sgrEvento->setAsignatura($asignatura);
+        }
+
+        return $this;
+    }
+
+    public function setGrupo($grupo, $entityManager, $repositoryGrupoAsignatura)
+    {
+
+        $asignatura = $this->sgrEvento->getAsignatura();
+        
+        $grupo = $repositoryGrupoAsignatura->findOneBy([ 'sgrAsignatura' => $asignatura->getId() ]);
+        if($grupo){
+            $this->sgrEvento->setGrupoAsignatura($grupo);
+            $asignatura->addGrupo($grupo);
+            $entityManager->persist($asignatura);
+            $entityManager->flush();   
+        }
+        else{
+            //
+            $grupo = new SgrGrupoAsignatura;
+            $grupo->setNombre($grupo);
+            $grupo->setSgrAsignatura($asignatura);
+            $grupo->addSgrProfesor($profesor);
+            $entityManager->persist($grupo);
+            $entityManager->flush();
+        }
+
+        return $this;
+    }
+
     /**
      * devuleve true si $this->sgrEvento solapa con cualquier otro evento en el mismo espacio
      * @return bool

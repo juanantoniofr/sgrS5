@@ -15,6 +15,7 @@ use App\Service\Evento;
 
 use App\Entity\SgrEspacio;
 use App\Entity\SgrEvento;
+use App\Entity\sgrFechasEvento;
 use App\Entity\SgrProfesor;
 use App\Entity\SgrAsignatura;
 use App\Entity\SgrTitulacion;
@@ -50,10 +51,8 @@ class SgrUploadCSVController extends AbstractController
 
             $aKeysValid = [ 'ES','C.ASIG.','ASIGNATURA','DUR.','GRP.','PROFESOR','F_DESDE','F_HASTA','C.DIA','H_INICIO','H_FIN','AULA'];
             
-            
+            //Validación de claves
             $keysInvalid = $csv->isValidHeader($file,$aKeysValid);
-            //dump($keysInvalid);
-            //exit;
             if ( !empty($keysInvalid) ){
                 
                 $errors[] = 'Error al procesar las cabeceras del archivo ' . $file->getClientOriginalName();
@@ -68,154 +67,61 @@ class SgrUploadCSVController extends AbstractController
                 ]);
             }
             
-            //$rowsCsv = $csv->getRowsFilterByKeys($file,$aKeysValid);
-            //dump($rowsCsv);
+            //lee el archivo csv y lo guarda en el array $rowsCsv
             $rowsCsv = new ArrayCollection($csv->getRowsFilterByKeys($file,$aKeysValid));
             
-            //Solapa en csv
-            //Todas las filas del csv que tiene solapammiento
-            $filasConSolape = new ArrayCollection();
-            //dump($filasConSolape);
-            //dump($rowsCsv->current());
-
+            //Solapa en csv            
+            $csv->setSolapamientos($rowsCsv);
             
-            //
-            //incializar validaciones
-            foreach ($rowsCsv as $key => $row) {    
-                $row['validations']['existAula'] = false;
-                $row['validations']['solapa'] = false;
-                $row['validations']['solapaCsv'] = array();
-
-                $rowsCsv[$key] = $row;
-            }
-            
-
-            $auxRowsCsv = clone $rowsCsv;
-            foreach ($rowsCsv as $key => $row) {    
-                
-                
-                 
-    
-                $solapesCsv = new ArrayCollection();//array();
-
-                //Evitar solapamientos consigo mismo
-                $auxRowsCsv->removeElement($row);
-                //inicializar validaciones
-                
-                $solapesCsv = $csv->solapaCsv($auxRowsCsv,$row);
-                if (!empty($solapesCsv)){
-                    $filasConSolape->add($row['numfilaCsv']);
-                    //Para cada fila del csv se añade array con los números de filas con los que solapa
-                    $row['validations']['solapaCsv'] = $solapesCsv;
-                }
-                
-                
-                //dump($auxRowsCsv);
-                //dump($rowsCsv);
-                //exit;
-                //Se vuelve a añadir para seguir testando solapamientos
-                $auxRowsCsv->add($row);
-                
-                $rowsCsv->set($key,$row);
-            }
-            //dump($rowsCsv);
-            //dump($filasConSolape);
-            
-            //Validation existAula
-            $repository = $this->getDoctrine()->getRepository(SgrEspacio::class);
-            //Validation espacio ocupado (solapa), si existe Aula
-
-            //set titulacion //  asignatura // grupo_asignatura // profesor // 
             $entityManager = $this->getDoctrine()->getManager();
+            $repositoryEspacio = $this->getDoctrine()->getRepository(SgrEspacio::class); 
+            
             $repositoryProfesor = $this->getDoctrine()->getRepository(SgrProfesor::class);
             $repositoryAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
             $repositoryTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
             $repositoryActividad = $this->getDoctrine()->getRepository(SgrTipoActividad::class);
             $repositoryGrupoAsignatura = $this->getDoctrine()->getRepository(SgrGrupoAsignatura::class);
+            $rowsSgrEventos = array();
             foreach ($rowsCsv as $key => $row) {
                 
 
                 $sgrEvento = new SgrEvento;
-                $sgrEspacio = $repository->exist($row['AULA']);
-                dump($sgrEspacio);
-
+                //Validation existAula
+                $sgrEspacio = $repositoryEspacio->exist($row['AULA']);
+                
+                //Si existe Aula
                 if ($sgrEspacio){
                     $row['validations']['existAula'] = true;
-                
                 
                     //set Espacio                    
                     $sgrEvento->setEspacio($sgrEspacio);
 
-                    //set f_inicio, f_fin, h_inicio, h_fin
-                    $sgrEvento->setFInicio( date_create_from_format('d/m/Y', $row['F_DESDE'], new \DateTimeZone('Europe/Madrid')) );
-                    $sgrEvento->setFFin( date_create_from_format('d/m/Y', $row['F_HASTA'], new \DateTimeZone('Europe/Madrid')) );
-                    $sgrEvento->setHInicio( date_create_from_format('H:i', $row['H_INICIO'], new \DateTimeZone('Europe/Madrid')) );
-                    $sgrEvento->setHFin( date_create_from_format('H:i', $row['H_FIN'], new \DateTimeZone('Europe/Madrid')) );
-                    $sgrEvento->setDias([ $row['C.DIA'] ]);
-                    
+                    dump($sgrEvento);
+                    $evento->setEvento($sgrEvento);
+                    $evento->setFechaDesde($row['F_DESDE']);
+                    $evento->setFechaHasta($row['F_HASTA']);
+                    $evento->setHoraInicio($row['H_INICIO']);
+                    $evento->setHoraFin($row['H_FIN']);
+                    $evento->setDias($row['C.DIA']);
+                   
                     //set validation solapa
-                    $row['validations']['solapa'] = $evento->setEvento($sgrEvento)->solapa();
-                    
+                    $row['validations']['solapa'] = $evento->solapa();
                     //update rowsCsv
                     $rowsCsv[$key]=$row;
-                    if (!$row['validations']['solapa']){
-                        
+                    
+                    //Si no hay solapamientos
+                    //añadir ! /*!*/
+                    if ($row['validations']['solapa']){
                         //set Profesor
-                        $profesor = $repositoryProfesor->findOneBy([ 'nombre' => $row['PROFESOR'] ]);
-                        if($profesor)
-                            $sgrEvento->setProfesor($profesor);
-                        else
-                        {
-                            $profesor = new SgrProfesor;
-                            $profesor->setNombre($row['PROFESOR']);
-                            $entityManager->persist($profesor);
-                            $entityManager->flush();
-
-                            $gerEvento->setProfesor($profesor);
-                        }
-
+                        $evento->setProfesor($row['PROFESOR'], $entityManager, $repositoryProfesor);
                         
-                        //set asignatura && titulacion
-                        $asignatura = $repositoryAsignatura->findOneBy([ 'codigo' => $row['C.ASIG.'] ]);
-                        
-                        if($asignatura){
-                            $sgrEvento->setAsignatura($asignatura);
-                            $sgrEvento->setTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ]));
-                            //dump($asignatura->getSgrTitulacion());
-                        }
-
-                        else
-                        {
-                            $asignatura = new SgrAsignatura;
-                            $asignatura->setCodigo($row['C.ASIG.']);
-                            $asignatura->setNombre($row['ASIGNATURA']);
-                            $asignatura->setCuatrimestre($row['DUR.']);
-                            $asignatura->setSgrTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ])); //LANZAR EXCEPTION SI NO EXISTE TITULACIÓN
-                            $entityManager->persist($asignatura);
-                            $entityManager->flush();
-
-                            $sgrEvento->setAsignatura($asignatura);
-                            $sgrEvento->setTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ]));
-                        }                        
+                        //set titulacion
+                        $evento->setTitulacion( $row['C.ASIG.'] , $repositoryTitulacion );
+                        //set asignatura 
+                        $evento->setAsignatura( $row['C.ASIG.'] , $row['ASIGNATURA'], $row['DUR.'], $entityManager, $repositoryAsignatura, $repositoryTitulacion );
                         
                         //set Grupo
-                        $grupo = $repositoryGrupoAsignatura->findOneBy([ 'sgrAsignatura' => $asignatura->getId() ]);
-                        if($grupo){
-                            $sgrEvento->setGrupoAsignatura($grupo);
-                            $asignatura->addGrupo($grupo);
-                            $entityManager->persist($asignatura);
-                            $entityManager->flush();   
-                        }
-                        else{
-                            //
-                            $grupo = new SgrGrupoAsignatura;
-                            $grupo->setNombre($row['GRP.']);
-                            $grupo->setSgrAsignatura($asignatura);
-                            $grupo->addSgrProfesor($profesor);
-                            $entityManager->persist($grupo);
-                            $entityManager->flush();
-                        }
-
+                        $evento->setGrupo($row['GRP.'], $entityManager, $repositoryGrupoAsignatura);
 
                         //set Actividad
                         $actividad = $repositoryActividad->findOneBy([ 'actividad' => 'Docencia Reglada POD' ]);
@@ -238,20 +144,34 @@ class SgrUploadCSVController extends AbstractController
                         //set Update At
                         $sgrEvento->setUpdatedAt();
                         
-
                         //update rowsSgrEventos
                         $rowsSgrEventos[] = $sgrEvento;
                     }
                 }
             }
+            dump($sgrEvento);
+                        exit;
+                        
+            exit;
+            // añadir ! al if solapa
+            if ($rowsSgrEventos)
+                
+                foreach ($rowsSgrEventos as $sgrEvento) {
+                    $evento->setEvento($sgrEvento);
+                    $fechasEvento = $evento->calculateFechasEvento();
+                           
+                    foreach ($fechasEvento as $dt) {
+                        $sgrFechasEvento = new sgrFechasEvento();
+                        $sgrFechasEvento->setFecha($dt);
+                        $entityManager->persist($sgrFechasEvento);
+                        $sgrEvento->addFecha($sgrFechasEvento);
+                    }
+                    
+                    $entityManager->persist($sgrEvento);
+                    $entityManager->flush();
+            }
             
             
-            
-            dump($filasConSolape);
-            dump($rowsSgrEventos);
-            dump($rowsCsv);
-
-            //exit;
             //return $this->redirectToRoute('sgr_uploadCSV_index', [ 'msg' => $fileName ]);
             return $this->render('sgr_uploadCSV/index.html.twig', [ 
                 'eventos' => $rowsSgrEventos,

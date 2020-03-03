@@ -15,7 +15,7 @@
     		</div>
     		</div>
   		</fieldset>
-  		<button class="btn btn-primary m-3">{{ button_label|default('Upload') }}</button>
+  		<button class="btn btn-primary m-3">{{ button_label|default('Upload CSV') }}</button>
     {{ form_end(form) }}
 
     {% if errors is defined %}
@@ -27,13 +27,12 @@
     {% endif %}
     
     {% if filas is defined %}
-    	<div class="alert alert-danger">    
-               <h2 class="center">Filas en el CVS con solapamiento en BD</h2>
-        </div>
+
         <table class="table">
         <thead class="thead-dark">
             <tr>
-                <th>ES</th>
+                <th>Validaciones</th>
+                <th>Num. Fila</th>
                 <th>C.ASIG.</th>
                 <th>ASIGNATURA</th>
                 <th>DUR.</th>
@@ -45,15 +44,32 @@
                 <th>H_INICIO</th>
                 <th>H_FIN</th>
                 <th>AULA</th>
-                <th>Validations</th>
             </tr>
         </thead>
         <tbody>
             
             
-        {% for fila in filas|filter(fila => fila.validations.solapa == true ) %}
+        {% for fila in filas %}
             <tr>
-                
+                <td>
+                    {% if fila.validations.existAula and not fila.validations.solapa and  fila.validations.solapaCsv is empty %}
+                        <span class="text-success"><b><i class="fas fa-check"></i>Evento salvado con éxito.</b></span>
+                    {% else %}
+                        <span class="text-danger"><b>Fila con errores.</b></span><br />
+                    {% endif %}
+
+                    {% if not fila.validations.existAula %}
+                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> No existe espacio</span>
+                    {% endif %}
+                    {% if fila.validations.solapa %}
+                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado</span>
+                    {% endif %}
+                    {% if fila.validations.solapaCsv %}
+                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Solapamiento con la/s fila/s: {{ fila.validations.solapaCsv|join(', ', ' y ') }}</span>
+                    {% endif %}
+
+                    {# dump(fila.validations) #}
+                </td>
                 <td>{{ fila.numfilaCsv }}</td>
                 <td>{{ fila['C.ASIG.'] }}</td>
                 <td>{{ fila.ASIGNATURA }}</td>
@@ -66,7 +82,7 @@
                 <td>{{ fila.H_INICIO }}</td>
                 <td>{{ fila.H_FIN }}</td>
                 <td>{{ fila.AULA }}</td>
-                <td>{{ dump(fila.validations) }}</td>
+                
             </tr>
         {% endfor %}
         </tr>
@@ -74,102 +90,6 @@
         </tbody>
     	</table>
 
-        <div class="alert alert-danger">    
-               <h2 class="center">No exite espacio</h2>
-        </div>
-        <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>ES</th>
-                <th>C.ASIG.</th>
-                <th>ASIGNATURA</th>
-                <th>DUR.</th>
-                <th>GRP.</th>
-                <th>PROFESOR</th>
-                <th>F_DESDE</th>
-                <th>F_HASTA</th>
-                <th>C.DIA</th>
-                <th>H_INICIO</th>
-                <th>H_FIN</th>
-                <th>AULA</th>
-                <th>Validations</th>
-            </tr>
-        </thead>
-        <tbody>
-            
-            
-        {% for fila in filas|filter(fila => fila.validations.existAula == false ) %}
-            <tr>
-                
-                <td>{{ fila.numfilaCsv }}</td>
-                <td>{{ fila['C.ASIG.'] }}</td>
-                <td>{{ fila.ASIGNATURA }}</td>
-                <td>{{ fila['DUR.'] }}</td>
-                <td>{{ fila['GRP.'] }}</td>
-                <td>{{ fila.PROFESOR }}</td>
-                <td>{{ fila.F_DESDE }}</td>
-                <td>{{ fila.F_HASTA }}</td>
-                <td>{{ fila['C.DIA'] }}</td>
-                <td>{{ fila.H_INICIO }}</td>
-                <td>{{ fila.H_FIN }}</td>
-                <td>{{ fila.AULA }}</td>
-                <td>{{ dump(fila.validations) }}</td>
-            </tr>
-        {% endfor %}
-        </tr>
         
-        </tbody>
-        </table>
-
-        <div class="alert alert-danger">    
-               <h2 class="center">Filas en el CVS con solapamiento entre sí</h2>
-        </div>
-        <table class="table">
-        <thead class="thead-dark">
-            <tr>
-                <th>ES</th>
-                <th>C.ASIG.</th>
-                <th>ASIGNATURA</th>
-                <th>DUR.</th>
-                <th>GRP.</th>
-                <th>PROFESOR</th>
-                <th>F_DESDE</th>
-                <th>F_HASTA</th>
-                <th>C.DIA</th>
-                <th>H_INICIO</th>
-                <th>H_FIN</th>
-                <th>AULA</th>
-                <th>Validations</th>
-            </tr>
-        </thead>
-        <tbody>
-            
-            
-        {% for fila in filas|filter(fila => fila.validations.solapaCsv is not empty ) %}
-            <tr>
-                
-                <td>{{ fila.numfilaCsv }}</td>
-                <td>{{ fila['C.ASIG.'] }}</td>
-                <td>{{ fila.ASIGNATURA }}</td>
-                <td>{{ fila['DUR.'] }}</td>
-                <td>{{ fila['GRP.'] }}</td>
-                <td>{{ fila.PROFESOR }}</td>
-                <td>{{ fila.F_DESDE }}</td>
-                <td>{{ fila.F_HASTA }}</td>
-                <td>{{ fila['C.DIA'] }}</td>
-                <td>{{ fila.H_INICIO }}</td>
-                <td>{{ fila.H_FIN }}</td>
-                <td>{{ fila.AULA }}</td>
-                <td>{{ dump(fila.validations) }}</td>
-            </tr>
-        {% endfor %}
-        </tr>
-        
-        </tbody>
-        </table>
-
     {% endif %}
-{% if filas is defined %}
-    {{ dump(filas) }}
-{% endif %}
 {% endblock %}

@@ -4,6 +4,9 @@ namespace App\Service;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 class Csv extends AbstractController{
 
 
@@ -54,11 +57,6 @@ class Csv extends AbstractController{
             }
         }
 
-        //dump($keysCsv);
-        //dump($keys);
-        //dump($positions);
-        //dump($mappedKeys);
-        //exit;
         $numfila = 0;
         while ( ($fila = fgetcsv($manejador,0,',','"')) != NULL) {
             
@@ -72,6 +70,9 @@ class Csv extends AbstractController{
                 $row[$key] = $fila[$positionCsvFila];
             }
             $row['numfilaCsv'] = $numfila;
+            $row['validations']['existAula'] = false;
+            $row['validations']['solapa'] = false;
+            $row['validations']['solapaCsv'] = array();
             $rows[] = $row;
             
             //$row['validaciones'] = array('existeEspacio' => false);
@@ -90,15 +91,8 @@ class Csv extends AbstractController{
 
 
         $aNumfilas = array();
-        //dump($rowsCsv);
-        //dump($row);
-        
+                
         foreach ($rowsCsv as $key => $r) {
-            //dump($r['AULA'] == $row['AULA']);
-            //dump($r['C.DIA'] == $row['C.DIA']);
-            //dump($r['F_DESDE'] <= $row['F_HASTA']);
-            //dump($row['F_HASTA'] <= $r['F_HASTA']);
-            //exit;
             $row_f_desde = date_create_from_format('d/m/Y', $row['F_DESDE'], new \DateTimeZone('Europe/Madrid'));
             $row_f_hasta = date_create_from_format('d/m/Y', $row['F_HASTA'], new \DateTimeZone('Europe/Madrid'));
 
@@ -134,9 +128,31 @@ class Csv extends AbstractController{
             } //primer if
                 
         }//fin del foreach
-        //dump($aNumfilas);
-        //exit;
+
+        
+        
         return $aNumfilas;
+    }
+
+    public function setSolapamientos(ArrayCollection $rowsCsv){
+        
+        foreach ($rowsCsv as $key => $row) {    
+            
+                $solapesCsv = new ArrayCollection();//array();
+        
+                //Evitar solapamientos consigo mismo
+                $rowsCsv->removeElement($row);
+
+                $solapesCsv = $this->solapaCsv($rowsCsv,$row);
+                if (!empty($solapesCsv)){
+                    
+                    $row['validations']['solapaCsv'] = $solapesCsv;
+                }
+              
+                //Se vuelve a añadir para seguir testando solapamientos
+                $rowsCsv->add($row);
+            }
+        return $rowsCsv;
     }
 }    
 ?>
