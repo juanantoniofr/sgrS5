@@ -5,8 +5,7 @@
 {% block body %}
     <h1>Upload CSV</h1>
 
-    {# include('sgr_tipo_actividad/_form.html.twig') #}
-	{{ form_start(form) }}
+    {{ form_start(form) }}
     	<fieldset>
 			<legend class="col-md-6">CSV file formulario</legend>
 			<div class="form-row p-3">
@@ -28,7 +27,10 @@
     {% endif %}
     
     {% if filas is defined %}
-    	<table class="table">
+    	<div class="alert alert-danger">    
+               <h2 class="center">Filas en el CVS con solapamiento en BD</h2>
+        </div>
+        <table class="table">
         <thead class="thead-dark">
             <tr>
                 <th>ES</th>
@@ -47,27 +49,127 @@
             </tr>
         </thead>
         <tbody>
-    	{% for fila in filas %}
-        <tr {% if fila.validations.solapa %} class="alert alert-danger" {% endif %} >
-    		<td>{{ fila.ES }}</td>
-            <td>{{ fila['C.ASIG.'] }}</td>
-            <td>{{ fila.ASIGNATURA }}</td>
-            <td>{{ fila['DUR.'] }}</td>
-            <td>{{ fila['GRP.'] }}</td>
-            <td>{{ fila.PROFESOR }}</td>
-            <td>{{ fila.F_DESDE }}</td>
-            <td>{{ fila.F_HASTA }}</td>
-            <td>{{ fila['C.DIA'] }}</td>
-            <td>{{ fila.H_INICIO }}</td>
-            <td>{{ fila.H_FIN }}</td>
-            <td>{{ fila.AULA }}</td>
-            <td>{{ dump(fila.validations) }}</td>
-        </tr>
+            
+            
+        {% for fila in filas|filter(fila => fila.validations.solapa == true ) %}
+            <tr>
+                
+                <td>{{ fila.numfilaCsv }}</td>
+                <td>{{ fila['C.ASIG.'] }}</td>
+                <td>{{ fila.ASIGNATURA }}</td>
+                <td>{{ fila['DUR.'] }}</td>
+                <td>{{ fila['GRP.'] }}</td>
+                <td>{{ fila.PROFESOR }}</td>
+                <td>{{ fila.F_DESDE }}</td>
+                <td>{{ fila.F_HASTA }}</td>
+                <td>{{ fila['C.DIA'] }}</td>
+                <td>{{ fila.H_INICIO }}</td>
+                <td>{{ fila.H_FIN }}</td>
+                <td>{{ fila.AULA }}</td>
+                <td>{{ dump(fila.validations) }}</td>
+            </tr>
         {% endfor %}
+        </tr>
+        
         </tbody>
     	</table>
+
+        <div class="alert alert-danger">    
+               <h2 class="center">No exite espacio</h2>
+        </div>
+        <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ES</th>
+                <th>C.ASIG.</th>
+                <th>ASIGNATURA</th>
+                <th>DUR.</th>
+                <th>GRP.</th>
+                <th>PROFESOR</th>
+                <th>F_DESDE</th>
+                <th>F_HASTA</th>
+                <th>C.DIA</th>
+                <th>H_INICIO</th>
+                <th>H_FIN</th>
+                <th>AULA</th>
+                <th>Validations</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            
+        {% for fila in filas|filter(fila => fila.validations.existAula == false ) %}
+            <tr>
+                
+                <td>{{ fila.numfilaCsv }}</td>
+                <td>{{ fila['C.ASIG.'] }}</td>
+                <td>{{ fila.ASIGNATURA }}</td>
+                <td>{{ fila['DUR.'] }}</td>
+                <td>{{ fila['GRP.'] }}</td>
+                <td>{{ fila.PROFESOR }}</td>
+                <td>{{ fila.F_DESDE }}</td>
+                <td>{{ fila.F_HASTA }}</td>
+                <td>{{ fila['C.DIA'] }}</td>
+                <td>{{ fila.H_INICIO }}</td>
+                <td>{{ fila.H_FIN }}</td>
+                <td>{{ fila.AULA }}</td>
+                <td>{{ dump(fila.validations) }}</td>
+            </tr>
+        {% endfor %}
+        </tr>
+        
+        </tbody>
+        </table>
+
+        <div class="alert alert-danger">    
+               <h2 class="center">Filas en el CVS con solapamiento entre sí</h2>
+        </div>
+        <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ES</th>
+                <th>C.ASIG.</th>
+                <th>ASIGNATURA</th>
+                <th>DUR.</th>
+                <th>GRP.</th>
+                <th>PROFESOR</th>
+                <th>F_DESDE</th>
+                <th>F_HASTA</th>
+                <th>C.DIA</th>
+                <th>H_INICIO</th>
+                <th>H_FIN</th>
+                <th>AULA</th>
+                <th>Validations</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            
+        {% for fila in filas|filter(fila => fila.validations.solapaCsv is not empty ) %}
+            <tr>
+                
+                <td>{{ fila.numfilaCsv }}</td>
+                <td>{{ fila['C.ASIG.'] }}</td>
+                <td>{{ fila.ASIGNATURA }}</td>
+                <td>{{ fila['DUR.'] }}</td>
+                <td>{{ fila['GRP.'] }}</td>
+                <td>{{ fila.PROFESOR }}</td>
+                <td>{{ fila.F_DESDE }}</td>
+                <td>{{ fila.F_HASTA }}</td>
+                <td>{{ fila['C.DIA'] }}</td>
+                <td>{{ fila.H_INICIO }}</td>
+                <td>{{ fila.H_FIN }}</td>
+                <td>{{ fila.AULA }}</td>
+                <td>{{ dump(fila.validations) }}</td>
+            </tr>
+        {% endfor %}
+        </tr>
+        
+        </tbody>
+        </table>
+
     {% endif %}
-{% if eventos is defined %}
-    {{ dump(eventos) }}
+{% if filas is defined %}
+    {{ dump(filas) }}
 {% endif %}
 {% endblock %}

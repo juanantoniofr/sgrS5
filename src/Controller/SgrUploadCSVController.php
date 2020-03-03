@@ -71,8 +71,6 @@ class SgrUploadCSVController extends AbstractController
             //$rowsCsv = $csv->getRowsFilterByKeys($file,$aKeysValid);
             //dump($rowsCsv);
             $rowsCsv = new ArrayCollection($csv->getRowsFilterByKeys($file,$aKeysValid));
-            //dump($rowsCsv);
-            //dump($rowsColletion);
             
             //Solapa en csv
             //Todas las filas del csv que tiene solapammiento
@@ -82,18 +80,28 @@ class SgrUploadCSVController extends AbstractController
 
             
             //
+            //incializar validaciones
+            foreach ($rowsCsv as $key => $row) {    
+                $row['validations']['existAula'] = false;
+                $row['validations']['solapa'] = false;
+                $row['validations']['solapaCsv'] = array();
+
+                $rowsCsv[$key] = $row;
+            }
+            
+
             $auxRowsCsv = clone $rowsCsv;
             foreach ($rowsCsv as $key => $row) {    
                 
+                
+                 
+    
                 $solapesCsv = new ArrayCollection();//array();
 
                 //Evitar solapamientos consigo mismo
                 $auxRowsCsv->removeElement($row);
-                //dump($auxRowsCsv);
-                //dump($rowsCsv);
-                //exit;
-                //dump($rowsCsv);
-                //exit;
+                //inicializar validaciones
+                
                 $solapesCsv = $csv->solapaCsv($auxRowsCsv,$row);
                 if (!empty($solapesCsv)){
                     $filasConSolape->add($row['numfilaCsv']);
@@ -101,6 +109,10 @@ class SgrUploadCSVController extends AbstractController
                     $row['validations']['solapaCsv'] = $solapesCsv;
                 }
                 
+                
+                //dump($auxRowsCsv);
+                //dump($rowsCsv);
+                //exit;
                 //Se vuelve a añadir para seguir testando solapamientos
                 $auxRowsCsv->add($row);
                 
@@ -111,18 +123,8 @@ class SgrUploadCSVController extends AbstractController
             
             //Validation existAula
             $repository = $this->getDoctrine()->getRepository(SgrEspacio::class);
-            /*foreach ($rowsCsv as $key => $row) {
-                
-                $row['validations']['existAula'] = false;
-                if ($repository->exist($row['AULA']))
-                    $row['validations']['existAula'] = true;
-
-                $rowsCsv->set($key,$row);
-            }*/
-
-            //dump($rowsCsv);
-            
             //Validation espacio ocupado (solapa), si existe Aula
+
             //set titulacion //  asignatura // grupo_asignatura // profesor // 
             $entityManager = $this->getDoctrine()->getManager();
             $repositoryProfesor = $this->getDoctrine()->getRepository(SgrProfesor::class);
@@ -132,12 +134,15 @@ class SgrUploadCSVController extends AbstractController
             $repositoryGrupoAsignatura = $this->getDoctrine()->getRepository(SgrGrupoAsignatura::class);
             foreach ($rowsCsv as $key => $row) {
                 
+
                 $sgrEvento = new SgrEvento;
                 $sgrEspacio = $repository->exist($row['AULA']);
-                if (!$sgrEspacio){
-                    $row['validations']['existAula'] = false;
-                }
-                else {
+                dump($sgrEspacio);
+
+                if ($sgrEspacio){
+                    $row['validations']['existAula'] = true;
+                
+                
                     //set Espacio                    
                     $sgrEvento->setEspacio($sgrEspacio);
 
@@ -212,10 +217,7 @@ class SgrUploadCSVController extends AbstractController
                         }
 
 
-                        //dump($grupo); 
-                        //dump($asignatura->getGrupos()->contains($grupo));
                         //set Actividad
-
                         $actividad = $repositoryActividad->findOneBy([ 'actividad' => 'Docencia Reglada POD' ]);
                         if($actividad)
                             $sgrEvento->setActividad($actividad);
@@ -223,14 +225,23 @@ class SgrUploadCSVController extends AbstractController
                             //exception 
                         }
 
-                        //dump(substr($row['C.ASIG.'],0,3));
-                        //dump($repositoryTitulacion->findOneBy([ 'codigo' => substr($row['C.ASIG.'],0,3) ]));
+
+                        //set estado
+                        $sgrEvento->setEstado('aprobado'); //pendiente?? Cargar valor de archivo de configuración
+
+                        //set Título
+                        $sgrEvento->setTitulo($row['C.ASIG.'] . '-' . $row['ASIGNATURA']);
+
+                        //set User
+                        $sgrEvento->setUser($this->getUser());
+
+                        //set Update At
+                        $sgrEvento->setUpdatedAt();
                         
 
                         //update rowsSgrEventos
                         $rowsSgrEventos[] = $sgrEvento;
                     }
-                    
                 }
             }
             
@@ -240,7 +251,7 @@ class SgrUploadCSVController extends AbstractController
             dump($rowsSgrEventos);
             dump($rowsCsv);
 
-            exit;
+            //exit;
             //return $this->redirectToRoute('sgr_uploadCSV_index', [ 'msg' => $fileName ]);
             return $this->render('sgr_uploadCSV/index.html.twig', [ 
                 'eventos' => $rowsSgrEventos,
