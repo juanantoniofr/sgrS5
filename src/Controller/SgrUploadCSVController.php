@@ -51,7 +51,7 @@ class SgrUploadCSVController extends AbstractController
 
             $aKeysValid = [ 'ES','C.ASIG.','ASIGNATURA','DUR.','GRP.','PROFESOR','F_DESDE','F_HASTA','C.DIA','H_INICIO','H_FIN','AULA'];
             
-            //Validación de claves
+            //Validación de claves (columnas CSV, debe estar todas)
             $keysInvalid = $csv->isValidHeader($file,$aKeysValid);
             if ( !empty($keysInvalid) ){
                 
@@ -70,33 +70,42 @@ class SgrUploadCSVController extends AbstractController
             //lee el archivo csv y lo guarda en el array $rowsCsv
             $rowsCsv = new ArrayCollection($csv->getRowsFilterByKeys($file,$aKeysValid));
             
-            //Solapa en csv            
-            $csv->setSolapamientos($rowsCsv);
+            //check valid value para F_DESDE, F_HASTA, H_INICIO, H_FIN, DIA
+            //Validations valuesNotValid
+            $rowsCsv = $csv->checkValidValues($rowsCsv);
+
+            //Validations existsAULA
+            $repositoryEspacio = $this->getDoctrine()->getRepository(SgrEspacio::class);
+            $rowsCsv = $csv->checkIfExistEspacio($rowsCsv, $repositoryEspacio);
+
+            //Validations solapaCsv            
+            $rowsCsv = $csv->setSolapamientos($rowsCsv);
+            //dump($rowsCsv);
+            //exit;
+            
+            
+            
             
             $entityManager = $this->getDoctrine()->getManager();
-            $repositoryEspacio = $this->getDoctrine()->getRepository(SgrEspacio::class); 
-            
+                        
             $repositoryProfesor = $this->getDoctrine()->getRepository(SgrProfesor::class);
             $repositoryAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
             $repositoryTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
             $repositoryActividad = $this->getDoctrine()->getRepository(SgrTipoActividad::class);
             $repositoryGrupoAsignatura = $this->getDoctrine()->getRepository(SgrGrupoAsignatura::class);
             $rowsSgrEventos = array();
+            
             foreach ($rowsCsv as $key => $row) {
                 
-
-                $sgrEvento = new SgrEvento;
-                //Validation existAula
-                $sgrEspacio = $repositoryEspacio->exist($row['AULA']);
+              
                 
-                //Si existe Aula
-                if ($sgrEspacio){
-                    $row['validations']['existAula'] = true;
-                
+                if ($csv->passValidations($row)){
+                    
+                    $sgrEvento = new SgrEvento;    
                     //set Espacio                    
-                    $sgrEvento->setEspacio($sgrEspacio);
+                    $sgrEvento->setEspacio($repositoryEspacio->exist($row['AULA']));
 
-                    dump($sgrEvento);
+                    
                     $evento->setEvento($sgrEvento);
                     $evento->setFechaDesde($row['F_DESDE']);
                     $evento->setFechaHasta($row['F_HASTA']);
@@ -104,7 +113,7 @@ class SgrUploadCSVController extends AbstractController
                     $evento->setHoraFin($row['H_FIN']);
                     $evento->setDias($row['C.DIA']);
                    
-                    //set validation solapa
+                    //set validations solapa
                     $row['validations']['solapa'] = $evento->solapa();
                     //update rowsCsv
                     $rowsCsv[$key]=$row;
@@ -149,10 +158,9 @@ class SgrUploadCSVController extends AbstractController
                     }
                 }
             }
-            dump($sgrEvento);
-                        exit;
-                        
-            exit;
+            dump($rowsSgrEventos);
+            dump($rowsCsv);
+            
             // añadir ! al if solapa
             if ($rowsSgrEventos)
                 

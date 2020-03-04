@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+//use App\Entity\SgrEvento;
+
 class Csv extends AbstractController{
 
 
@@ -38,7 +40,8 @@ class Csv extends AbstractController{
      *
      * @return $rows //array con los valores de las columnas $keys  
     */
-    public function getRowsFilterByKeys($file,$keys){
+    public function getRowsFilterByKeys($file,$keys)
+    {
 
         $rows = array();
         $manejador = fopen($file,"r");
@@ -73,6 +76,7 @@ class Csv extends AbstractController{
             $row['validations']['existAula'] = false;
             $row['validations']['solapa'] = false;
             $row['validations']['solapaCsv'] = array();
+            $row['validations']['valuesNotValid'] = array();
             $rows[] = $row;
             
             //$row['validaciones'] = array('existeEspacio' => false);
@@ -87,7 +91,89 @@ class Csv extends AbstractController{
     }
 
 
-    public function solapaCsv($rowsCsv,$row){
+    public function checkValidValues($rowsCsv)
+    {
+        
+        $rowsCsv = $this->checkValidValueForColumnTypeDateTime($rowsCsv, 'F_DESDE');
+        $rowsCsv = $this->checkValidValueForColumnTypeDateTime($rowsCsv, 'F_HASTA');
+        $rowsCsv = $this->checkValidValueForColumnTypeTime($rowsCsv, 'H_INICIO');
+        $rowsCsv = $this->checkValidValueForColumnTypeTime($rowsCsv, 'H_FIN');
+        $rowsCsv = $this->checkValidValueForColumnDia($rowsCsv, 'C.DIA');
+
+        return $rowsCsv;
+    }
+
+    public function checkValidValueForColumnTypeDateTime($rowsCsv, $column)
+    {
+
+        foreach ($rowsCsv as $key => $row) {
+            
+            if ( false == date_create_from_format('d/m/Y', $row[$column], new \DateTimeZone('Europe/Madrid')) )
+                $row['validations']['valuesNotValid'][] = 'Formato no válido para ' .  $column ; 
+
+            $rowsCsv[$key] = $row;
+
+        }
+
+        return $rowsCsv;
+        
+    }
+
+    public function checkValidValueForColumnTypeTime($rowsCsv, $column){
+
+        foreach ($rowsCsv as $key => $row) {
+            
+            if ( false == date_create_from_format('H:i', $row[$column], new \DateTimeZone('Europe/Madrid')) )
+                $row['validations']['valuesNotValid'][] = 'Formato no válido para ' .  $column ; 
+
+            $rowsCsv[$key] = $row;
+
+        }
+
+        return $rowsCsv;
+        
+    }
+
+    public function checkValidValueForColumnDia($rowsCsv, $column){
+
+        foreach ($rowsCsv as $key => $row) {
+            
+            if ( empty($column) || $column < 0 || $column > 6)
+                $row['validations']['valuesNotValid'][] = 'Formato no válido para ' .  $column ; 
+
+            $rowsCsv[$key] = $row;
+
+        }
+
+        return $rowsCsv;
+        
+    }
+
+    public function checkIfExistEspacio($rowsCsv, $repositoryEspacio)
+    {
+        
+        foreach ($rowsCsv as $key => $row) {
+            
+            //Validation existAula
+            $sgrEspacio = $repositoryEspacio->exist($row['AULA']);
+                
+            //Si existe Espacio
+            if ($sgrEspacio)
+                $row['validations']['existAula'] = true;
+
+            $rowsCsv[$key] = $row;
+        }
+
+        return $rowsCsv;
+    }
+
+    public function passValidations($row){
+
+        return $row['validations']['existAula'] && empty($row['validations']['valuesNotValid']) && !$row['validations']['solapa'] && !$row['validations']['solapaCsv'];
+    }
+
+    public function solapaCsv($rowsCsv,$row)
+    {
 
 
         $aNumfilas = array();
