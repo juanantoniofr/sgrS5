@@ -18,7 +18,8 @@ class Csv extends AbstractController{
      *
      * @return $keyError //array con columnas no encontradas
     */
-	public function isValidHeader($file,$columnas){
+	public function isValidHeader($file,$columnas)
+    {
         
         $manejador = fopen($file,"r");
 
@@ -74,7 +75,7 @@ class Csv extends AbstractController{
             }
             $row['numfilaCsv'] = $numfila;
             $row['validations']['existAula'] = false;
-            $row['validations']['solapa'] = false;
+            $row['validations']['solapa'] = true;
             $row['validations']['solapaCsv'] = array();
             $row['validations']['valuesNotValid'] = array();
             $rows[] = $row;
@@ -89,7 +90,6 @@ class Csv extends AbstractController{
         //exit;
         return $rows;
     }
-
 
     public function checkValidValues($rowsCsv)
     {
@@ -169,7 +169,7 @@ class Csv extends AbstractController{
 
     public function passValidations($row){
 
-        return $row['validations']['existAula'] && empty($row['validations']['valuesNotValid']) && !$row['validations']['solapa'] && !$row['validations']['solapaCsv'];
+        return $row['validations']['existAula'] && empty($row['validations']['valuesNotValid']) && !$row['validations']['solapaCsv'];
     }
 
     public function solapaCsv($rowsCsv,$row)

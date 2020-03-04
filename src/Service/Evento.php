@@ -4,6 +4,13 @@ namespace App\Service;
 
 use App\Entity\SgrEvento;
 use App\Entity\SgrFechasEvento;
+use App\Entity\SgrProfesor;
+use App\Entity\SgrAsignatura;
+use App\Entity\SgrTitulacion;
+use App\Entity\SgrTipoActividad;
+use App\Entity\SgrGrupoAsignatura;
+
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Evento extends AbstractController
@@ -107,12 +114,14 @@ class Evento extends AbstractController
         return $this;
     }
 
-    public function setGrupo($grupo, $entityManager, $repositoryGrupoAsignatura)
+    public function setGrupo($nombreGrupo, $entityManager, $repositoryGrupoAsignatura)
     {
 
         $asignatura = $this->sgrEvento->getAsignatura();
         
         $grupo = $repositoryGrupoAsignatura->findOneBy([ 'sgrAsignatura' => $asignatura->getId() ]);
+        //dump($grupo);
+
         if($grupo){
             $this->sgrEvento->setGrupoAsignatura($grupo);
             $asignatura->addGrupo($grupo);
@@ -122,9 +131,10 @@ class Evento extends AbstractController
         else{
             //
             $grupo = new SgrGrupoAsignatura;
-            $grupo->setNombre($grupo);
+            $grupo->setNombre($nombreGrupo);
             $grupo->setSgrAsignatura($asignatura);
-            $grupo->addSgrProfesor($profesor);
+            $grupo->addSgrProfesor($this->sgrEvento->getProfesor());
+            
             $entityManager->persist($grupo);
             $entityManager->flush();
         }
@@ -146,6 +156,7 @@ class Evento extends AbstractController
         //Array de object SgrFechaEventos
         $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
         //dump($result);
+        //exit;
         //$result -> array con las fechas que coincide con alguna de las fechas del evento $this->sgrEvento
         foreach ($result as $fecha) {
             //dump($this->sgrEvento->getHInicio()->format('H:i'));

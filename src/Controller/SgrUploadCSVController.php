@@ -120,7 +120,7 @@ class SgrUploadCSVController extends AbstractController
                     
                     //Si no hay solapamientos
                     //añadir ! /*!*/
-                    if ($row['validations']['solapa']){
+                    if (!$row['validations']['solapa']){
                         //set Profesor
                         $evento->setProfesor($row['PROFESOR'], $entityManager, $repositoryProfesor);
                         
@@ -158,9 +158,9 @@ class SgrUploadCSVController extends AbstractController
                     }
                 }
             }
-            dump($rowsSgrEventos);
-            dump($rowsCsv);
-            
+            //dump($rowsSgrEventos);
+            //dump($rowsCsv);
+            //exit;
             // añadir ! al if solapa
             if ($rowsSgrEventos)
                 
