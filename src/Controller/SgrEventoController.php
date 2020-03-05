@@ -4,13 +4,21 @@ namespace App\Controller;
 
 use App\Entity\SgrEvento;
 use App\Entity\SgrFechasEvento;
+
+//use App\Service\Filters;
+use App\Service\Evento;
+
 use App\Form\SgrEventoType;
+use App\Form\SgrFiltersSgrEventosType;
+
+
 use App\Repository\SgrEventoRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\Evento;
+
 
 
 /**
@@ -18,14 +26,28 @@ use App\Service\Evento;
  */
 class SgrEventoController extends AbstractController
 {
+    
+    /**
+     * @Route("/ajax-getAsignaturas", methods={"GET"})
+     */
+    public function getAsinaturasByTitulacion(Request $request){
+
+        return new Response(
+            '<div>vassssmossss</div>');
+    }
+
+
     /**
      * @Route("/", name="sgr_evento_index", methods={"GET"})
      */
-    public function index(SgrEventoRepository $sgrEventoRepository /*, Evento $evento */): Response
+    public function index(SgrEventoRepository $sgrEventoRepository): Response
     {
+                        
+        $form = $this->createForm(SgrFiltersSgrEventosType::class);
 
         return $this->render('sgr_evento/index.html.twig', [
-            'sgr_eventos' => $sgrEventoRepository->findAll(),
+            'sgr_eventos'   => $sgrEventoRepository->findAll(),
+            'form'          => $form->createView(),
         ]);
     }
 

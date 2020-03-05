@@ -15,7 +15,7 @@
     <!-- Collapse buttons by filters -->
     <p>
         <a class="btn btn-primary" data-toggle="collapse" href="#Filtros" aria-expanded="false" aria-controls="Filtros">
-            Filtros
+           Ver filtros
         </a>
     </p>
     <!-- / Collapse buttons -->
@@ -23,9 +23,7 @@
     <!-- Collapsible element -->
     <div class="collapse" id="Filtros">
         <div class="mt-3 mb-3">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim
-            keffiyeh helvetica,
-            craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            {{ include('sgr_evento/_formFilters.html.twig', {'button_label': 'Filtrar eventos'}) }}
         </div>
     </div>
     <!-- / Collapsible element -->    
@@ -74,4 +72,44 @@
     </table>
 
     <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_new') }}">Nuevo evento</a>
+{% endblock %}
+{% block morescripts %}
+<script type="text/javascript">
+        
+        var $sport = $('#sgr_filters_sgr_eventos_titulacion');
+        console.log($sport);
+        // When sport gets selected ...
+        $sport.change(function() {
+            // ... retrieve the corresponding form.
+            var $form = $(this).closest('form');
+            console.log($form);
+            // Simulate form data, but only include the selected sport value.
+            var data = {};
+            data[$sport.attr('name')] = $sport.val();
+            console.log($sport.val());
+            //console.log($form.attr('method'));
+            //console.log($form.attr('action'));
+            // Submit data via AJAX to the form's action path.
+            $.ajax({
+                url : '/admin/sgr/evento/ajax-getAsignaturas',
+                type: 'GET',//$form.attr('method'),
+                data : data,
+                success: function(html) {
+                    console.log(html);
+                    
+
+
+                    // Replace current position field ...
+                    //$('#sgr_filters_sgr_eventos_asignatura').replaceWith(
+                    // ... with the returned one from the AJAX response.
+                    //$(html).find('#meetup_position')
+                    //);
+                // Position field now displays the appropriate positions.
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
+                }
+            });
+        });        
+</script>
 {% endblock %}
