@@ -14,8 +14,9 @@
             {{ encore_entry_link_tags('app') }}
 
         {% block stylesheets %}{% endblock %}
-        <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
+
         <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body class="d-flex flex-column h-100">
         <header>
@@ -47,13 +48,16 @@
 
         {% block javascripts %}
         	
-            {{ encore_entry_script_tags('app') }}
+            {# encore_entry_script_tags('app') #}
             
             <!-- Renders app.js & a webpack runtime.js file -->
                <!-- <script src="/build/runtime.js"></script>
                 <script src="/build/app.js"></script> -->
-        {# datepicker boostrap #}       
-        <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+        
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>       
+        {# datepicker boostrap #}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
