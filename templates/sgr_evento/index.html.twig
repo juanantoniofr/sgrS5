@@ -86,8 +86,6 @@
             var data = {};
             data[$titulacion.attr('name')] = $titulacion.val();
         
-            //console.log(data);
-            
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 url : '/admin/sgr/evento/ajax-getAsignaturas',
@@ -104,6 +102,31 @@
                     alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
                 }
             });
-        });        
+        });
+
+        $asignatura.change(function(){
+
+            // ... retrieve the corresponding form.
+            var $form = $(this).closest('form');
+            // Simulate form data, but only include the selected titulacion value.
+            var data = {};
+            data[$asignatura.attr('name')] = $asignatura.val();
+
+           // Submit data via AJAX to the form's action path.
+            $.ajax({
+                url : '/admin/sgr/evento/ajax-getProfesores',
+                type: 'GET',//$form.attr('method'),
+                data : data,
+                success: function(html) {
+                    console.log(html.profesores.content);
+                    //console.log(html.asignaturas.content);
+                    $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
+
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
+                }
+            }); 
+        });      
 </script>
 {% endblock %}

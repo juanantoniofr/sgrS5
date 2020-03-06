@@ -6,8 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -29,6 +29,15 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'class' => SgrTitulacion::class,
                                     // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
+                                ])
+            ->add('curso', ChoiceType::class, [
+                                'label' => 'Curso',
+                                'placeholder' => 'Seleccione Curso',
+                                'choices'  => [
+                                    'Primero' => 1,
+                                    'Segundo' => 2,
+                                    'Tercero' => 3,
+                                    'Cuarto' => 4,]
                                 ])
             ->add('asignatura', EntityType::class, [
                                     'label' => 'Asignatura',

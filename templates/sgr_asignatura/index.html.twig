@@ -3,13 +3,14 @@
 {% block title %}Sgr: Asignaturas{% endblock %}
 
 {% block body %}
-    <h1>Sgr: Asignaturas</h1>
+    <h1>Asignaturas</h1>
 
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Codigo</th>
+                <th>Titulación</th>
                 <th>Nombre</th>
                 <th>Cuatrimestre</th>
                 <th>Curso</th>
@@ -21,6 +22,7 @@
             <tr>
                 <td>{{ sgr_asignatura.id }}</td>
                 <td>{{ sgr_asignatura.codigo }}</td>
+                <td> {{sgr_asignatura.sgrTitulacion}}</td>
                 <td>{{ sgr_asignatura.nombre }}</td>
                 <td>{{ sgr_asignatura.cuatrimestre }}</td>
                 <td>{{ sgr_asignatura.curso }}</td>

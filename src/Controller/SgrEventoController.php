@@ -34,6 +34,48 @@ class SgrEventoController extends AbstractController
 {
     
     /**
+     * @Route("/ajax-getProfesores", methods={"GET"})
+     */
+    public function getProfesoresByAsignatura(Request $request)
+    {
+        if ($request->isXmlHttpRequest())
+        {
+            $profesores = new ArrayCollection();
+            $asignatura_id = $request->query->get('sgr_filters_sgr_eventos')['asignatura'];
+            $repositorySgrAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
+            $sgrAsignatura = $repositorySgrAsignatura->find($asignatura_id);
+            
+            if ($sgrAsignatura)
+            {
+                $grupos = $sgrAsignatura->getGrupos();
+                if ($grupos)
+                {
+                    foreach ($grupos as $grupo)
+                    {
+                        $profesors = $grupo->getSgrProfesors();
+                        if ($profesors)
+                        {
+                            foreach ($profesors as $profesor)
+                            {
+                                $profesores->add($profesor);
+                            }    
+                        }
+                    }
+                }
+            }
+            else
+                $profesores = $this->getDoctrine()->getRepository(SgrProfesor::class)->findAll();
+            
+            $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $profesores,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
+                        ]);    
+            return $this->json($html);
+        }   
+        return new Response('');
+    }
+
+    /**
      * @Route("/ajax-getAsignaturas", methods={"GET"})
      */
     public function getAsignaturasByTitulacion(Request $request)
@@ -44,35 +86,40 @@ class SgrEventoController extends AbstractController
             $profesores = new ArrayCollection();
 
             $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
-            
             $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
-
             $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
             
-            if ($sgrTitulacion){
+            if ($sgrTitulacion)
+            {
                 $asignaturas = $sgrTitulacion->getAsignaturas();
-                if ($asignaturas){
-                    foreach ($asignaturas as $asignatura) {
-                        //dump($asignatura);
-                        //dump($asignatura->getGrupos()->count());
-                        foreach ($asignatura->getGrupos() as $grupo) {
-                            //dump($grupo->getNombre());
-                            $profesors = $grupo->getSgrProfesors();
-                            foreach ($profesors as $profesor) {
-                                $profesores->add($profesor);
+                if ($asignaturas)
+                {
+                    foreach ($asignaturas as $asignatura)
+                    {
+                        $grupos = $asignatura->getGrupos(); 
+                        if ($grupos)
+                        {
+                            foreach ($grupos as $grupo)
+                            {
+                                $profesors = $grupo->getSgrProfesors();
+                                if ($profesors)
+                                {
+                                    foreach ($profesors as $profesor)
+                                    {
+                                        $profesores->add($profesor);
+                                    }
+                                }
                             }
                         }
-
                     }
                 }
             }
-            else {
+            else
+            {
                 $asignaturas = $this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll();
                 $profesores = $this->getDoctrine()->getRepository(SgrProfesor::class)->findAll();
             }
-            //dump($profesores);
-            //dump($asignaturas);
-            //exit;
+            
             $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $asignaturas,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Asignatura']
@@ -81,11 +128,10 @@ class SgrEventoController extends AbstractController
                             'options' => $profesores,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
                         ]);    
-            //dump($html);
-            //exit;
-            //return new Response($html);
+            
             return $this->json($html);
         }   
+        
         return new Response('');
     }
 
