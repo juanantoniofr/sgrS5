@@ -146,6 +146,28 @@ class SgrEventoController extends AbstractController
                 $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
                     return $asignatura->getCurso() ==  $curso;
                 });
+                if ($asignaturas)
+                {
+                    $profesores = new ArrayCollection();
+                    foreach ($asignaturas as $asignatura)
+                    {
+                        $grupos = $asignatura->getGrupos(); 
+                        if ($grupos)
+                        {
+                            foreach ($grupos as $grupo)
+                            {
+                                $profesors = $grupo->getSgrProfesors();
+                                if ($profesors)
+                                {
+                                    foreach ($profesors as $profesor)
+                                    {
+                                        $profesores->add($profesor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
