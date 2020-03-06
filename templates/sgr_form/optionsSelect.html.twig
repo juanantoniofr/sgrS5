@@ -1,0 +1,11 @@
+<option value="{{ default.value }}">{{ default.nombre }}</option>
+
+{% if options is defined and options is not empty %}
+{% for option in options %}
+               
+     <option value="{{ option.id }}">
+        {{ option.nombre }}
+    </option>
+{% endfor %}
+
+{% endif %}

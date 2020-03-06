@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormEvents;
 
 use App\Entity\SgrTitulacion;
 use App\Entity\SgrAsignatura;
+use App\Entity\SgrProfesor;
 
 class SgrFiltersSgrEventosType extends AbstractType
 {
@@ -27,7 +28,8 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     // looks for choices from this entity
                                     'class' => SgrTitulacion::class,
                                     // uses the User.username property as the visible option string
-                                    'choice_label' => 'nombre',])
+                                    'choice_label' => 'nombre',
+                                ])
             ->add('asignatura', EntityType::class, [
                                     'label' => 'Asignatura',
                                     'required' => false,
@@ -35,7 +37,17 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     // looks for choices from this entity
                                     'class' => SgrAsignatura::class,
                                     // uses the User.username property as the visible option string
-                                    'choice_label' => 'nombre',])
+                                    'choice_label' => 'nombre',
+                                ])
+            ->add('profesor', EntityType::class,[
+                                    'label' => 'Profesor',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione Profesor',
+                                    // looks for choices from this entity
+                                    'class' => SgrProfesor::class,
+                                    // uses the User.username property as the visible option string
+                                    'choice_label' => 'nombre',
+                                ])
         ;
 
    

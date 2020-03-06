@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\SgrEvento;
 use App\Entity\SgrFechasEvento;
 use App\Entity\SgrTitulacion;
+use App\Entity\SgrAsignatura;
+use App\Entity\SgrProfesor;
+use App\Entity\SgrGrupoAsignatura;
 
 //use App\Service\Filters;
 use App\Service\Evento;
@@ -20,6 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 
 /**
@@ -31,32 +36,57 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/ajax-getAsignaturas", methods={"GET"})
      */
-    public function getAsinaturasByTitulacion(Request $request)
+    public function getAsignaturasByTitulacion(Request $request)
     {
         if ($request->isXmlHttpRequest())
         {
-            //dump($request);
-            //dump($request->query->get('sgr_filters_sgr_eventos')['titulacion']);
-            
+            $asignaturas = array();
+            $profesores = new ArrayCollection();
+
             $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
-               
+            
             $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
 
             $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
-            //dump($sgrTitulacion);
             
+            if ($sgrTitulacion){
                 $asignaturas = $sgrTitulacion->getAsignaturas();
-                $html = '<option value="">Seleccione Asignatura</option>';
-                foreach ($asignaturas as $asignatura) {
-                    $html .= '<option value="' . $asignatura->getId() . '">';
-                    $html .= $asignatura->getNombre();
-                    $html .= '</option>';
-                    //dump($html);
-                }    
-            
-            return new Response($html);
-        
+                if ($asignaturas){
+                    foreach ($asignaturas as $asignatura) {
+                        //dump($asignatura);
+                        //dump($asignatura->getGrupos()->count());
+                        foreach ($asignatura->getGrupos() as $grupo) {
+                            //dump($grupo->getNombre());
+                            $profesors = $grupo->getSgrProfesors();
+                            foreach ($profesors as $profesor) {
+                                $profesores->add($profesor);
+                            }
+                        }
+
+                    }
+                }
+            }
+            else {
+                $asignaturas = $this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll();
+                $profesores = $this->getDoctrine()->getRepository(SgrProfesor::class)->findAll();
+            }
+            //dump($profesores);
+            //dump($asignaturas);
+            //exit;
+            $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $asignaturas,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Asignatura']
+                        ]);
+            $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $profesores,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
+                        ]);    
+            //dump($html);
+            //exit;
+            //return new Response($html);
+            return $this->json($html);
         }   
+        return new Response('');
     }
 
 

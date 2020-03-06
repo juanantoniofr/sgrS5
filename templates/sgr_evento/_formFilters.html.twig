@@ -4,15 +4,20 @@
 	<legend>Filtrar Eventos</legend>  
 	<div class="form-row p-3">
 		
-		<div class="form-group col-md-4">
+		<div class="form-group col-md-3">
     		<label for="inputAddress">{{ form_label(form.titulacion) }}</label>
     		{{ form_widget(form.titulacion) }}
     	</div>
     	
-    	<div class="form-group col-md-4">
+    	<div class="form-group col-md-3">
     		<label for="inputAddress">{{ form_label(form.asignatura) }}</label>
     		{{ form_widget(form.asignatura) }}
     	</div>
+
+        <div class="form-group col-md-3">
+            <label for="inputAddress">{{ form_label(form.profesor) }}</label>
+            {{ form_widget(form.profesor) }}
+        </div>
   	</div>
   </fieldset>
  {{ form_end(form) }}

@@ -76,35 +76,29 @@
 {% block morescripts %}
 <script type="text/javascript">
         
-        var $sport = $('#sgr_filters_sgr_eventos_titulacion');
-        //console.log($sport);
-        // When sport gets selected ...
-        $sport.change(function() {
+        var $titulacion = $('#sgr_filters_sgr_eventos_titulacion');
+        var $asignatura = $('#sgr_filters_sgr_eventos_asignatura');
+        
+        $titulacion.change(function() {
             // ... retrieve the corresponding form.
             var $form = $(this).closest('form');
-            //console.log($form);
-            // Simulate form data, but only include the selected sport value.
+            // Simulate form data, but only include the selected titulacion value.
             var data = {};
-            data[$sport.attr('name')] = $sport.val();
-            console.log(data);
-            //console.log($form.attr('method'));
-            //console.log($form.attr('action'));
+            data[$titulacion.attr('name')] = $titulacion.val();
+        
+            //console.log(data);
+            
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 url : '/admin/sgr/evento/ajax-getAsignaturas',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {
-                    console.log(html);
-                    
-                     $('#sgr_filters_sgr_eventos_asignatura').html(html).fadeOut().fadeIn();
+                    console.log(html.profesores.content);
+                    console.log(html.asignaturas.content);
+                    $('#sgr_filters_sgr_eventos_asignatura').html(html.asignaturas.content).fadeOut().fadeIn();
+                    $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
 
-                    // Replace current position field ...
-                    //$('#sgr_filters_sgr_eventos_asignatura').replaceWith(
-                    // ... with the returned one from the AJAX response.
-                    //$(html).find('#sgr_filters_sgr_eventos_titulacion')
-                    //);
-                // Position field now displays the appropriate positions.
                 },
                 error: function(xhr, ajaxOptions, thrownError){
                     alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
