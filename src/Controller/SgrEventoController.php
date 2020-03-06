@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\SgrEvento;
 use App\Entity\SgrFechasEvento;
+use App\Entity\SgrTitulacion;
 
 //use App\Service\Filters;
 use App\Service\Evento;
@@ -30,10 +31,32 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/ajax-getAsignaturas", methods={"GET"})
      */
-    public function getAsinaturasByTitulacion(Request $request){
+    public function getAsinaturasByTitulacion(Request $request)
+    {
+        if ($request->isXmlHttpRequest())
+        {
+            //dump($request);
+            //dump($request->query->get('sgr_filters_sgr_eventos')['titulacion']);
+            
+            $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
+               
+            $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
 
-        return new Response(
-            '<div>vassssmossss</div>');
+            $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
+            //dump($sgrTitulacion);
+            
+                $asignaturas = $sgrTitulacion->getAsignaturas();
+                $html = '<option value="">Seleccione Asignatura</option>';
+                foreach ($asignaturas as $asignatura) {
+                    $html .= '<option value="' . $asignatura->getId() . '">';
+                    $html .= $asignatura->getNombre();
+                    $html .= '</option>';
+                    //dump($html);
+                }    
+            
+            return new Response($html);
+        
+        }   
     }
 
 

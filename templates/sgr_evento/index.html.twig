@@ -59,8 +59,8 @@
                 <!--<td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>-->
                 <td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a class="btn btn-secondary" type="button" href="{{ path('sgr_evento_show', {'id': sgr_evento.id}) }}"> Ver </a>
-                    <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}"> Editar </a>
+                    <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_evento_show', {'id': sgr_evento.id}) }}"> Ver </a>
+                    <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}"> Editar </a>
                 </td>
             </tr>
         {% else %}
@@ -77,16 +77,16 @@
 <script type="text/javascript">
         
         var $sport = $('#sgr_filters_sgr_eventos_titulacion');
-        console.log($sport);
+        //console.log($sport);
         // When sport gets selected ...
         $sport.change(function() {
             // ... retrieve the corresponding form.
             var $form = $(this).closest('form');
-            console.log($form);
+            //console.log($form);
             // Simulate form data, but only include the selected sport value.
             var data = {};
             data[$sport.attr('name')] = $sport.val();
-            console.log($sport.val());
+            console.log(data);
             //console.log($form.attr('method'));
             //console.log($form.attr('action'));
             // Submit data via AJAX to the form's action path.
@@ -97,12 +97,12 @@
                 success: function(html) {
                     console.log(html);
                     
-
+                     $('#sgr_filters_sgr_eventos_asignatura').html(html).fadeOut().fadeIn();
 
                     // Replace current position field ...
                     //$('#sgr_filters_sgr_eventos_asignatura').replaceWith(
                     // ... with the returned one from the AJAX response.
-                    //$(html).find('#meetup_position')
+                    //$(html).find('#sgr_filters_sgr_eventos_titulacion')
                     //);
                 // Position field now displays the appropriate positions.
                 },
