@@ -10,10 +10,11 @@
             <tr>
                 <th>Id</th>
                 <th>Codigo</th>
-                <th>Titulación</th>
                 <th>Nombre</th>
+                <th>Grupo: Profesor/es</th>
                 <th>Cuatrimestre</th>
                 <th>Curso</th>
+                <th>Titulación</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -22,10 +23,15 @@
             <tr>
                 <td>{{ sgr_asignatura.id }}</td>
                 <td>{{ sgr_asignatura.codigo }}</td>
-                <td> {{sgr_asignatura.sgrTitulacion}}</td>
-                <td>{{ sgr_asignatura.nombre }}</td>
+                <td>{{ sgr_asignatura.nombre }} </td>
+                <td>{% for grupo in sgr_asignatura.grupos %} 
+                        Grupo {{grupo.nombre}}: 
+                        {{grupo.sgrprofesors|join(', ',' y ')}} 
+                    {%endfor%}
+                </td>
                 <td>{{ sgr_asignatura.cuatrimestre }}</td>
                 <td>{{ sgr_asignatura.curso }}</td>
+                <td> {{sgr_asignatura.sgrTitulacion}}</td>
                 <td>
                     <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_asignatura_show', {'id': sgr_asignatura.id}) }}">Ver</a>
                     <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_asignatura_edit', {'id': sgr_asignatura.id}) }}">Editar</a>
