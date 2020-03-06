@@ -34,6 +34,25 @@ class SgrEventoController extends AbstractController
 {
     
     /**
+     * @Route("/test",methods={"GET"})
+     */
+    public function test(Request $request){
+        $asignaturas = new ArrayCollection($this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll());
+        $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
+        $curso = $request->query->get('curso');
+
+        dump($asignaturas);
+        dump($curso);
+        if($curso)
+            {
+               $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
+                    return $asignatura->getCurso() ==  $curso;
+                });
+            }
+        dump($asignaturas);
+               exit;
+    }
+    /**
      * @Route("/ajax-getProfesores", methods={"GET"})
      */
     public function getProfesoresByAsignatura(Request $request)
@@ -82,7 +101,7 @@ class SgrEventoController extends AbstractController
     {
         if ($request->isXmlHttpRequest())
         {
-            $asignaturas = array();
+            $asignaturas = new ArrayCollection();
             $profesores = new ArrayCollection();
 
             $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
@@ -116,10 +135,19 @@ class SgrEventoController extends AbstractController
             }
             else
             {
-                $asignaturas = $this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll();
-                $profesores = $this->getDoctrine()->getRepository(SgrProfesor::class)->findAll();
+                $asignaturas = new ArrayCollection($this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll());
+                $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
             }
             
+            $curso = $request->query->get('sgr_filters_sgr_eventos')['curso'];
+            
+            if($curso)
+            {
+                $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
+                    return $asignatura->getCurso() ==  $curso;
+                });
+            }
+
             $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $asignaturas,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Asignatura']
