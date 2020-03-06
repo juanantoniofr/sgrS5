@@ -187,15 +187,40 @@ class SgrEventoController extends AbstractController
 
 
     /**
-     * @Route("/", name="sgr_evento_index", methods={"GET"})
+     * @Route("/", name="sgr_evento_index", methods={"GET","POST"})
      */
-    public function index(SgrEventoRepository $sgrEventoRepository): Response
+    public function index(Request $request, SgrEventoRepository $sgrEventoRepository): Response
     {
                         
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
+        $form->handleRequest($request);
+        $sgrEventos = $sgrEventoRepository->findAll();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $data = $form->getData();
+
+            $id_titulacion = '';
+            if ($data['titulacion'])
+                $id_titulacion = $data['titulacion']->getId();
+            
+            $curso = $data['curso'];
+            
+            $id_asignatura = '';
+            if ($data['asignatura'])
+                $id_asignatura = $data['asignatura']->getId();
+            
+            $id_profesor = '';
+            if ($data['profesor'])
+                $id_profesor = $data['profesor']->getId();
+
+            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor);
+            
+
+        }
 
         return $this->render('sgr_evento/index.html.twig', [
-            'sgr_eventos'   => $sgrEventoRepository->findAll(),
+            'sgr_eventos'   => $sgrEventos,
             'form'          => $form->createView(),
         ]);
     }

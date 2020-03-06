@@ -19,6 +19,28 @@ class SgrEventoRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrEvento::class);
     }
     
+    public function getSgrEventosByFilters($id_titulacion, $curso, $id_asignatura, $id_profesor){
+
+        $qb = $this->createQueryBuilder('sgr_e');
+
+        if($id_titulacion)
+            $qb->andWhere('sgr_e.titulacion = :id_titulacion')
+                ->setParameter('id_titulacion', $id_titulacion);
+
+        //if($curso)
+
+        if($id_asignatura)
+            $qb->andWhere('sgr_e.asignatura = :id_asignatura')
+                ->setParameter('id_asignatura', $id_asignatura);
+
+        if($id_profesor)
+            $qb->andWhere('sgr_e.profesor = :id_profesor')
+                ->setParameter('id_profesor', $id_profesor);
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
     // /**
     //  * @return SgrEvento[] Returns an array of SgrEvento objects
     //  */

@@ -33,6 +33,7 @@ class SgrFiltersSgrEventosType extends AbstractType
             ->add('curso', ChoiceType::class, [
                                 'label' => 'Curso',
                                 'placeholder' => 'Seleccione Curso',
+                                'required' => false,
                                 'choices'  => [
                                     'Primero' => 1,
                                     'Segundo' => 2,

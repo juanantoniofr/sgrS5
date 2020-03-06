@@ -24,5 +24,8 @@
             {{ form_widget(form.profesor) }}
         </div>
   	</div>
+  
+    <button class="float-right btn btn-primary" role="button"><i class="fas fa-filter"></i> {{ button_label|default('Filtrar') }}</button>
   </fieldset>
+
  {{ form_end(form) }}

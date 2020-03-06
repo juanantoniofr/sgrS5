@@ -14,8 +14,8 @@
     
     <!-- Collapse buttons by filters -->
     <p>
-        <a class="btn btn-primary" data-toggle="collapse" href="#Filtros" aria-expanded="false" aria-controls="Filtros">
-           Ver filtros
+        <a class="btn btn-info" data-toggle="collapse" href="#Filtros" aria-expanded="false" aria-controls="Filtros">
+           <i class="far fa-eye"></i> Ver filtros
         </a>
     </p>
     <!-- / Collapse buttons -->
@@ -79,7 +79,7 @@
         var $titulacion = $('#sgr_filters_sgr_eventos_titulacion');
         var $curso = $('#sgr_filters_sgr_eventos_curso');
         
-        $titulacion.change(function() {
+        $( '#sgr_filters_sgr_eventos_titulacion, #sgr_filters_sgr_eventos_curso' ).change(function() {
             // ... retrieve the corresponding form.
             var $form = $(this).closest('form');
             // Simulate form data, but only include the selected titulacion value.
