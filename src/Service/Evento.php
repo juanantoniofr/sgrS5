@@ -146,7 +146,7 @@ class Evento extends AbstractController
      * devuleve true si $this->sgrEvento solapa con cualquier otro evento en el mismo espacio
      * @return bool
     */
-    public function solapa(){
+    public function solapa($flash_errors = false){
 
         $solapa = false;
         //Array de objetos DateTime entre from f_inicio to f_fin 
@@ -167,10 +167,11 @@ class Evento extends AbstractController
                 $fecha->getEvento()->getHInicio()->format('H:i') <= $this->sgrEvento->getHInicio()->format('H:i') &&
                 $fecha->getEvento()->getHFin()->format('H:i') > $this->sgrEvento->getHInicio()->format('H:i') ){
                 $solapa = true;
-                $this->addFlash(
+                if ($flash_errors)
+                    $this->addFlash(
                             'danger',
                             'Espacio ocupado el día ' . $fecha->getFecha()->format('d-m-Y')
-                        );
+                    );
 
             }
                 

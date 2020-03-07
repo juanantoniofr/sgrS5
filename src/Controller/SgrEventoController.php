@@ -254,8 +254,8 @@ class SgrEventoController extends AbstractController
 
             $evento->setEvento($form->getData());
             $fechasEvento = $evento->calculateFechasEvento();
-            //Si hay solapamiento, volvemos al formulario
-            if ($evento->solapa())
+            //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
+            if ($evento->solapa(true))
             
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
@@ -318,8 +318,8 @@ class SgrEventoController extends AbstractController
 
             $evento->setEvento($form->getData());
             $fechasEvento = $evento->calculateFechasEvento();
-            //Si hay solapamiento, volvemos al formulario
-            if ($evento->solapa())
+            //Si hay solapamiento, volvemos al formulario, con true flashea el error si lo hay
+            if ($evento->solapa(true))
             
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
