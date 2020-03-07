@@ -97,14 +97,20 @@ class SgrUploadCSVController extends AbstractController
             
             foreach ($rowsCsv as $key => $row) {
                 
-              
-                
+                $sgrEvento = new SgrEvento;    
+                //Validations existAula pass??
+                //dump($row['AULA']);
+                //exit;
+                $espacio = $repositoryEspacio->exist($row['AULA']);
+                if($espacio)
+                {
+                    $row['validations']['existAula'] = true;
+                    $row[$key] = $row;
+                }
+                                
                 if ($csv->passValidations($row)){
                     
-                    $sgrEvento = new SgrEvento;    
-                    //set Espacio                    
-                    $sgrEvento->setEspacio($repositoryEspacio->exist($row['AULA']));
-
+                    $sgrEvento->setEspacio($espacio);
                     
                     $evento->setEvento($sgrEvento);
                     $evento->setFechaDesde($row['F_DESDE']);

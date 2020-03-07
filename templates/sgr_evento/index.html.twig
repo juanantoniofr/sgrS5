@@ -38,10 +38,11 @@
                 <th>F_inicio</th>
                 <th>F_fin</th>
                 <th>Todos los</th>
-                <th>H_inicio</th>
-                <th>H_fin</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Recurso</th>
                 <!--<th>CreatedAt</th>-->
-                <th>UpdatedAt</th>
+                <!--<th>UpdatedAt</th>-->
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -57,7 +58,8 @@
                 <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>
                 <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i:s') : '' }}</td>
                 <!--<td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>-->
-                <td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <!--<td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>-->
+                <td>{{ sgr_evento.espacio }}</td>
                 <td>
                     <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_evento_show', {'id': sgr_evento.id}) }}"> Ver </a>
                     <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}"> Editar </a>

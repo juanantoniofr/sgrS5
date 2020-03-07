@@ -58,17 +58,18 @@
                         <span class="text-danger"><b>Fila con errores.</b></span><br />
                     {% endif %}
 
-                    {% if not fila.validations.existAula %}
-                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> No existe espacio</span>
-                    {% endif %}
-                    {% if fila.validations.solapa %}
-                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado</span>
-                    {% endif %}
-                    {% if fila.validations.solapaCsv %}
-                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Solapamiento con la/s fila/s: {{ fila.validations.solapaCsv|join(', ', ' y ') }}</span>
-                    {% endif %}
                     {% if fila.validations.valuesNotValid %}
                         <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Valores no válidos: {{ fila.validations.valuesNotValid|join(', ', ' y ') }}</span>
+                    {% elseif not fila.validations.existAula %}
+                            <span class="text-danger"><i class="fas fa-exclamation-circle"></i> No existe espacio</span>
+                    {% else %}
+                        {% if fila.validations.solapaCsv %}
+                                <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Solapamiento con la/s fila/s: {{ fila.validations.solapaCsv|join(', ', ' y ') }}</span>
+                        {% elseif fila.validations.solapa %}
+                                    <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado</span>
+                        {% endif %}
+                        
+                                                
                     {% endif %}
 
                     {# dump(fila.validations) #}
