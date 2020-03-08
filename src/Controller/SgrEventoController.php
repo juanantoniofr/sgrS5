@@ -26,6 +26,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+// Include paginator interface
+use Knp\Component\Pager\PaginatorInterface;
+
 
 /**
  * @Route("/admin/sgr/evento")
@@ -185,16 +188,17 @@ class SgrEventoController extends AbstractController
         return new Response('');
     }
 
-
     /**
-     * @Route("/", name="sgr_evento_index", methods={"GET","POST"})
+     * @Route("/{page}", name="sgr_evento_index", defaults={"page"=1}, methods={"GET","POST"})
      */
-    public function index(Request $request, SgrEventoRepository $sgrEventoRepository): Response
+    public function index(Request $request, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page ): Response
     {
                         
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
         $sgrEventos = $sgrEventoRepository->findAll();
+        
+        
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -215,13 +219,18 @@ class SgrEventoController extends AbstractController
                 $id_profesor = $data['profesor']->getId();
 
             $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor);
-            
-
         }
 
+        $pagination = $paginator->paginate(
+            $sgrEventos,
+            $page,//$request->query->getInt('page', 1),
+            5
+        );
+
         return $this->render('sgr_evento/index.html.twig', [
-            'sgr_eventos'   => $sgrEventos,
-            'form'          => $form->createView(),
+            //'sgr_eventos'   => $sgrEventos,
+            'pagination' => $pagination,
+            'form'       => $form->createView(),
         ]);
     }
 

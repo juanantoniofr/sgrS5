@@ -47,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for sgr_evento in sgr_eventos %}
+        {% for sgr_evento in pagination %}
             <tr>
                 <td>{{ sgr_evento.id }}</td>
                 <td>{{ sgr_evento.titulo }}</td>
@@ -67,11 +67,19 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="11">no records found</td>
+                <td colspan="11">No se encontraron eventos...</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    <div>
+        Total de eventos: {{ pagination.getTotalItemCount }}    
+    </div>
+    <div>
+    {{ knp_pagination_render(pagination) }}
+    </div>
+
 
     <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_new') }}">Nuevo evento</a>
 {% endblock %}
