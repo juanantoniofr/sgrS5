@@ -23,58 +23,55 @@
     <!-- Collapsible element -->
     <div class="" id="Filtros">
         <div class="mt-3 mb-3">
-            {{ include('sgr_search/_formFilters.html.twig', {'button_label': 'Buscar'}) }}
+            {{ include('sgr_search/_formSearch.html.twig', {'button_label': 'Buscar'}) }}
         </div>
     </div>
     <!-- / Collapsible element -->    
     
 
+    <h1>Espacios</h1>
+
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>Id</th>
-                <th>Titulo</th>
-                <!--<th>Estado</th>-->
-                <th>F_inicio</th>
-                <th>F_fin</th>
-                <th>Día/s</th>
-                <th>Desde</th>
-                <th>Hasta</th>
-                <th>Recurso</th>
-                <!--<th>CreatedAt</th>-->
-                <!--<th>UpdatedAt</th>-->
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Aforo Máximo</th>
+                <th>Aforo Examen</th>
+                <th>Equipamiento</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-        {% for sgr_evento in pagination %}
+        {% for sgr_espacio in pagination %}
             <tr>
-                <td>{{ sgr_evento.id }}</td>
-                <td>{{ sgr_evento.titulo }}</td>
-                <!--<td>{{ sgr_evento.estado }}</td>-->
-                <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('d-m-Y') : '' }}</td>
-                <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('d-m-Y') : '' }}</td>
-                <td>{{ sgr_evento.getDiasStringFormat|join(', ',' y ')}} </td>
-                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>
-                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i:s') : '' }}</td>
-                <!--<td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>-->
-                <!--<td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>-->
-                <td>{{ sgr_evento.espacio }}</td>
+                <td>{{ sgr_espacio.id }}</td>
+                <td>{{ sgr_espacio.nombre }}</td>
+                <td>{{ sgr_espacio.descripcion }}</td>
+                <td>{{ sgr_espacio.aforo }}</td>
+                <td>{{ sgr_espacio.AforoExamen }} </td>
                 <td>
-                    <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_evento_show', {'id': sgr_evento.id}) }}"> Ver </a>
-                    <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}"> Editar </a>
+                    {% for medio in sgr_espacio.mediosDisponibles %}
+                        {{ medio }} &nbsp;
+                    {% else %}
+                        No hay medios definidos
+                    {% endfor %}
+                </td>
+                <td>
+                    <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_espacio_show', {'id': sgr_espacio.id}) }}">Ver</a>
+                    <a class="btn btn-primary  m-1" type="button" href="{{ path('sgr_espacio_edit', {'id': sgr_espacio.id}) }}">Editar</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="11">No se encontraron eventos...</td>
+                <td colspan="7">No espacios libres encontrados...</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
     <div>
-        Total de eventos: {{ pagination.getTotalItemCount }}    
+        Total de resultados: {{ pagination.getTotalItemCount }}    
     </div>
     <div>
     {{ knp_pagination_render(pagination) }}

@@ -24,7 +24,7 @@ use App\Entity\SgrTitulacion;
 use App\Entity\SgrTipoActividad;
 use App\Entity\SgrGrupoAsignatura;
 */
-use App\Form\SgrFiltersSgrEventosType;
+use App\Form\SgrSearchSgrEspacioType;
 use App\Repository\SgrEventoRepository;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -39,7 +39,7 @@ class SgrSearchController extends AbstractController
     public function index(Request $request, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page): Response
     {
 
-        $form = $this->createForm(SgrFiltersSgrEventosType::class);
+        $form = $this->createForm(SgrSearchSgrEspacioType::class);
         $form->handleRequest($request);
 
         $sgrEventos = new ArrayCollection();
