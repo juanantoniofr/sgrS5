@@ -8,6 +8,7 @@ use App\Entity\SgrTitulacion;
 use App\Entity\SgrAsignatura;
 use App\Entity\SgrProfesor;
 use App\Entity\SgrGrupoAsignatura;
+//use App\Entity\SgrEspacio;
 
 //use App\Service\Filters;
 use App\Service\Evento;
@@ -39,7 +40,8 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/test",methods={"GET"})
      */
-    public function test(Request $request){
+    public function test(Request $request)
+    {
         dump( date_create_from_format('d-m-Y', '04-06-2020', new \DateTimeZone('Europe/Madrid'))->format('Y-m-d') );
         //$string = new \DateTimeZone('Europe/Madrid')->format('d-m-Y');
         //dump($string);
@@ -215,8 +217,19 @@ class SgrEventoController extends AbstractController
             $f_fin = '';
             if ($data['f_fin'])
                 $f_fin = date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
+            
+            $id_espacio = '';
+            if ($data['espacio'])
+                $id_espacio = $data['espacio']->getId();
 
-            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin);
+            $id_actividad = '';
+            if ($data['actividad'])
+                $id_actividad = $data['actividad']->getId();
+
+            //dump($data['actividad']->getId());
+            
+
+            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $id_espacio, $id_actividad);
         }
 
         $pagination = $paginator->paginate(

@@ -37,6 +37,16 @@
             <label for="inputFFin">{{ form_label(form.f_fin) }}</label>
             {{ form_widget(form.f_fin) }}
         </div>
+        <div class="form-group col-md-3">
+            <label id="inputEspacio"></label>
+            <label for="inputEspacio">{{ form_label(form.espacio) }}</label>
+            {{ form_widget(form.espacio) }}
+        </div>
+        <div class="form-group col-md-3">
+            <label id="inputActividad"></label>
+            <label for="inputActividad">{{ form_label(form.actividad) }}</label>
+            {{ form_widget(form.actividad) }}
+        </div>
     </div>
   
     <button class="float-right btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-filter"></i> {{ button_label|default('Filtrar') }}</button>

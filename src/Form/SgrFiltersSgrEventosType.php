@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use App\Entity\SgrTitulacion;
 use App\Entity\SgrAsignatura;
 use App\Entity\SgrProfesor;
+use App\Entity\SgrEspacio;
+use App\Entity\SgrTipoActividad;
 
 class SgrFiltersSgrEventosType extends AbstractType
 {
@@ -72,6 +74,24 @@ class SgrFiltersSgrEventosType extends AbstractType
                 'data' => ( new \DateTime('+6 month') )->format('d-m-Y'),
                 //'constraints' => [new Length(['min' => 5])],
             ))
+            ->add('espacio', EntityType::class,[
+                                    'label' => 'Espacio',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione Espacio',
+                                    // looks for choices from this entity
+                                    'class' => SgrEspacio::class,
+                                    // uses the User.username property as the visible option string
+                                    'choice_label' => 'nombre',
+                                ])
+            ->add('actividad', EntityType::class,[
+                                    'label' => 'Actividad',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione Actividad',
+                                    // looks for choices from this entity
+                                    'class' => SgrTipoActividad::class,
+                                    // uses the User.username property as the visible option string
+                                    'choice_label' => 'actividad',
+                                ])
         ;
 
    
