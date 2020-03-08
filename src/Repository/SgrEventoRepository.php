@@ -19,7 +19,7 @@ class SgrEventoRepository extends ServiceEntityRepository
         parent::__construct($registry, SgrEvento::class);
     }
     
-    public function getSgrEventosByFilters($id_titulacion, $curso, $id_asignatura, $id_profesor){
+    public function getSgrEventosByFilters($id_titulacion, $curso, $id_asignatura, $id_profesor, \DateTime $f_inicio, \DateTime $f_fin){
 
         $qb = $this->createQueryBuilder('sgr_e');
 
@@ -36,6 +36,15 @@ class SgrEventoRepository extends ServiceEntityRepository
         if($id_profesor)
             $qb->andWhere('sgr_e.profesor = :id_profesor')
                 ->setParameter('id_profesor', $id_profesor);
+
+        if($f_inicio)
+            $qb->andWhere('sgr_e.f_inicio > :finicio')
+                ->setParameter('finicio', $f_inicio->format('Y-m-d'));
+
+        if($f_fin)
+            $qb->andWhere('sgr_e.f_fin < :ffin')
+                ->setParameter('ffin', $f_fin->format('Y-m-d'));
+
 
         $query = $qb->getQuery();
 

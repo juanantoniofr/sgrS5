@@ -40,7 +40,7 @@ class SgrEventoController extends AbstractController
      * @Route("/test",methods={"GET"})
      */
     public function test(Request $request){
-        dump( (new \DateTime)->format('d-m-Y') );
+        dump( date_create_from_format('d-m-Y', '04-06-2020', new \DateTimeZone('Europe/Madrid'))->format('Y-m-d') );
         //$string = new \DateTimeZone('Europe/Madrid')->format('d-m-Y');
         //dump($string);
         exit;
@@ -99,6 +99,7 @@ class SgrEventoController extends AbstractController
 
             $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
             $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
+            
             $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
             
             if ($sgrTitulacion)
@@ -186,10 +187,9 @@ class SgrEventoController extends AbstractController
                         
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
+
         $sgrEventos = $sgrEventoRepository->findAll();
         
-        
-
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
@@ -208,7 +208,15 @@ class SgrEventoController extends AbstractController
             if ($data['profesor'])
                 $id_profesor = $data['profesor']->getId();
 
-            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor);
+            $f_inicio = '';
+            if ($data['f_inicio'])
+                $f_inicio = date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
+            
+            $f_fin = '';
+            if ($data['f_fin'])
+                $f_fin = date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
+
+            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin);
         }
 
         $pagination = $paginator->paginate(
