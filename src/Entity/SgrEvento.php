@@ -37,15 +37,13 @@ class SgrEvento
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\Expression(
-     *     "this.getFInicio() <= this.getFFin()",
-     *     message="Fecha inicio debe ser menor que fecha fin"
-     * )
+     * @Assert\LessThan(propertyPath="f_fin",message="Debe ser menor que fecha hasta")
     */
     private $f_inicio;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\GreaterThan(propertyPath="f_inicio",message="Debe ser mayor que fecha hasta")
      */
     private $f_fin;
 

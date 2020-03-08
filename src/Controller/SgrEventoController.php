@@ -40,20 +40,10 @@ class SgrEventoController extends AbstractController
      * @Route("/test",methods={"GET"})
      */
     public function test(Request $request){
-        $asignaturas = new ArrayCollection($this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll());
-        $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
-        $curso = $request->query->get('curso');
-
-        dump($asignaturas);
-        dump($curso);
-        if($curso)
-            {
-               $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
-                    return $asignatura->getCurso() ==  $curso;
-                });
-            }
-        dump($asignaturas);
-               exit;
+        dump( (new \DateTime)->format('d-m-Y') );
+        //$string = new \DateTimeZone('Europe/Madrid')->format('d-m-Y');
+        //dump($string);
+        exit;
     }
     /**
      * @Route("/ajax-getProfesores", methods={"GET"})
@@ -189,7 +179,7 @@ class SgrEventoController extends AbstractController
     }
 
     /**
-     * @Route("/{page}", name="sgr_evento_index", defaults={"page"=1}, methods={"GET","POST"})
+     * @Route("/index/{page}", name="sgr_evento_index", defaults={"page"=1}, methods={"GET","POST"})
      */
     public function index(Request $request, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page ): Response
     {

@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -58,6 +59,17 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
                                 ])
+            ->add('f_inicio', TextType::class, array(
+                'required' => true,
+                'label' => 'Desde',
+                'data' => ( new \DateTime() )->format('d-m-Y'),
+                //'translation_domain' => 'App',
+                'attr' => array(
+                    //'class' => 'form-control input-inline datetimepicker',
+                    //'data-provide' => 'datepicker',
+                    //'data-format' => 'dd-mm-yyyy',
+                ),
+            ))
         ;
 
    

@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+use Symfony\Component\Validator\Constraints\Length;
+
 class SgrEventoType extends AbstractType
 {
 
@@ -35,6 +37,8 @@ class SgrEventoType extends AbstractType
             ->add('f_inicio', TextType::class, array(
                 'required' => true,
                 'label' => 'Fecha inicio',
+                'invalid_message' => 'Esto no es una fecha válida',
+                //'constraints' => [new Lenght(['min' => 3])],
                 'translation_domain' => 'App',
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',

@@ -32,8 +32,10 @@ class DateTimeTransformer implements DataTransformerInterface
     public function reverseTransform($datetime)
     {
         
-        if (!$datetime) {
-            return;
+        //if (!$datetime) {
+        if (!date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid'))){
+              throw new TransformationFailedException();
+            //return;
         }
 
         return date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid'));
