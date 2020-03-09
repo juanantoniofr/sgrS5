@@ -85,7 +85,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                                     // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
                                 ])
-            ->add('taxonomia', EntityType::class,[
+            ->add('termino', EntityType::class,[
                                     'label' => 'Término Taxonomía',
                                     'required' => false,
                                     'placeholder' => 'Seleccione término',

@@ -36,7 +36,25 @@ class SgrEspacioRepository extends ServiceEntityRepository
         //exit;
         return $query->getOneOrNullResult();//->execute();
     }
+    
+    /**
+     * @return sgrEventos[] Returns an array of sgrEvento objects
+    */
+    public function findByFilters($termino)
+    {
+        $qb = $this->createQueryBuilder('sgr_e');
 
+        if($termino)
+            $qb->andWhere('sgr_e.termino = :termino')
+                    ->setParameter('termino', $termino);
+        
+        $query = $qb->getQuery();
+            //->orderBy('s.id', 'ASC')
+            //->setMaxResults(10)
+        return $query->execute();
+    }
+
+    
     public function hasEvento(\DateTime $f_desde, \DateTime $f_hasta, \DateTime $hora = null, string $espacio = null)
     {
 
@@ -64,6 +82,7 @@ class SgrEspacioRepository extends ServiceEntityRepository
 
         return $query->execute();
     }
+    
     
     // /**
     //  * @return SgrEspacio[] Returns an array of SgrEspacio objects

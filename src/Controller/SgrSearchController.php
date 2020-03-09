@@ -24,9 +24,9 @@ use App\Entity\SgrTitulacion;
 use App\Entity\SgrTipoActividad;
 use App\Entity\SgrGrupoAsignatura;
 */
-use App\Entity\SgrFechasEvento;
+
 use App\Form\SgrSearchSgrEspacioType;
-//use App\Repository\SgrEventoRepository;
+use App\Repository\SgrFechasEventoRepository;
 use App\Repository\SgrEspacioRepository;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -38,7 +38,7 @@ class SgrSearchController extends AbstractController
     /**
      * @Route("/index/{page}", name="sgr_search_index", defaults={"page"=1}, methods={"GET","POST"})
      */
-    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, PaginatorInterface $paginator, $page): Response
+    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrFechasEventoRepository $sgrFechasEventoRepository, PaginatorInterface $paginator, $page): Response
     {
 
         $form = $this->createForm(SgrSearchSgrEspacioType::class);
@@ -52,8 +52,6 @@ class SgrSearchController extends AbstractController
             $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
         }
         
-        //dump($mappedEspacioSolape);
-        //dump($aSolapes);
         
 
         if ($form->isSubmitted() && $form->isValid()) 
@@ -61,6 +59,22 @@ class SgrSearchController extends AbstractController
 
             $data = $form->getData();
 
+            $termino = '';
+            if($data['termino'])
+                $termino = $data['termino'];
+            
+            $sgrEspacios = new ArrayCollection($sgrEspacioRepository->findByFilters($termino));
+            $aSolapes = new ArrayCollection();    
+            foreach ($sgrEspacios as $sgrEspacio) 
+            {
+                
+                $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
+                //$data['equipamiento'] -> será un array
+                $sgrEspacio->getMediosDisponibles()->initialize();
+                if($data['equipamiento'] && false == $sgrEspacio->getMediosDisponibles()->contains($data['equipamiento']))
+                    $aSolapes->remove($sgrEspacio->getId());
+            }
+            
             $f_inicio = '';
             if ($data['f_inicio'])
                 $f_inicio = date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
@@ -70,32 +84,22 @@ class SgrSearchController extends AbstractController
                 $f_fin = date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
 
             
-
             $interval = new \DateInterval('P7D');
             $rangeDates = new \DatePeriod($f_inicio, $interval, $f_fin);
-            //dump($rangeDates);
-            
-            $respositorySgrFechasEvento = $this->getDoctrine()->getRepository(SgrFechasEvento::class);
                         
-            foreach ($rangeDates as $date) {
-                //dump($date);
-                $solapes = $respositorySgrFechasEvento->findByFecha($date);
-                //dump($solapes);
-                //exit;
-                if ($solapes)
+            foreach ($rangeDates as $date)
+            {
+                $solapes = $sgrFechasEventoRepository->findByFecha($date);
+                if ($solapes )
                 {
                     foreach ($solapes as $solape) {
-
                         $sgrEspacio = $solape->getEvento()->getEspacio();
-                        $aSolapes->get($sgrEspacio->getId())->get('solapes')->add($solape);//;   
+                        if($aSolapes->containsKey($sgrEspacio->getId()))
+                            $aSolapes->get($sgrEspacio->getId())->get('solapes')->add($solape);
                     }
                 }
 
             }
-
-            dump($aSolapes);
-            //exit;
-            
         }
 
         $pagination = $paginator->paginate(

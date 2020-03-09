@@ -34,21 +34,32 @@
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
+                <th>Estado</th>
                 <th>Id</th>
                 <th>Nombre</th>
-                <th>Descripcion</th>
+                <th>Término</th>
                 <th>Aforo Máximo</th>
                 <th>Aforo Examen</th>
                 <th>Equipamiento</th>
-                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
         {% for sgr_espacio in pagination %}
             <tr>
+                <td>
+                    {% if 0 == sgr_espacio.solapes.count %}
+                        <i class="fas fa-check text-success"></i><span class="text-success"> Libre</span>
+                    {% elseif not sgr_espacio.solapes is empty  %}
+                        <span class="text-danger"> Solapamiento en la/s fecha/s: {{ sgr_espacio.solapes|join(', ',' y ') }}</span>
+                    {% endif %}
+                    
+                    {#dump(sgr_espacio)#}
+                    <!--<a class="btn btn-secondary m-1" type="button" href="{# path('sgr_espacio_show', {'id': sgr_espacio.id}) #}">Ver</a>
+                    <a class="btn btn-primary  m-1" type="button" href="{# path('sgr_espacio_edit', {'id': sgr_espacio.id}) #}">Editar</a>-->
+                </td>
                 <td>{{ sgr_espacio[0].id }}</td>
                 <td>{{ sgr_espacio[0].nombre }}</td>
-                <td>{{ sgr_espacio[0].descripcion }}</td>
+                <td>{{ sgr_espacio[0].termino }}</td>
                 <td>{{ sgr_espacio[0].aforo }}</td>
                 <td>{{ sgr_espacio[0].AforoExamen }} </td>
                 <td>
@@ -58,11 +69,7 @@
                         No hay medios definidos
                     {% endfor %}
                 </td>
-                <td>
-                    {{ dump(sgr_espacio.solapes.count)}}
-                    <!--<a class="btn btn-secondary m-1" type="button" href="{# path('sgr_espacio_show', {'id': sgr_espacio.id}) #}">Ver</a>
-                    <a class="btn btn-primary  m-1" type="button" href="{# path('sgr_espacio_edit', {'id': sgr_espacio.id}) #}">Editar</a>-->
-                </td>
+
             </tr>
         {% else %}
             <tr>
