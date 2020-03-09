@@ -24,6 +24,7 @@ use App\Entity\SgrTitulacion;
 use App\Entity\SgrTipoActividad;
 use App\Entity\SgrGrupoAsignatura;
 */
+use App\Entity\SgrFechasEvento;
 use App\Form\SgrSearchSgrEspacioType;
 //use App\Repository\SgrEventoRepository;
 use App\Repository\SgrEspacioRepository;
@@ -43,7 +44,17 @@ class SgrSearchController extends AbstractController
         $form = $this->createForm(SgrSearchSgrEspacioType::class);
         $form->handleRequest($request);
 
-        $sgrEspacios = $sgrEspacioRepository->findAll();
+        $sgrEspacios = new ArrayCollection($sgrEspacioRepository->findAll());
+
+        $aSolapes = new ArrayCollection();
+        
+        foreach ($sgrEspacios as $sgrEspacio) {
+            $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
+        }
+        
+        //dump($mappedEspacioSolape);
+        //dump($aSolapes);
+        
 
         if ($form->isSubmitted() && $form->isValid()) 
         {
@@ -58,21 +69,40 @@ class SgrSearchController extends AbstractController
             if ($data['f_fin'])
                 $f_fin = date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
 
-
-            $sgrEspacios = $sgrEspacios->filter(funtion($sgrEspacio) use ($f_inicio,$f_fin){
-
-                    
-            });
             
 
-            //$sgrEspacioRepository->hasEvento($f_inicio, $f_fin);
+            $interval = new \DateInterval('P7D');
+            $rangeDates = new \DatePeriod($f_inicio, $interval, $f_fin);
+            //dump($rangeDates);
+            
+            $respositorySgrFechasEvento = $this->getDoctrine()->getRepository(SgrFechasEvento::class);
+                        
+            foreach ($rangeDates as $date) {
+                //dump($date);
+                $solapes = $respositorySgrFechasEvento->findByFecha($date);
+                //dump($solapes);
+                //exit;
+                if ($solapes)
+                {
+                    foreach ($solapes as $solape) {
 
+                        $sgrEspacio = $solape->getEvento()->getEspacio();
+                        $aSolapes->get($sgrEspacio->getId())->get('solapes')->add($solape);//;   
+                    }
+                }
+
+            }
+
+            dump($aSolapes);
+            //exit;
+            
         }
 
         $pagination = $paginator->paginate(
-            $sgrEspacios,
+            //$sgrEspacios,
+            $aSolapes,
             $page,//$request->query->getInt('page', 1),
-            5
+            10
         );
 
         return $this->render('sgr_search/index.html.twig', [

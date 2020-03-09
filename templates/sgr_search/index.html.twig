@@ -46,21 +46,22 @@
         <tbody>
         {% for sgr_espacio in pagination %}
             <tr>
-                <td>{{ sgr_espacio.id }}</td>
-                <td>{{ sgr_espacio.nombre }}</td>
-                <td>{{ sgr_espacio.descripcion }}</td>
-                <td>{{ sgr_espacio.aforo }}</td>
-                <td>{{ sgr_espacio.AforoExamen }} </td>
+                <td>{{ sgr_espacio[0].id }}</td>
+                <td>{{ sgr_espacio[0].nombre }}</td>
+                <td>{{ sgr_espacio[0].descripcion }}</td>
+                <td>{{ sgr_espacio[0].aforo }}</td>
+                <td>{{ sgr_espacio[0].AforoExamen }} </td>
                 <td>
-                    {% for medio in sgr_espacio.mediosDisponibles %}
+                    {% for medio in sgr_espacio[0].mediosDisponibles %}
                         {{ medio }} &nbsp;
                     {% else %}
                         No hay medios definidos
                     {% endfor %}
                 </td>
                 <td>
-                    <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_espacio_show', {'id': sgr_espacio.id}) }}">Ver</a>
-                    <a class="btn btn-primary  m-1" type="button" href="{{ path('sgr_espacio_edit', {'id': sgr_espacio.id}) }}">Editar</a>
+                    {{ dump(sgr_espacio.solapes.count)}}
+                    <!--<a class="btn btn-secondary m-1" type="button" href="{# path('sgr_espacio_show', {'id': sgr_espacio.id}) #}">Ver</a>
+                    <a class="btn btn-primary  m-1" type="button" href="{# path('sgr_espacio_edit', {'id': sgr_espacio.id}) #}">Editar</a>-->
                 </td>
             </tr>
         {% else %}

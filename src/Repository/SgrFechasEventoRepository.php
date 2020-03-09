@@ -36,22 +36,21 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    // /**
-    //  * @return SgrFechasEvento[] Returns an array of SgrFechasEvento objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
+    /**
+     * @return SgrFechasEvento[] Returns an array of SgrFechasEvento objects
     */
+    public function findByFecha($fecha)
+    {
+        $qb = $this->createQueryBuilder('sgr_fe')
+            ->andWhere('sgr_fe.fecha = :fecha')
+            ->setParameter('fecha', $fecha->format('Y-m-d'));
+        
+        $query = $qb->getQuery();
+            //->orderBy('s.id', 'ASC')
+            //->setMaxResults(10)
+        return $query->execute();
+    }
+
 
     /*
     public function findOneBySomeField($value): ?SgrFechasEvento

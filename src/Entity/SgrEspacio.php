@@ -61,25 +61,6 @@ class SgrEspacio
         $this->eventos = new ArrayCollection();
     }
 
-    /**
-    * True si existe $checkFecha en DB y no pertenece a las fechas del evento $id_evento
-    */
-   /* public function isOcupado(\DateTime $checkFecha, \DateTime $h_inicio, \DateTime $h_fin, $id_evento){
-
-        foreach ($this->getEventos() as $sgrEvento) {
-            
-            if ($sgrEvento->getId() != $id_evento)
-                foreach ($sgrEvento->getFechas() as $sgrEventoFechas) {
-                    
-                    if ( $sgrEventoFechas->getFecha() == $checkFecha ){
-                        return true;
-                    }
-                }
-            }
-
-        return false;
-    }
-*/
     public function getId(): ?int
     {
         return $this->id;
@@ -159,11 +140,6 @@ class SgrEspacio
         return $this;
     }
     
-    public function __toString(){
-
-        return $this->nombre;
-    }
-
     public function getTermino(): ?SgrTermino
     {
         return $this->termino;
@@ -207,16 +183,23 @@ class SgrEspacio
         return $this;
     }
    
-    public function hasSolapeWith($fecha){
+    public function __toString(){
 
-        $sgrEventos = $this->getEventos();
+        return $this->nombre;
+    }
 
-        $sgrEventos = $sgrEventos->filter(funtion($sgrEvento) use ($fecha) {
+    /**
+     * @param Array $rangeDates  
+     * @return ArrayCollection de objetos sgrEventos que contienen (solapan) con $date  
+     */
+    public function getSolapeWith($date)
+    {
 
-            return ($sgrEvento->getFechas()->contains($fecha));
-        });
+        return $this->eventos->filter(function($sgrEvento) use ($date) {
 
-        return $sgrEventos;
+                return $sgrEvento->getFechas()->contains($date);
+            });
+
     }
 
 }

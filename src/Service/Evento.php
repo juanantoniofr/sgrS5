@@ -204,7 +204,7 @@ class Evento extends AbstractController
         //reserva puntual sin repetición
         if (!$end || $start == $end){
             $adt[] = $start;
-            return $adt;
+            return $adt; //array de object datetime
         }
         
         $interval = new \DateInterval('P7D');
