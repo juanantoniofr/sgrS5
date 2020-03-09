@@ -233,7 +233,7 @@ class SgrEventoController extends AbstractController
         }
 
         $pagination = $paginator->paginate(
-            $sgrEventos,
+             $sgrEventos,
             $page,//$request->query->getInt('page', 1),
             5
         );

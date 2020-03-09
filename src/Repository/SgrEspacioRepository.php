@@ -20,7 +20,8 @@ class SgrEspacioRepository extends ServiceEntityRepository
     }
 
 
-    public function exist(string $espacio){
+    public function exist(string $espacio)
+    {
 
         if (!$espacio)
             return false;
@@ -36,19 +37,24 @@ class SgrEspacioRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();//->execute();
     }
 
-    public function hasEvento(\DateTime $f_desde, \DateTime $f_hasta, \DateTime $hora, string $espacio = null){
+    public function hasEvento(\DateTime $f_desde, \DateTime $f_hasta, \DateTime $hora = null, string $espacio = null)
+    {
 
         
         $qb = $this->createQueryBuilder('sgr_e')
                 ->leftjoin('sgr_e.eventos','eventos')
                 ->leftjoin('eventos.fechas','fechas')
-                ->where('(eventos.f_inicio <= :f_desde AND eventos.f_fin > :f_desde) OR (eventos.f_inicio < :f_hasta AND eventos.f_fin >= :f_hasta)')
-                ->andWhere('eventos.h_inicio <= :hora AND eventos.h_fin > :hora')
-                ->andWhere('fechas.fecha = :fecha') //No definido!!!!!
-                ->setParameter('hora', $hora)
+                ->where('(eventos.f_inicio <= :f_desde AND eventos.f_fin > :f_desde) OR (eventos.f_inicio > :f_desde AND eventos.f_fin > :f_hasta)')
+                //->andWhere('eventos.h_inicio <= :hora AND eventos.h_fin > :hora')
+                //->andWhere('fechas.fecha = :fecha') //No definido!!!!!
+                //->setParameter('hora', $hora)
                 ->setParameter('f_desde', $f_desde)
                 ->setParameter('f_hasta', $f_hasta);
 
+        if($hora)
+            $qb->andWhere('eventos.h_inicio <= :hora AND eventos.h_fin > :hora')
+            ->setParameter('hora', $hora);
+                
         if($espacio)
             $qb->andWhere('sgr_e.nombre = :espacio')
                 ->setParameter('espacio', $espacio);
@@ -58,6 +64,7 @@ class SgrEspacioRepository extends ServiceEntityRepository
 
         return $query->execute();
     }
+    
     // /**
     //  * @return SgrEspacio[] Returns an array of SgrEspacio objects
     //  */

@@ -207,4 +207,16 @@ class SgrEspacio
         return $this;
     }
    
+    public function hasSolapeWith($fecha){
+
+        $sgrEventos = $this->getEventos();
+
+        $sgrEventos = $sgrEventos->filter(funtion($sgrEvento) use ($fecha) {
+
+            return ($sgrEvento->getFechas()->contains($fecha));
+        });
+
+        return $sgrEventos;
+    }
+
 }
