@@ -45,15 +45,11 @@ class SgrSearchController extends AbstractController
         $form->handleRequest($request);
 
         $sgrEspacios = new ArrayCollection($sgrEspacioRepository->findAll());
-
         $aSolapes = new ArrayCollection();
-        
         foreach ($sgrEspacios as $sgrEspacio) {
             $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
         }
         
-        
-
         if ($form->isSubmitted() && $form->isValid()) 
         {
 
@@ -63,18 +59,40 @@ class SgrSearchController extends AbstractController
             if($data['termino'])
                 $termino = $data['termino'];
             
+            //Search by termino
             $sgrEspacios = new ArrayCollection($sgrEspacioRepository->findByFilters($termino));
             $aSolapes = new ArrayCollection();    
             foreach ($sgrEspacios as $sgrEspacio) 
             {
-                
+                //add all sgrEspacios
                 $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
+                
+                //Search by equipamiento
                 //$data['equipamiento'] -> será un array
                 $sgrEspacio->getMediosDisponibles()->initialize();
-                if($data['equipamiento'] && false == $sgrEspacio->getMediosDisponibles()->contains($data['equipamiento']))
+                if( $data['equipamiento'] && false == $sgrEspacio->getMediosDisponibles()->contains($data['equipamiento']) )
+                    //if not contains equipamiento => remove(sgrEspacio)
                     $aSolapes->remove($sgrEspacio->getId());
+
+                //search by aforo
+                if($data['aforo'])
+                    if( $sgrEspacio->getAforo() < $data['aforo'])
+                        //if aforo sgrEspacio < aforo form  => remove(sgrEspacio)
+                        $aSolapes->remove($sgrEspacio->getId());    
+
+                //Search by aforoExamen
+                if($data['aforoExamen'])
+                    if ( $sgrEspacio->getAforoExamen() < $data['aforoExamen'] )
+                        //if aforoExamen sgrEspacio < aforoExamen form  => remove(sgrEspacio)
+                        $aSolapes->remove($sgrEspacio->getId());
             }
             
+            //search by aforo
+            if($data['aforo'])
+                if( $sgrEspacio->getAforo() < $data['aforo'])
+                    $aSolapes->remove($sgrEspacio->getId());
+
+            //search by f_inicio && f_fin
             $f_inicio = '';
             if ($data['f_inicio'])
                 $f_inicio = date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();

@@ -2,28 +2,76 @@
 
 	<fieldset>
 	<legend>Criterios de busqueda</legend>  
-	
-    <div class="form-row p-3">
-
-        <div class="form-group col-md-3">
+	<div class="form-row p-3">
+        
+        <div class="form-group col-md-2">
             <label id="inputFInicio"></label>
             <label for="inputFInicio">{{ form_label(form.f_inicio) }}</label>
             {{ form_widget(form.f_inicio) }}
         </div>
-        <div class="form-group col-md-3">
+        
+        <div class="form-group col-md-2">
             <label id="inputFFin"></label>
             <label for="inputFFin">{{ form_label(form.f_fin) }}</label>
             {{ form_widget(form.f_fin) }}
         </div>
+        <div class="form-group col-md-2">
+            <label for="inputTitulo">{{ form_label(form.h_inicio) }}</label>
+            <div class='input-group date' id='datetimepicker-hi'>
+                {{ form_widget(form.h_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
+                <div class="input-group-append input-group-addon">
+                    <span class="input-group-text">
+                        <i class="fas fa-clock"></i>
+                    </span>
+                </div>  
+            </div>
+        </div>
+
+        <div class="form-group col-md-2">
+            <label for="inputTitulo">{{ form_label(form.h_fin) }}</label>
+            <div class='input-group date' id='datetimepicker-hf'>
+                {{ form_widget(form.h_fin, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
+                <div class="input-group-append input-group-addon">
+                    <span class="input-group-text">
+                        <i class="fas fa-clock"></i>
+                    </span>
+                </div>  
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="form-row p-3">
+        <div class="form-group col-md-6">
+                <label for="inputDias">{{ form_label(form.dias) }}</label>
+                {{ form_widget(form.dias, {'attr' : {'class' : 'form-check form-check-inline'}}) }}
+        </div>    
+    </div>
+    
+    <div class="form-row p-3">
+
+        <div class="form-group col-md-3">
+            <label id="inputTermino"></label>
+            <label for="inputTermino">{{ form_label(form.termino) }}</label>
+            {{ form_widget(form.termino) }}
+        </div>
+
         <div class="form-group col-md-3">
             <label id="inputEquipamiento"></label>
             <label for="inputEquipamiento">{{ form_label(form.equipamiento) }}</label>
             {{ form_widget(form.equipamiento) }}
         </div>
+
         <div class="form-group col-md-3">
-            <label id="inputTermino"></label>
-            <label for="inputTermino">{{ form_label(form.termino) }}</label>
-            {{ form_widget(form.termino) }}
+            <label id="inputAforo"></label>
+            <label for="inputAforo">{{ form_label(form.aforo) }}</label>
+            {{ form_widget(form.aforo) }}
+        </div>
+
+        <div class="form-group col-md-3">
+            <label id="inputAforoExamen"></label>
+            <label for="inputAforoExamen">{{ form_label(form.aforoExamen) }}</label>
+            {{ form_widget(form.aforoExamen) }}
         </div>
     </div>
   

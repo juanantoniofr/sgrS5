@@ -26,56 +26,16 @@ class SgrSearchSgrEspacioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           /* ->add('titulacion', EntityType::class, [
-                                    'label' => 'Titulación',
+            ->add('aforoExamen', TextType::class, [
+                                    'label' => 'aforo examen',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione Titulación',
-                                    // looks for choices from this entity
-                                    'class' => SgrTitulacion::class,
-                                    // uses the User.username property as the visible option string
-                                    'choice_label' => 'nombre',
+                                    'attr' => array('placeholder' => 'Indique aforo para exámenes'),
                                 ])
-            ->add('curso', ChoiceType::class, [
-                                'label' => 'Curso',
-                                'placeholder' => 'Seleccione Curso',
-                                'required' => false,
-                                'choices'  => [
-                                    'Primero' => 1,
-                                    'Segundo' => 2,
-                                    'Tercero' => 3,
-                                    'Cuarto' => 4,]
-                                ])
-            ->add('asignatura', EntityType::class, [
-                                    'label' => 'Asignatura',
+            ->add('aforo', TextType::class, [
+                                    'label' => 'aforo',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione Asignatura',
-                                    // looks for choices from this entity
-                                    'class' => SgrAsignatura::class,
-                                    // uses the User.username property as the visible option string
-                                    'choice_label' => 'nombre',
+                                    'attr' => array('placeholder' => 'Indique aforo máximo'),
                                 ])
-            ->add('profesor', EntityType::class,[
-                                    'label' => 'Profesor',
-                                    'required' => false,
-                                    'placeholder' => 'Seleccione Profesor',
-                                    // looks for choices from this entity
-                                    'class' => SgrProfesor::class,
-                                    // uses the User.username property as the visible option string
-                                    'choice_label' => 'nombre',
-                                ])
-            */
-            ->add('f_inicio', TextType::class, array(
-                'required' => true,
-                'label' => 'Desde',
-                'data' => ( new \DateTime() )->format('d-m-Y'),
-                //'constraints' => [new Length(['min' => 5])],
-            ))
-            ->add('f_fin', TextType::class, array(
-                'required' => true,
-                'label' => 'Hasta',
-                'data' => ( new \DateTime('+6 month') )->format('d-m-Y'),
-                //'constraints' => [new Length(['min' => 5])],
-            ))
             ->add('equipamiento', EntityType::class,[
                                     'label' => 'Equipamiento',
                                     'required' => false,
@@ -93,7 +53,57 @@ class SgrSearchSgrEspacioType extends AbstractType
                                     'class' => SgrTermino::class,
                                     // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
-                                ])
+                                ])            
+            ->add('f_inicio', TextType::class, array(
+                'required' => true,
+                'label' => 'Desde',
+                'data' => ( new \DateTime() )->format('d-m-Y'),
+                //'constraints' => [new Length(['min' => 5])],
+            ))
+            ->add('f_fin', TextType::class, array(
+                'required' => true,
+                'label' => 'Hasta',
+                'data' => ( new \DateTime('+6 month') )->format('d-m-Y'),
+                //'constraints' => [new Length(['min' => 5])],
+            ))
+            ->add('dias', ChoiceType::class, [
+                            'choices' => [
+                                            'Lunes' => 1,
+                                            'Martes' => 2,
+                                            'Miércoles' => 3,
+                                            'Jueves' => 4,
+                                            'Viernes' => 5,
+                                        ],
+                            'expanded'  => true,
+                            'multiple'  => true,
+                            'choice_attr' => function($choice, $key, $value) {
+                                // adds a class like attending_yes, attending_no, etc
+                                return ['class' => 'tinymce'];
+                            },
+                            'attr' => array('class' => 'form-check-inline'),
+                            'label' => 'Los días: ',
+            ])
+            ->add('h_inicio', TextType::class, array(
+                'required' => true,
+                'label' => 'Hora inicio',
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'HH-mm',
+                ),
+            ))
+            //->add('h_fin',null,['label' => 'Hasta'])
+            ->add('h_fin', TextType::class, array(
+                'required' => true,
+                'label' => 'Hora fin',
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'HH:mm',
+                ),
+            ))
         ;
 
    
