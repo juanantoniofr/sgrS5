@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Busquedas</h1>
+    <h1>Disponibilidad</h1>
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="alert alert-{{ label }}" role="alert">
@@ -42,7 +42,7 @@
     <!-- / Collapsible element -->    
     
     {% if pagination is defined %}
-    <h1>Espacios</h1>
+    <h1>Listado de Espacios</h1>
 
     <div class="p-1">
         <span>Total de resultados: {{ pagination.getTotalItemCount }}</span>

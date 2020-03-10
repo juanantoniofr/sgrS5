@@ -70,7 +70,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                 ),
             ))
             ->add('f_fin', TextType::class, array(
-                'required' => false,
+                'required' => true,
                 'label' => 'Hasta',
                 'translation_domain' => 'App',
                 'attr' => array(
@@ -98,7 +98,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                             'label' => 'Los días: ',
             ])
             ->add('h_inicio', TextType::class, array(
-                    'required' => false,
+                    'required' => true,
                     'label' => 'Hora inicio',
                     'translation_domain' => 'App',
                     'attr' => array(
@@ -108,7 +108,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                     ),
             ))
             ->add('h_fin', TextType::class, array(
-                    'required' => false,
+                    'required' => true,
                     'label' => 'Hora fin',
                     'translation_domain' => 'App',
                     'attr' => array(
