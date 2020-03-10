@@ -15,6 +15,8 @@ use Symfony\Component\Validator\Constraints\Length;
 
 use App\Entity\SgrEquipamiento;
 use App\Entity\SgrTermino;
+
+//use Symfony\Component\Validator\Constraints\Date;
 use App\Entity\SgrAsignatura; //??
 use App\Entity\SgrProfesor; //??
 use App\Entity\SgrEspacio; //??
@@ -56,16 +58,28 @@ class SgrSearchSgrEspacioType extends AbstractType
                                 ])            
             ->add('f_inicio', TextType::class, array(
                 'required' => true,
-                'label' => 'Desde',
-                'data' => ( new \DateTime() )->format('d-m-Y'),
-                //'constraints' => [new Length(['min' => 5])],
+                'label' => 'Fecha inicio',
+                'invalid_message' => 'Esto no es una fecha válida',
+                //'constraints' => [new Lenght(['min' => 3])],
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'dd-mm-yyyy',
+                    
+                ),
             ))
             ->add('f_fin', TextType::class, array(
-                'required' => true,
+                'required' => false,
                 'label' => 'Hasta',
-                'data' => ( new \DateTime('+6 month') )->format('d-m-Y'),
-                //'constraints' => [new Length(['min' => 5])],
+                'translation_domain' => 'App',
+                'attr' => array(
+                    'class' => 'form-control input-inline datetimepicker',
+                    'data-provide' => 'datepicker',
+                    'data-format' => 'dd-mm-yyyy',
+                ),
             ))
+
             ->add('dias', ChoiceType::class, [
                             'choices' => [
                                             'Lunes' => 1,
@@ -84,26 +98,25 @@ class SgrSearchSgrEspacioType extends AbstractType
                             'label' => 'Los días: ',
             ])
             ->add('h_inicio', TextType::class, array(
-                'required' => true,
-                'label' => 'Hora inicio',
-                'translation_domain' => 'App',
-                'attr' => array(
-                    'class' => 'form-control input-inline datetimepicker',
-                    'data-provide' => 'datepicker',
-                    'data-format' => 'HH-mm',
-                ),
+                    'required' => false,
+                    'label' => 'Hora inicio',
+                    'translation_domain' => 'App',
+                    'attr' => array(
+                        'class' => 'form-control input-inline datetimepicker',
+                        'data-provide' => 'datepicker',
+                        'data-format' => 'HH-mm',
+                    ),
             ))
-            //->add('h_fin',null,['label' => 'Hasta'])
             ->add('h_fin', TextType::class, array(
-                'required' => true,
-                'label' => 'Hora fin',
-                'translation_domain' => 'App',
-                'attr' => array(
-                    'class' => 'form-control input-inline datetimepicker',
-                    'data-provide' => 'datepicker',
-                    'data-format' => 'HH:mm',
-                ),
-            ))
+                    'required' => false,
+                    'label' => 'Hora fin',
+                    'translation_domain' => 'App',
+                    'attr' => array(
+                        'class' => 'form-control input-inline datetimepicker',
+                        'data-provide' => 'datepicker',
+                        'data-format' => 'HH:mm',
+                    ),
+                ))
         ;
 
    
