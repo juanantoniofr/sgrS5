@@ -121,10 +121,11 @@
             });
             $('#datetimepicker-hi').datetimepicker({
                 locale: 'es',
-                useCurrent: false,
+                useCurrent:false,
                 format: 'LT',
                 enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
                 stepping: 15,
+                defaultDate: moment(),
             });
             $('#datetimepicker-hf').datetimepicker({
                 locale: 'es',
@@ -132,6 +133,7 @@
                 format: 'LT',
                 enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
                 stepping: 15,
+                defaultDate: moment().add(1,'hours'),
             });
             $("#datetimepicker-hi").on("dp.change", function (e) {
                 

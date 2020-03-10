@@ -44,12 +44,12 @@ class SgrSearchController extends AbstractController
         $form = $this->createForm(SgrSearchSgrEspacioType::class);
         $form->handleRequest($request);
 
-        $sgrEspacios = new ArrayCollection($sgrEspacioRepository->findAll());
+        /*$sgrEspacios = new ArrayCollection($sgrEspacioRepository->findAll());
         $aSolapes = new ArrayCollection();
         foreach ($sgrEspacios as $sgrEspacio) {
             $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
         }
-        
+        */
         if ($form->isSubmitted() && $form->isValid()) 
         {
 
@@ -92,7 +92,7 @@ class SgrSearchController extends AbstractController
                 if( $sgrEspacio->getAforo() < $data['aforo'])
                     $aSolapes->remove($sgrEspacio->getId());
 
-            //search by f_inicio && f_fin
+            //search by f_inicio && f_fin && h_inicio && h_fin
             $f_inicio = new \DateTimeZone('Europe/Madrid');
             if ($data['f_inicio'])
                 $f_inicio = clone date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
@@ -114,28 +114,51 @@ class SgrSearchController extends AbstractController
             foreach ($rangeDates as $date)
             {
                 $solapes = $sgrFechasEventoRepository->findByFecha($date);
-                if ($solapes )
+                if ( $solapes )
                 {
-                    foreach ($solapes as $solape) {
-                        $sgrEspacio = $solape->getEvento()->getEspacio();
-                        if($aSolapes->containsKey($sgrEspacio->getId()))
-                            $aSolapes->get($sgrEspacio->getId())->get('solapes')->add($solape);
+                    foreach ( $solapes as $solape ) {
+
+                        $solapaHoras = false;
+                        
+                        if ( (new \DateTime($data['h_inicio']))->format('H:i') >= $solape->getEvento()->getHInicio()->format('H:i') && (new \DateTime($data['h_inicio']))->format('H:i') < $solape->getEvento()->getHFin()->format('H:i') )
+                        {
+                            $solapaHoras = true;
+                        }
+                        if ( (new \DateTime($data['h_inicio']))->format('H:i') < $solape->getEvento()->getHInicio()->format('H:i') && (new \DateTime($data['h_fin']))->format('H:i') > $solape->getEvento()->getHInicio()->format('H:i') )
+                        {
+                            $solapaHoras = true;
+                        }
+                        $solapaHoras = true;
+                        if( $solapaHoras )
+                        {
+                            $sgrEspacio = $solape->getEvento()->getEspacio();
+                            if($aSolapes->containsKey($sgrEspacio->getId()))
+                                $aSolapes->get($sgrEspacio->getId())->get('solapes')->add($solape);    
+                        }
+                        
                     }
                 }
-
             }
-        }
+            //dump($data['h_inicio']);
+            //dump($aSolapes);
+            //exit;
 
-        $pagination = $paginator->paginate(
-            //$sgrEspacios,
-            $aSolapes,
-            $page,//$request->query->getInt('page', 1),
-            10
-        );
+            $pagination = $paginator->paginate(
+                            //$sgrEspacios,
+                            $aSolapes,
+                            $page,//$request->query->getInt('page', 1),
+                            10
+                            );
+
+            return $this->render('sgr_search/index.html.twig', [
+                            'pagination' => $pagination,
+                            'form'       => $form->createView(),
+                            ]);
+        }
 
         return $this->render('sgr_search/index.html.twig', [
             //'sgr_eventos'   => $sgrEventos,
-            'pagination' => $pagination,
+            //'pagination' => $pagination,
             'form'       => $form->createView(),
         ]);
     }

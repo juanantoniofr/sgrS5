@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
     
-    
     <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
     <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
 
@@ -15,7 +14,6 @@
     
     -->
 {% endblock %}
-
 
 {% block body %}
     <h1>Busquedas</h1>
@@ -43,9 +41,13 @@
     </div>
     <!-- / Collapsible element -->    
     
-
+    {% if pagination is defined %}
     <h1>Espacios</h1>
 
+    <div class="p-1">
+        <span>Total de resultados: {{ pagination.getTotalItemCount }}</span>
+        <a class="btn btn-danger mb-2 float-right" type="button" href="{{ path('sgr_evento_new') }}"><i class="fas fa-calendar-plus"></i> Nuevo evento</a>
+    </div>
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
@@ -93,15 +95,19 @@
         {% endfor %}
         </tbody>
     </table>
-    <div>
-        Total de resultados: {{ pagination.getTotalItemCount }}    
-    </div>
+    
     <div>
     {{ knp_pagination_render(pagination) }}
     </div>
 
-
-    <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_new') }}">Nuevo evento</a>
+    
+    {% else %}
+        <div class="alert alert-primary p-4" role="alert">
+            Seleccione criterios de busqueda... 
+        </div>
+    {% endif %}
+    
+    
 {% endblock %}
 {% block morescripts %}
 <script type="text/javascript">

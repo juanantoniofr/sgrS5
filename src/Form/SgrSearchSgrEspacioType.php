@@ -65,7 +65,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'dd-mm-yyyy',
+                    'data-format' => 'hh:mm',
                     
                 ),
             ))
@@ -76,7 +76,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'dd-mm-yyyy',
+                    'data-format' => 'hh:mm',
                 ),
             ))
 
