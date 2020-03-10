@@ -1,7 +1,8 @@
 security:
     encoders:
         App\Entity\SgrUser:
-            algorithm: auto
+            algorithm: bcrypt
+            #algorithm: auto
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:

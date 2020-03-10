@@ -3,11 +3,18 @@
 {% block title %}New SgrEvento{% endblock %}
 
 {% block stylesheets %}
+    
+    
+    <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
     <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
+
+    <!-- <link href="/reservasfgh/public/build/bootstrap-datetimepicker.css" rel="stylesheet">
+                <link href="/reservasfgh/public/build/bootstrap-datetimepicker-standalone.min.css">
+    -->
 {% endblock %}
 
 {% block body %}
-    <h1>Create new SgrEvento</h1>
+    <h1>Nuevo Evento</h1>
 	{% for label, messages in app.flashes %}
     	{% for message in messages %}
         	<div class="alert alert-{{ label }}" role="alert">

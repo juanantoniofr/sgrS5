@@ -8,33 +8,34 @@
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: "Font Awesome 5 Free"; 
+    font-family: "Font Awesome 5 Free";
     font-weight: 900;
 }
 
 .glyphicon-time:before {
-    content: "\e023";
+       font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f017";
 }
 
 .glyphicon-chevron-left:before {
-    /*content: "\e079";*/
-        content: "\f104";
+       font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f053";
+    /* content: "\f104";*/
 }
 
 .glyphicon-chevron-right:before {
-    content: "\f105";
+    ont-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f054";
+    /*content: "\f105";*/
 }
 
 .glyphicon-chevron-up:before {
-    content: "\f106";
+    font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f077";
 }
 
 .glyphicon-chevron-down:before {
-    content: "\f107";
+    font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f078";
 }
 
 .glyphicon-calendar:before {
-    content: "\e109";
+    font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f073";
 }
 
 .btn {
