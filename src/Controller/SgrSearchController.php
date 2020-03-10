@@ -93,14 +93,20 @@ class SgrSearchController extends AbstractController
                     $aSolapes->remove($sgrEspacio->getId());
 
             //search by f_inicio && f_fin
-            $f_inicio = '';
+            $f_inicio = new \DateTimeZone('Europe/Madrid');
             if ($data['f_inicio'])
-                $f_inicio = date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
+                $f_inicio = clone date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
             
-            $f_fin = '';
-            if ($data['f_fin'])
-                $f_fin = date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
-
+            $f_fin = new \DateTimeZone('Europe/Madrid');
+            if (!$data['f_fin'])
+                //Si no existe, hacemos f_fin igual a f_inicio
+                $f_fin = clone $f_inicio;
+            else 
+                $f_fin = clone date_create_from_format('d/m/Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));
+            
+            if ( $f_inicio->diff($f_fin)->format('%a') <= 0 )
+                //si la diferencia es negativa o cero, f_fin <= f_inicio => f_fin = f_inicio +7 days 
+                $f_fin->modify('+7 days');
             
             $interval = new \DateInterval('P7D');
             $rangeDates = new \DatePeriod($f_inicio, $interval, $f_fin);
