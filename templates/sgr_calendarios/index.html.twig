@@ -6,9 +6,7 @@
 	<div class="row">
 		<p>Información, navegación y configuración</p>
 	</div>
-	{{ dump(sgr_espacios) }}
-
-
+	
 	<div class="row">
 	<div class="col">
 		
@@ -17,7 +15,13 @@
 		<thead class="thead-dark">
 			<tr>
 				<th scope="col" class="h"><div class="col">Hora</div></th>
-
+				
+				{% for espacio in sgr_espacios %}
+					<th scope="col" width="40px">
+						<div class="col">{{ espacio[0].nombre }}</div>
+					</th>
+				{% endfor %}
+				
 			</tr>
 		</thead>
 		<tbody>

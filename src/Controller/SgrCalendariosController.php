@@ -66,7 +66,7 @@ class SgrCalendariosController extends AbstractController
                 		$diff = $hi->diff($hf);
                 		$diffInMinutes = $diff->format('%h') * 60 + $diff->format('%i');
                 		$rangeHorario = [ 'hi' => $hi->format('U'), 'numSteps' => $diffInMinutes / $step ];
-                		dump($rangeHorario);
+                		//dump($rangeHorario);
                     	$aResult->get($sgrEspacio->getId())->get('rangos')->add($rangeHorario);    
                 	}
             	}
