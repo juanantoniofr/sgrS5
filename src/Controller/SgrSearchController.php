@@ -120,11 +120,11 @@ class SgrSearchController extends AbstractController
 
                         $solapaHoras = false;
                         
-                        if ( (new \DateTime($data['h_inicio']))->format('G:i') >= $solape->getEvento()->getHInicio()->format('G:i') && (new \DateTime($data['h_inicio']))->format('G:i') < $solape->getEvento()->getHFin()->format('G:i') )
+                        if ( (new \DateTime($data['h_inicio']))->format('H:i') >= $solape->getEvento()->getHInicio()->format('H:i') && (new \DateTime($data['h_inicio']))->format('H:i') < $solape->getEvento()->getHFin()->format('H:i') )
                         {
                             $solapaHoras = true;
                         }
-                        if ( (new \DateTime($data['h_inicio']))->format('G:i') < $solape->getEvento()->getHInicio()->format('G:i') && (new \DateTime($data['h_fin']))->format('G:i') > $solape->getEvento()->getHInicio()->format('G:i') )
+                        if ( (new \DateTime($data['h_inicio']))->format('H:i') < $solape->getEvento()->getHInicio()->format('H:i') && (new \DateTime($data['h_fin']))->format('H:i') > $solape->getEvento()->getHInicio()->format('H:i') )
                         {
                             $solapaHoras = true;
                         }
