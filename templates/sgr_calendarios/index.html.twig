@@ -6,6 +6,9 @@
 	<div class="row">
 		<p>Información, navegación y configuración</p>
 	</div>
+	{{ dump(sgr_espacios) }}
+
+
 	<div class="row">
 	<div class="col">
 		
@@ -14,8 +17,13 @@
 		<thead class="thead-dark">
 			<tr>
 				<th scope="col" class="h"><div class="col">Hora</div></th>
-				<th scope="col"><div class="col">Esapcio 1</div></th>
-				<th scope="col"><div class="col">Esapcio 2</div> </th>
+				
+				{% for espacio in sgr_espacios %}
+					<th scope="col">
+						<div class="col">{{ espacio[0].nombre }}</div>
+					</th>
+				{% endfor %}
+				
 			</tr>
 		</thead>
 		<tbody>
@@ -24,15 +32,26 @@
 			 
 			{% for hour in range(start_h,end_h,30*60) %}
 			<tr>
+
 				<th scope="row">
 					<div class="col">{{ hour|date('H:i')}}</div>
 				</th>
-				<td>
-					<div class="e"></div>
-				</td>
-				<td>
-					<div class="e"></div>
-				</td>
+				{% for espacio in sgr_espacios %}
+					<td>
+						<div class="e">
+							{% if not espacio['rangos'] is empty %}
+								{% for rango in espacio['rangos'] %}
+									{% if hour == rango.hi %}
+									{{dump(hour)}}
+									{{dump(rango)}}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+							
+						</div>
+						
+					</td>
+				{% endfor %}
 			</tr>
 			{% endfor %}
 		</tbody>

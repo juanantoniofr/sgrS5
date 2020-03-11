@@ -189,12 +189,13 @@ class SgrEspacio
     }
 
     /**
-     * @param Array $rangeDates  
+     * @param Array $date  
      * @return ArrayCollection de objetos sgrEventos que contienen (solapan) con $date  
      */
     public function getSolapeWith($date)
     {
 
+        
         return $this->eventos->filter(function($sgrEvento) use ($date) {
 
                 return $sgrEvento->getFechas()->contains($date);

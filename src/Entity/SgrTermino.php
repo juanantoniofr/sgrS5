@@ -87,11 +87,6 @@ class SgrTermino
         return $this;
     }
 
-    public function __toString(){
-
-        return $this->nombre;
-    }
-
     /**
      * @return Collection|SgrEspacio[]
      */
@@ -123,4 +118,8 @@ class SgrTermino
         return $this;
     }
 
+     public function __toString(){
+
+        return $this->nombre;
+    }
 }

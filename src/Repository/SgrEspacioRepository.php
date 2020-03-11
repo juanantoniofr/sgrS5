@@ -38,6 +38,7 @@ class SgrEspacioRepository extends ServiceEntityRepository
     }
     
     /**
+     * @param $termino = id del termino 
      * @return sgrEventos[] Returns an array of sgrEvento objects
     */
     public function findByFilters($termino)
