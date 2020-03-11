@@ -108,7 +108,7 @@ class SgrSearchController extends AbstractController
                 //si la diferencia es negativa o cero, f_fin <= f_inicio => f_fin = f_inicio +7 days 
                 $f_fin->modify('+7 days');
             
-            $interval = new \DateInterval('P7D');
+            $interval = new \DateInterval('P1D');
             $rangeDates = new \DatePeriod($f_inicio, $interval, $f_fin);
                         
             foreach ($rangeDates as $date)
@@ -120,15 +120,15 @@ class SgrSearchController extends AbstractController
 
                         $solapaHoras = false;
                         
-                        if ( (new \DateTime($data['h_inicio']))->format('H:i') >= $solape->getEvento()->getHInicio()->format('H:i') && (new \DateTime($data['h_inicio']))->format('H:i') < $solape->getEvento()->getHFin()->format('H:i') )
+                        if ( (new \DateTime($data['h_inicio']))->format('G:i') >= $solape->getEvento()->getHInicio()->format('G:i') && (new \DateTime($data['h_inicio']))->format('G:i') < $solape->getEvento()->getHFin()->format('G:i') )
                         {
                             $solapaHoras = true;
                         }
-                        if ( (new \DateTime($data['h_inicio']))->format('H:i') < $solape->getEvento()->getHInicio()->format('H:i') && (new \DateTime($data['h_fin']))->format('H:i') > $solape->getEvento()->getHInicio()->format('H:i') )
+                        if ( (new \DateTime($data['h_inicio']))->format('G:i') < $solape->getEvento()->getHInicio()->format('G:i') && (new \DateTime($data['h_fin']))->format('G:i') > $solape->getEvento()->getHInicio()->format('G:i') )
                         {
                             $solapaHoras = true;
                         }
-                        $solapaHoras = true;
+                        
                         if( $solapaHoras )
                         {
                             $sgrEspacio = $solape->getEvento()->getEspacio();
@@ -152,6 +152,7 @@ class SgrSearchController extends AbstractController
 
             return $this->render('sgr_search/index.html.twig', [
                             'pagination' => $pagination,
+                            'data'  => $data,
                             'form'       => $form->createView(),
                             ]);
         }

@@ -79,7 +79,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                     'data-format' => 'hh:mm',
                 ),
             ))
-
+            /*
             ->add('dias', ChoiceType::class, [
                             'choices' => [
                                             'Lunes' => 1,
@@ -97,6 +97,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                             'attr' => array('class' => 'form-check-inline'),
                             'label' => 'Los días: ',
             ])
+            */
             ->add('h_inicio', TextType::class, array(
                     'required' => true,
                     'label' => 'Hora inicio',

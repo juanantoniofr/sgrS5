@@ -43,6 +43,18 @@
     
     {% if pagination is defined %}
     <h1>Listado de Espacios</h1>
+    {% if data is defined  %} 
+        <div class="alert alert-success p-4" role="alert">
+            <h5>Resultados para los términos de busqueda:</h5>
+            {% for key, input in data %}
+                {% if not input is null  %}
+                   <b>{{ key }}</b>={{ input }}, 
+                {% endif %}
+            {% endfor %}
+            
+        
+        </div>
+    {% endif %}
 
     <div class="p-1">
         <span>Total de resultados: {{ pagination.getTotalItemCount }}</span>
@@ -67,10 +79,20 @@
                     {% if 0 == sgr_espacio.solapes.count %}
                         <i class="fas fa-check text-success"></i><span class="text-success"> Libre</span>
                     {% elseif not sgr_espacio.solapes is empty  %}
-                        <span class="text-danger"> Solapamiento en la/s fecha/s: {{ sgr_espacio.solapes|join(', ',' y ') }}</span>
+                         
+                            <h5>Solapamientos</h5> 
+                            {% for solape in sgr_espacio.solapes%}
+
+                                <span class="text-danger">
+                                {{ solape.fecha|format_datetime('full','none', locale='es')|capitalize }}
+                                    -> </span>
+                                    <a href = "{{ path('sgr_evento_edit', {'id': solape.evento.id}) }}">{{ solape.evento.titulo }}</a> ({{ solape.evento.hinicio|format_datetime('none','short', locale='es') }} - {{ solape.evento.hfin|format_datetime('none','short', locale='es') }})
+                                </br>
+                            {% endfor %}
+                        
                     {% endif %}
                     
-                    {#dump(sgr_espacio)#}
+                    
                     <!--<a class="btn btn-secondary m-1" type="button" href="{# path('sgr_espacio_show', {'id': sgr_espacio.id}) #}">Ver</a>
                     <a class="btn btn-primary  m-1" type="button" href="{# path('sgr_espacio_edit', {'id': sgr_espacio.id}) #}">Editar</a>-->
                 </td>
