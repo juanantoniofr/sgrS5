@@ -10,6 +10,8 @@ use App\Repository\SgrEspacioRepository;
 use App\Repository\SgrTerminoRepository;
 use App\Repository\SgrFechasEventoRepository;
 
+use App\Service\Calendario;
+
 class SgrCalendariosController extends AbstractController
 {
     
@@ -83,4 +85,52 @@ class SgrCalendariosController extends AbstractController
         	]
     	);
     }
+
+    /**
+     * @Route("/test.html", name="sgr_calendarios_test")
+     */
+    public function test(SgrEspacioRepository $sgrEspacioRepository, SgrFechasEventoRepository $sgrFechasEventoRepository){
+
+    	$termino  =  2;// id de 'Aula de Docencia';
+        $f = '13/03/2020';
+        $fecha = date_create_from_format('d/m/Y', $f, new \DateTimeZone('Europe/Madrid'));
+        
+        //Search by termino
+		$sgrEspacios = $sgrEspacioRepository->findByFilters($termino);
+        $sgrFechasEvento = $sgrFechasEventoRepository->findBy( ['fecha' => $fecha] );
+        foreach ($sgrEspacios as $sgrEspacio){ 
+          	
+       		$calendario = new Calendario;
+       		$calendario->setSgrEspacio($sgrEspacio);
+
+			foreach ($sgrFechasEvento as $sgrFechaEvento) {
+       			
+       			if ($sgrFechaEvento->getEvento()->getEspacio() == $sgrEspacio)
+       			$calendario->setPeriodsByDay( $sgrFechaEvento, $sgrFechaEvento->getEvento()->getHInicio(), $sgrFechaEvento->getEvento()->getHFin()); 
+       		}
+       		
+       		$aCalendarios[] = $calendario;
+       	}
+
+       	
+       	//dump($aCalendarios);
+       	foreach ($aCalendarios as $calendario) {
+       		# code...
+       	
+       		if ($periods = $calendario->getPeriods())
+       			foreach ($periods as $period) {
+       				dump($period);
+       				dump($period->getStartDate()->diff($period->getEndDate()));
+       			}
+       	}
+       	//exit;
+     	
+     	return $this->render( 'sgr_calendarios/index.html.twig',
+        	[ 
+        		'aCalendarios' => $aCalendarios,
+        		//'sgr_espacios' => $sgrTerminoRepository->findAll(),
+        	]
+    	);  	
+    }
+
 }

@@ -16,9 +16,9 @@
 			<tr>
 				<th scope="col" class="h"><div class="col">Hora</div></th>
 				
-				{% for calendario in aCalendarios %}
+				{% for espacio in sgr_espacios %}
 					<th scope="col" width="40px">
-						<div class="col">{{ calendario.sgrEspacio.nombre }}</div>
+						<div class="col">{{ espacio[0].nombre }}</div>
 					</th>
 				{% endfor %}
 				
@@ -36,27 +36,24 @@
 				<th scope="row">
 					<div class="col">{{ hour|date('H:i')}}</div>
 				</th>
-				{% for calendario in aCalendarios %}
+				{% for espacio in sgr_espacios %}
 					<td>
 						<div class="e" style="position: relative;">
-							{% if not calendario.periods is empty %}
-								{% for period in calendario.periods %}
-									
-									
-									{# hour|date('H:i') #}
-									
-
-									{% if hour|date('H:i') == period.start|date('H:i') %}
-										<div style="
-											max-height: {{ ((calendario.duration(period) / 30 ) + 1 ) * 34 }}px;
-											height: {{ ((calendario.duration(period) / 30 ) + 1 ) * 34 }}px;
-											position:absolute;top:{{hour / 60}};background-color: #999;max-width: 100% ">
-												{{ dump(calendario.duration(period)) }}
+							{% if not espacio['rangos'] is empty %}
+								{% for rango in espacio['rangos'] %}
+									{% if hour == rango.hi %}
+										<div style="max-height: {{ (rango.numSteps + 1) * 34 }}px;height: {{ (rango.numSteps + 1) * 34 }}px;position:absolute;top:{{hour / 60}};background-color: #999;max-width: 100% ">
+										
+											<span style="">Aquí va el título del evento..</span>
+										{#dump(espacio[0])#}
+										
 										</div>
 									{% endif %}
 								{% endfor %}
 							{% endif %}
+							
 						</div>
+						
 					</td>
 				{% endfor %}
 			</tr>

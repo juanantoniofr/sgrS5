@@ -9,22 +9,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-//use Symfony\Component\Form\Extension\Core\Type\FileType;
-//use Symfony\Component\HttpFoundation\File\UploadedFile;
-
-//use App\Service\Csv;
-//use App\Service\Evento;
-
-/*use App\Entity\SgrEspacio;
-use App\Entity\SgrEvento;
-use App\Entity\sgrFechasEvento;
-use App\Entity\SgrProfesor;
-use App\Entity\SgrAsignatura;
-use App\Entity\SgrTitulacion;
-use App\Entity\SgrTipoActividad;
-use App\Entity\SgrGrupoAsignatura;
-*/
-
 use App\Form\SgrSearchSgrEspacioType;
 use App\Repository\SgrFechasEventoRepository;
 use App\Repository\SgrEspacioRepository;
@@ -44,12 +28,6 @@ class SgrSearchController extends AbstractController
         $form = $this->createForm(SgrSearchSgrEspacioType::class);
         $form->handleRequest($request);
 
-        /*$sgrEspacios = new ArrayCollection($sgrEspacioRepository->findAll());
-        $aSolapes = new ArrayCollection();
-        foreach ($sgrEspacios as $sgrEspacio) {
-            $aSolapes->set($sgrEspacio->getId(), new ArrayCollection( array( $sgrEspacio, 'solapes' => new ArrayCollection()  ) ));
-        }
-        */
         if ($form->isSubmitted() && $form->isValid()) 
         {
 

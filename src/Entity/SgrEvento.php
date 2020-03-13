@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class SgrEvento
 {
-    const H_INICIO_MIN = '08:30';
+    const H_INICIO_MIN = '08:00';
     const H_FIN_MAX = '21:30';
     /**
      * @ORM\Id()
@@ -43,10 +43,12 @@ class SgrEvento
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\GreaterThan(propertyPath="f_inicio",message="Debe ser mayor que fecha hasta")
+     * @Assert\GreaterThanOrEqual(propertyPath="f_inicio",
+            message="Debe ser igual o mayor que fecha hasta"
+            )
      */
     private $f_fin;
-
+    
     /**
      * @ORM\Column(type="time")
      * @Assert\Expression(
