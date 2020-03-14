@@ -14,11 +14,16 @@
 		<caption>Cuadrante de ocupación</caption>
 		<thead class="thead-dark">
 			<tr>
-				<th scope="col" class="h"><div class="col">Hora</div></th>
+				<th scope="col" style="max-width: 100px"><div class="col">Hora</div></th>
 				
-				{% for calendario in aCalendarios %}
-					<th scope="col" width="40px">
-						<div class="col">{{ calendario.sgrEspacio.nombre }}</div>
+				{% set start_h = constant('\\App\\Entity\\SgrEvento::H_INICIO_MIN') | date('U') %}
+				{% set end_h = constant('\\App\\Entity\\SgrEvento::H_FIN_MAX') | date('U') %}	
+				{% set step = 180*60 %} {# 3 horas en segundos #}
+				{% set setpMinutes = 180 %} {# 3 horas en minutos #}
+				{% for hour in range(start_h, end_h, step) %}
+
+					<th scope="col">
+						<div class="col"><span class="float-left">{{ hour|date('H:i') }}</span><span class="float-right">{{ (hour + step)|date('H:i') }}</span></div>
 					</th>
 				{% endfor %}
 				
@@ -26,36 +31,32 @@
 		</thead>
 		<tbody>
 							
-			
-			{% set start_h = constant('\\App\\Entity\\SgrEvento::H_INICIO_MIN') | date('U') %}
-			{% set end_h = constant('\\App\\Entity\\SgrEvento::H_FIN_MAX') | date('U') %}
-			 
-			{% for hour in range(start_h,end_h,30*60) %}
-			<tr>
-
+			{% for calendario in aCalendarios %}
 				<th scope="row">
-					<div class="col">{{ hour|date('H:i')}}</div>
+					<div class="col">{{ calendario.sgrEspacio.nombre }}</div>
 				</th>
-				{% for calendario in aCalendarios %}
+
+				{% for hour in range(start_h, end_h, step) %}	
 					<td>
 						<div class="e" style="position: relative;">
+
+							{% for i in range(0,2)%}
+							<div style="border-right: dotted;height: 100%;display: inline;width: Calc(100% - 60px)"></div>
+							{% endfor %}
+						
 							{% if not calendario.periods is empty %}
 								{% for period in calendario.periods %}
-									
-									
-									{# hour|date('H:i') #}
-									
-
-									{% if hour|date('H:i') == period.start|date('H:i') %}
+												
+									{% if period.start|date('H:i') >= hour|date('H:i') and period.start|date('H:i') < (hour+step)|date('H:i') %}
 										<div style="
-											max-height: {{ ((calendario.duration(period) / 30 ) + 1 ) * 34 }}px;
-											height: {{ ((calendario.duration(period) / 30 ) + 1 ) * 34 }}px;
-											position:absolute;top:{{hour / 60}};background-color: #999;max-width: 100% ">
+											width: Calc(100% - {{ setpMinutes - calendario.duration(period) }}px);
+											position:absolute;top:{{hour / 60}};background-color: #999;max-height: : 100% ">
 												{{ dump(calendario.duration(period)) }}
 										</div>
 									{% endif %}
 								{% endfor %}
 							{% endif %}
+						
 						</div>
 					</td>
 				{% endfor %}
