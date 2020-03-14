@@ -102,19 +102,36 @@ class SgrCalendariosController extends AbstractController
           	
        		$calendario = new Calendario;
        		$calendario->setSgrEspacio($sgrEspacio);
-
-			foreach ($sgrFechasEvento as $sgrFechaEvento) {
+       		
+       		$eventos = new ArrayCollection();
+			foreach ($sgrFechasEvento as $sgrFechaEvento) 
+			{
        			
+       			/*foreach ($sgrFechaEvento->getEvento() as $sgrEvento) {
+       				if ( $eventos->containsKey($sgrEvento->getId()) ){
+       					
+       					$eventos->set($sgrEvento->getId(), $value );
+	       				}
+
+       			}*/
+
        			if ($sgrFechaEvento->getEvento()->getEspacio() == $sgrEspacio)
-       			$calendario->setPeriodsByDay( $sgrFechaEvento, $sgrFechaEvento->getEvento()->getHInicio(), $sgrFechaEvento->getEvento()->getHFin()); 
+       			{
+       				//$calendario->setEvento($sgrFechaEvento->getEvento());
+
+       				$calendario->setPeriodsByDay( $sgrFechaEvento->getEvento(), $sgrFechaEvento, $sgrFechaEvento->getEvento()->getHInicio(), $sgrFechaEvento->getEvento()->getHFin());
+       			} 
        		}
        		
        		$aCalendarios[] = $calendario;
        	}
 
+       	//dump($aCalendarios);
+       	//exit;	
+       		
        	
        	//dump($aCalendarios);
-       	foreach ($aCalendarios as $calendario) {
+       	/*foreach ($aCalendarios as $calendario) {
        		# code...
        	
        		if ($periods = $calendario->getPeriods())
@@ -122,7 +139,7 @@ class SgrCalendariosController extends AbstractController
        				dump($period);
        				dump($period->getStartDate()->diff($period->getEndDate()));
        			}
-       	}
+       	}*/
        	//exit;
      	
      	return $this->render( 'sgr_calendarios/index.html.twig',

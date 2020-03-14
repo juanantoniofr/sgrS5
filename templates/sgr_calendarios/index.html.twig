@@ -10,7 +10,7 @@
 	<div class="row">
 	<div class="col">
 		
-	<table class="table table-striped table-bordered table-sm">
+	<table class="table table-striped table-bordered ">
 		<caption>Cuadrante de ocupación</caption>
 		<thead class="thead-dark">
 			<tr>
@@ -25,7 +25,7 @@
 				{% for hour in range(start_h, end_h, step) %}
 				
 						<th scope="col" >
-							<div class="col text-center" ><small><span >{{ hour|date('H:i') }}</span> - <span>{{ (hour + step)|date('H:i') }}</span></small></div>
+							<div class="col text-center" ><span >{{ hour|date('H:i') }}</span> - <span>{{ (hour + step)|date('H:i') }}</span></div>
 						</th>
 					
 				{% endfor %}
@@ -42,11 +42,11 @@
 					</th>
 
 				{% for hour in range(start_h, end_h, step) %}	
-					<td style="padding: 0px">
-						<div class="e" style="position: relative;">
+					<td style="padding: 0px;overflow: hidden;">
+						<div class="e" style="position: relative;min-height: 50px;height: 100%;">
 
 							
-						<div style="width:100%;position: absolute;height: 35px;">
+						<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
 							{% for i in range(0,2) %}
 							<div style="float: left;width: 33%;height: 100%;border-left: 1px dotted gray;"></div>	
 							{% endfor %}
@@ -59,11 +59,11 @@
 							{% if not calendario.periods is empty %}
 								{% for period in calendario.periods %}
 												
-									{% if period.start|date('H:i') >= hour|date('H:i') and period.start|date('H:i') < (hour+step)|date('H:i') %}
+									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
 										<div style="
-											width: Calc(100% - {{ setpMinutes - calendario.duration(period) }}px);
-											position:absolute;top:{{hour / 60}};background-color: #999;max-height: : 100% ">
-												{{ dump(calendario.duration(period)) }}
+											width: Calc(100% - {{ setpMinutes - calendario.duration(period.datePeriod) }}px);
+											position:absolute;top:{{hour / 60}};background-color: #999;">
+												{{ period.evento.titulo }}
 										</div>
 									{% endif %}
 								{% endfor %}
