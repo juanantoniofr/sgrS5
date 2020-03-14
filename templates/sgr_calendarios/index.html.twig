@@ -20,29 +20,41 @@
 				{% set end_h = constant('\\App\\Entity\\SgrEvento::H_FIN_MAX') | date('U') %}	
 				{% set step = 180*60 %} {# 3 horas en segundos #}
 				{% set setpMinutes = 180 %} {# 3 horas en minutos #}
+				
+				 
 				{% for hour in range(start_h, end_h, step) %}
-
-					<th scope="col">
-						<div class="col"><span class="float-left">{{ hour|date('H:i') }}</span><span class="float-right">{{ (hour + step)|date('H:i') }}</span></div>
-					</th>
+				
+						<th scope="col" >
+							<div class="col text-center" ><small><span >{{ hour|date('H:i') }}</span> - <span>{{ (hour + step)|date('H:i') }}</span></small></div>
+						</th>
+					
 				{% endfor %}
+				
 				
 			</tr>
 		</thead>
 		<tbody>
-							
+					
 			{% for calendario in aCalendarios %}
-				<th scope="row">
-					<div class="col">{{ calendario.sgrEspacio.nombre }}</div>
-				</th>
+				<tr>
+					<th scope="row" >
+						<div class="col">{{ calendario.sgrEspacio.nombre }}</div>
+					</th>
 
 				{% for hour in range(start_h, end_h, step) %}	
-					<td>
+					<td style="padding: 0px">
 						<div class="e" style="position: relative;">
 
-							{% for i in range(0,2)%}
-							<div style="border-right: dotted;height: 100%;display: inline;width: Calc(100% - 60px)"></div>
+							
+						<div style="width:100%;position: absolute;height: 35px;">
+							{% for i in range(0,2) %}
+							<div style="float: left;width: 33%;height: 100%;border-left: 1px dotted gray;"></div>	
 							{% endfor %}
+
+						</div>
+			
+					
+								
 						
 							{% if not calendario.periods is empty %}
 								{% for period in calendario.periods %}
@@ -60,6 +72,7 @@
 						</div>
 					</td>
 				{% endfor %}
+					
 			</tr>
 			{% endfor %}
 		</tbody>
