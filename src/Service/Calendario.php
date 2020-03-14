@@ -18,16 +18,10 @@ class Calendario extends AbstractController{
 
 	private $periods; 
 
-	//private $eventos;
 
 	public function __construct(){
 
-		$this->periods = new ArrayCollection();
-		//$this->eventos = new ArrayCollection(); 
-
-		//$this->eventos->set('evento',new ArrayCollection());
-		//$this->eventos->set('periods', new ArrayCollection());
-		
+		$this->periods = new ArrayCollection();		
 		return $this;
 	}
 
@@ -41,43 +35,22 @@ class Calendario extends AbstractController{
 		return $this->sgrEspacio;
 	}
 
-	public function setPeriodsByDay(SgrEvento $sgrEvento, SgrFechasEvento $f_inicio, \DateTime $h_inicio, \DateTime $h_fin)
+	public function setPeriodsByDay(SgrEvento $sgrEvento, SgrFechasEvento $f_inicio)
 	{
 
-		//dump($f_inicio->getFecha());
-		
-		$begin = $f_inicio->getFecha()->setTime($h_inicio->format('H'), $h_inicio->format('i'));
+		$begin = $f_inicio->getFecha()->setTime($sgrEvento->getHInicio()->format('H'), $sgrEvento->getHInicio()->format('i'));
 		
 		$end = clone $begin;
-        $end->setTime($h_fin->format('H'), $h_fin->format('i'));
+        $end->setTime($sgrEvento->getHFin()->format('H'), $sgrEvento->getHFin()->format('i'));
         $interval = new \DateInterval('P1D');
-        
-        //dump(new \DatePeriod($begin, $interval, $end));
-        //exit;
-
-        //return $this->eventos->get($sgrEvento_id)->add(new \DatePeriod($begin, $interval, $end)); 
         
         return $this->periods->add(['evento' => $sgrEvento, 'datePeriod' => new \DatePeriod($begin, $interval, $end) ]) ;
 	}
-
-	/*public function setEvento(SgrEvento $sgrEvento){
-
-		if ($this->eventos->containsKey($sgrEvento->getId()))
-			return $this->eventos->get($sgrEvento->getId())->get('evento')->add([ $sgrEvento, 'peridos' => [] ]);
-
-		return $this->eventos->set($sgrEvento->getId(), [ 'evento' => $sgrEvento, 'period' => [] ] );
-		//if (!$this->eventos->get('evento')->contains($sgrEvento))
-		//	return $this->eventos->get('evento')->add([ $sgrEvento, new ArrayCollection() ]);
-	
-		return '';
-        
-	}*/
 
 	public function getPeriods(){
 
 		return $this->periods;
 	}
-
 
 	//número de minutos entre h_inicio y h_fin 
 	public function duration(\DatePeriod $period){

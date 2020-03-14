@@ -128,24 +128,10 @@ class SgrCalendariosController extends AbstractController
 
        	//dump($aCalendarios);
        	//exit;	
-       		
-       	
-       	//dump($aCalendarios);
-       	/*foreach ($aCalendarios as $calendario) {
-       		# code...
-       	
-       		if ($periods = $calendario->getPeriods())
-       			foreach ($periods as $period) {
-       				dump($period);
-       				dump($period->getStartDate()->diff($period->getEndDate()));
-       			}
-       	}*/
-       	//exit;
-     	
+
      	return $this->render( 'sgr_calendarios/index.html.twig',
         	[ 
         		'aCalendarios' => $aCalendarios,
-        		//'sgr_espacios' => $sgrTerminoRepository->findAll(),
         	]
     	);  	
     }

@@ -5,6 +5,7 @@
 {% block body %}
 	<div class="row">
 		<p>Información, navegación y configuración</p>
+		<button type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
 	</div>
 	
 	<div class="row">
@@ -52,24 +53,30 @@
 							{% endfor %}
 
 						</div>
-			
-					
-								
 						
 							{% if not calendario.periods is empty %}
 								{% for period in calendario.periods %}
 												
 									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
+										
 										<div style="
 											width: Calc(100% - {{ setpMinutes - calendario.duration(period.datePeriod) }}px);
-											position:absolute;top:{{hour / 60}};background-color: #999;">
-												{{ period.evento.titulo }}
+											position:absolute;
+											top:{{hour / 60}};
+											background-color: #bbb;
+											height: 50px;">
+											
+											
+  												{{ period.evento.titulo }}
+  												
 										</div>
+										
 									{% endif %}
 								{% endfor %}
 							{% endif %}
 						
 						</div>
+
 					</td>
 				{% endfor %}
 					
@@ -80,5 +87,13 @@
 	</div><!-- /.col -->
 	</div><!-- /.row -->
 
+{% endblock %}
+
+{% block morescripts %}
+<script type="text/javascript">        
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
+</script>
 {% endblock %}
 {# composer req twig/intl-extra #}
