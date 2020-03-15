@@ -80,17 +80,17 @@
 									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
 
 
-										{% set fp =  date( period.datePeriod.start|date('H:i') )  %}
-										{% set fp_fin =  date( period.datePeriod.end|date('H:i') )  %}
-										{% set duration = (fp_fin.diff(fp).format('%H')*60 + fp_fin.diff(fp).format('%i')) %}
-										{% set  d = 100*duration / 180 %}
-										{% set fh =  date( hour|date('H:i') )  %}
-										{% set diffInMinutes = (fh.diff(fp).format('%H')*60 + fh.diff(fp).format('%i')) %}
-										{% set offset = 100*diffInMinutes / 180 %}
-										{% set w = 100 - offset %}
+	{% set h_inicio =  date( period.datePeriod.start|date('H:i') )  %}
+	{% set h_fin =  date( period.datePeriod.end|date('H:i') )  %}
+	{% set duration = (h_fin.diff(h_inicio).format('%H')*60 + h_fin.diff(h_inicio).format('%i')) %}
+	{% set w = 100*duration / 180 %}
+	
+	{% set h_cuadrante =  date( hour|date('H:i') )  %}
+	{% set diffInMinutes = (h_cuadrante.diff(h_inicio).format('%H')*60 + h_cuadrante.diff(h_inicio).format('%i')) %}
+	{% set offset = 100*diffInMinutes / 180 %}
 								
 										<div style="z-index: 2;
-											width: {{ d }}%;
+											width: {{ w }}%;
 											position:absolute;
 											top:0px;
 											left:{{ offset }}%;
@@ -112,8 +112,24 @@
 	  												</div>	
 	  											</div>
   											</a>
-  											<div style="height: 10px;background-color: red;width: 80%;float:left;"></div>
-											<div style="height: 10px;background-color: green;width: 20%;float:left"></div>		
+{% set f_inicio =  period.datePeriod.start %}
+{% set f_fin =  period.datePeriod.end %}
+{% set diff = f_inicio.diff(f_fin).format('%d') %}
+
+{# numdaysView --> pasada desde controlador = número de días entre f_inicio y f_fin elegido por el usuario  #}
+{# dump(numDaysView) #}
+{% if diff == 0%}
+	{% set diff = 1 %}
+{% endif %}
+{% if numDaysView != 0 %}
+	{% set anchor = (diff * 100) / numDaysView %}
+{% else %}
+{# la diferencia entre f_inicio y f_fin es cero, osea, f_inicio = f_fin #}							{% set anchor = 100 %}
+{% endif %}
+
+{#dump(anchor)#}
+  											<div style="height: 10px;background-color: red;width: {{ anchor  }}%;float:left;"></div>
+											<div style="height: 10px;background-color: green;width: Calc(100% - {{anchor}}%);float:left"></div>		
 										</div>
 									{% endif %}
 								{% endfor %}

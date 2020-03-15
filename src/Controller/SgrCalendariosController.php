@@ -29,15 +29,15 @@ class SgrCalendariosController extends AbstractController
         $form->handleRequest($request);
 
         $data = $form->getData();
-        dump($data);
-        dump($data['f_inicio']);
-        dump($data['f_fin']);
+        //dump($data);
+        //dump($data['f_inicio']);
+        //dump($data['f_fin']);
         $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . '00:00', new \DateTimeZone('Europe/Madrid'));
         $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . '00:00', new \DateTimeZone('Europe/Madrid'));
-        dump($begin);
-        dump($end);
+        //dump($begin);
+        //dump($end);
         $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-        dump($sgrFechasEvento);
+        //dump($sgrFechasEvento);
         //exit;
 		$termino  =  2;// id de 'Aula de Docencia';
         
@@ -62,6 +62,7 @@ class SgrCalendariosController extends AbstractController
        	
      	return $this->render( 'sgr_calendarios/index.html.twig',[ 
         		'aCalendarios' => $aCalendarios,
+        		'numDaysView' => (int) $begin->diff($end)->format('%d'),
         		'form'       => $form->createView(),
         	]
     	); 
