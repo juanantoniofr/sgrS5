@@ -4,8 +4,7 @@
 
 {% block body %}
 	<div class="row">
-		<p>Información, navegación y configuración</p>
-		<button type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+		<p>Información, navegación y configuración</p>S
 	</div>
 	
 	<div class="row">
@@ -43,7 +42,7 @@
 					</th>
 
 				{% for hour in range(start_h, end_h, step) %}	
-					<td style="padding: 0px;overflow: hidden;">
+					<td style="padding: 0px;">
 						<div class="e" style="position: relative;min-height: 50px;height: 100%;">
 
 							
@@ -55,22 +54,54 @@
 						</div>
 						
 							{% if not calendario.periods is empty %}
+
 								{% for period in calendario.periods %}
-												
+									
+									{% set counter = ( counter | default(0) ) + 1 %}
+									
 									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
-										
-										<div style="
-											width: Calc(100% - {{ setpMinutes - calendario.duration(period.datePeriod) }}px);
+
+
+
+{% set fp =  date( period.datePeriod.start|date('H:i') )  %}
+{% set fp_fin =  date( period.datePeriod.end|date('H:i') )  %}
+{% set duration = (fp_fin.diff(fp).format('%H')*60 + fp_fin.diff(fp).format('%i')) %}
+{#dump(duration)#}
+{% set  d = 100*duration / 180 %}
+
+{% set fh =  date( hour|date('H:i') )  %}
+{# dump( fh.diff(fp) ) #}
+{% set diffInMinutes = (fh.diff(fp).format('%H')*60 + fh.diff(fp).format('%i')) %}
+{# dump(diffInMinutes) #}
+{% set offset = 100*diffInMinutes / 180 %}
+{# dump( offset ) #}
+{% set w = 100 - offset %}
+{#dump(w)#}
+								<a  href="#" tabindex="{{ counter }}" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="
+										<p>Actividad: {{ period.evento.actividad }}</p>
+										<p>f_inicio:{{ period.evento.fInicio|date('d-m-Y') }}, f_fin: {{ period.evento.fFin|date('d-m-Y') }}</p>
+										<p>h_inicio: {{ period.evento.hInicio|date('H:i')}}, h_fin {{ period.evento.hFin|date('H:i') }}</p>"
+										>
+										<div style="z-index: 2;
+											width: {{ d }}%;
 											position:absolute;
-											top:{{hour / 60}};
+											top:0px;
+											left:{{ offset }}%;
 											background-color: #bbb;
 											height: 50px;">
-											
-											
+												
+											<div class="badge badge-primary text-wrap p-2" style="width: 100%;height: 50px;">
+  												<div class="align-middle">
   												{{ period.evento.titulo }}
+  												</div>
+  												<div class="align-bottom">
+  														<span class="text-sm-left"><small class="align-bottom">{{ period.evento.hInicio|date('H:i') }}</small></span>
+  														<span class="text-sm-right"><small class="align-bottom">{{ period.evento.hFin|date('H:i') }}</small></span>
+  												</div>	
+  											</div>
   												
 										</div>
-										
+										</a>
 									{% endif %}
 								{% endfor %}
 							{% endif %}
@@ -91,9 +122,11 @@
 
 {% block morescripts %}
 <script type="text/javascript">        
-$(function () {
-  $('[data-toggle="popover"]').popover()
-})
+	$(function () {
+ 		$('[data-toggle="popover"]').popover({
+ 			trigger: 'focus',
+  		});
+ 	});
 </script>
 {% endblock %}
 {# composer req twig/intl-extra #}
