@@ -20,10 +20,17 @@ class SgrCalendariosController extends AbstractController
     
 
     /**
-       * @Route("/calendarios.html", name="sgr_calendarios_index")
+       * @Route("/calendarios.html", name="sgr_calendarios_index", methods={"GET","POST"})
     */
     public function index(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
     {
+
+    	$form = $this->createForm(SgrFiltersSgrEventosType::class);
+        $form->handleRequest($request);
+
+        $data = $form->getData();
+        dump($data);
+        //exit;
 		$termino  =  2;// id de 'Aula de Docencia';
         $f = '13/03/2020';
         $fecha = date_create_from_format('d/m/Y', $f, new \DateTimeZone('Europe/Madrid'));
@@ -47,9 +54,7 @@ class SgrCalendariosController extends AbstractController
        		$aCalendarios[] = $calendario;
        	}
 
-       	$form = $this->createForm(SgrFiltersSgrEventosType::class);
-        $form->handleRequest($request);
-
+       	
      	return $this->render( 'sgr_calendarios/index.html.twig',[ 
         		'aCalendarios' => $aCalendarios,
         		'form'       => $form->createView(),
