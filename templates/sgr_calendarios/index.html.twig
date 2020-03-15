@@ -55,13 +55,13 @@
 		<tbody>
 					
 			{% for calendario in aCalendarios %}
-				<tr>
+				<tr style="">
 					<th scope="row" >
 						<div class="col">{{ calendario.sgrEspacio.nombre }}</div>
 					</th>
 				{% for hour in range(start_h, end_h, step) %}	
 					<td style="padding: 0px;">
-						<div class="e" style="position: relative;min-height: 50px;height: 100%;">
+						<div class="e" style="position: relative;min-height: 60px;height: 100%;">
 
 							
 							<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
@@ -96,6 +96,7 @@
 											left:{{ offset }}%;
 											background-color: #bbb;
 											height: 50px;">
+											
 											<a  href="#" tabindex="{{ counter }}" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="
 											<p>Actividad: {{ period.evento.actividad }}</p>
 											<p>f_inicio:{{ period.evento.fInicio|date('d-m-Y') }}, f_fin: {{ period.evento.fFin|date('d-m-Y') }}</p>
@@ -110,7 +111,9 @@
 	  														<span class="text-sm-right"><small class="align-bottom">{{ period.evento.hFin|date('H:i') }}</small></span>
 	  												</div>	
 	  											</div>
-  											</a>		
+  											</a>
+  											<div style="height: 10px;background-color: red;width: 80%;float:left;"></div>
+											<div style="height: 10px;background-color: green;width: 20%;float:left"></div>		
 										</div>
 									{% endif %}
 								{% endfor %}

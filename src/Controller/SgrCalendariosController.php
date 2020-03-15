@@ -30,14 +30,19 @@ class SgrCalendariosController extends AbstractController
 
         $data = $form->getData();
         dump($data);
+        dump($data['f_inicio']);
+        dump($data['f_fin']);
+        $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . '00:00', new \DateTimeZone('Europe/Madrid'));
+        $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . '00:00', new \DateTimeZone('Europe/Madrid'));
+        dump($begin);
+        dump($end);
+        $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
+        dump($sgrFechasEvento);
         //exit;
 		$termino  =  2;// id de 'Aula de Docencia';
-        $f = '13/03/2020';
-        $fecha = date_create_from_format('d/m/Y', $f, new \DateTimeZone('Europe/Madrid'));
         
         //Search by termino
 		$sgrEspacios = $sgrEspacioRepository->findByFilters($termino);
-        $sgrFechasEvento = $sgrFechasEventoRepository->findBy( ['fecha' => $fecha] );
         foreach ($sgrEspacios as $sgrEspacio){ 
           	
        		$calendario = new Calendario;

@@ -52,15 +52,16 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
     }
 
 
-    /*
-    public function findOneBySomeField($value): ?SgrFechasEvento
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    public function findBetween($begin, $end){
+
+        $qb = $this->createQueryBuilder('sgr_fe')
+                ->andWhere('sgr_fe.fecha >= :begin')
+                ->andWhere('sgr_fe.fecha <= :end')
+                ->setParameter('begin',$begin)
+                ->setParameter('end',$end);
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
     }
-    */
 }
