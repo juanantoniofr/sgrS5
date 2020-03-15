@@ -239,7 +239,6 @@ class SgrEventoController extends AbstractController
         );
 
         return $this->render('sgr_evento/index.html.twig', [
-            //'sgr_eventos'   => $sgrEventos,
             'pagination' => $pagination,
             'form'       => $form->createView(),
         ]);

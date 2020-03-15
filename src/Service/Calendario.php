@@ -52,15 +52,4 @@ class Calendario extends AbstractController{
 		return $this->periods;
 	}
 
-	//número de minutos entre h_inicio y h_fin 
-	public function duration(\DatePeriod $period){
-
-		//StartDate es igual a EndDate => entoces tenemos la diferrencia en horas...
-		$hours = $period->getStartDate()->diff($period->getEndDate())->format('%h');
-		$minutes = $period->getStartDate()->diff($period->getEndDate())->format('%i');
-
-		return ($hours * 60) + $minutes;
-	}
-
-
 }
