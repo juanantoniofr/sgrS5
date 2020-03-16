@@ -89,4 +89,4 @@
     <button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Filtrar') }}</button>
   </fieldset>
 
- {{ form_end(form) }}
+ {{ form_end(form, {'render_rest': false}) }}

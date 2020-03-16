@@ -33,7 +33,9 @@
   				</div>
 			</div>
 		</div>
-    </div>    
+    </div>
+    <button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Mostrar eventos') }}</button>  
+
+	{{ form_row(form._token) }}  
 </fieldset>  
-<button class="btn btn-primary" role="button">{{ button_label|default('Mostar reservas') }}</button>
 {{ form_end(form, {'render_rest': false}) }}
