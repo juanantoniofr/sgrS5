@@ -21,8 +21,6 @@ use App\Entity\SgrProfesor;
 use App\Entity\SgrEspacio;
 use App\Entity\SgrTipoActividad;
 
-//use App\Repository\SgrTaxonomiaRepository;
-
 class SgrFiltersSgrEventosType extends AbstractType
 {
 

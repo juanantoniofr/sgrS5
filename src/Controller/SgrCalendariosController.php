@@ -15,12 +15,15 @@ use App\Form\SgrFiltersSgrEventosType;
 
 use App\Service\Calendario;
 
+/**
+ * @Route("/admin/sgr/calendario/")
+ */
 class SgrCalendariosController extends AbstractController
 {
     
 
     /**
-       * @Route("/calendarios.html", name="sgr_calendarios_index", methods={"GET","POST"})
+       * @Route("/index.html", name="sgr_calendarios_index", methods={"GET","POST"})
     */
     public function index(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
     {
@@ -29,10 +32,10 @@ class SgrCalendariosController extends AbstractController
         $form->handleRequest($request);
 
         //defaults values
-        $aCalendarios = new ArrayCollection();
-        $begin = date_create_from_format('d/m/Y H:i', '01/09/2019 00:00', new \DateTimeZone('Europe/Madrid'));
+        //$aCalendarios = new ArrayCollection();
+        /*$begin = date_create_from_format('d/m/Y H:i', '01/09/2019 00:00', new \DateTimeZone('Europe/Madrid'));
         $end = date_create_from_format('d/m/Y H:i', '31/08/2020 00:00', new \DateTimeZone('Europe/Madrid'));
-        $termino  =  2;// id de 'Aula de Docencia';
+        $termino  =  2;*/ // id de 'Aula de Docencia';
         //dump($form->isSubmitted());
         //dump($form->isValid());
         //dump($form->getErrors());
@@ -71,12 +74,20 @@ class SgrCalendariosController extends AbstractController
          		$aCalendarios[] = $calendario;
          	}
         }
-     	
+     	//dump($aCalendarios);
+        //exit;
+
+        if (isset($aCalendarios))
+            return $this->render( 'sgr_calendarios/index.html.twig',[ 
+          		'aCalendarios' => $aCalendarios,
+          		'numDaysView' => (int) $begin->diff($end)->format('%d'),
+          		'form'  => $form->createView(),
+                'data'  => [ 'begin' => $begin , 'end' => $end, 'sgrTermino' => $sgrTerminoRepository->find($termino) ],
+          	]
+          );
+
         return $this->render( 'sgr_calendarios/index.html.twig',[ 
-      		'aCalendarios' => $aCalendarios,
-      		'numDaysView' => (int) $begin->diff($end)->format('%d'),
-      		'form'       => $form->createView(),
-      	]
-      ); 
+                'form'  => $form->createView(),
+            ]);
     }
 }
