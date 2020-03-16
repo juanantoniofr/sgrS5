@@ -89,8 +89,9 @@
         var $titulacion = $('#sgr_filters_sgr_eventos_titulacion');
         var $curso = $('#sgr_filters_sgr_eventos_curso');
         
-        $( '#sgr_filters_sgr_eventos_titulacion, #sgr_filters_sgr_eventos_curso' ).change(function() {
+        $( '#sgr_filters_sgr_eventos_titulacion, #sgr_filters_sgr_eventos_curso' ).change(function(e) {
             // ... retrieve the corresponding form.
+            e.preventDefault();
             var $form = $(this).closest('form');
             // Simulate form data, but only include the selected titulacion value.
             var data = {};
@@ -98,7 +99,7 @@
             data[$curso.attr('name')] = $curso.val();        
             // Submit data via AJAX to the form's action path.
             $.ajax({
-                url : '/admin/sgr/evento/index/ajax-getAsignaturas',
+                url : '/admin/sgr/evento/ajax/getAsignaturas',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {
@@ -116,8 +117,9 @@
 
         var $asignatura = $('#sgr_filters_sgr_eventos_asignatura');
         
-        $asignatura.change(function(){
+        $asignatura.change(function(e){
 
+            e.preventDefault();
             // ... retrieve the corresponding form.
             var $form = $(this).closest('form');
             // Simulate form data, but only include the selected titulacion value.
@@ -126,7 +128,7 @@
 
            // Submit data via AJAX to the form's action path.
             $.ajax({
-                url : '/admin/sgr/evento/index/ajax-getProfesores',
+                url : '/admin/sgr/evento/ajax/getProfesores',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {

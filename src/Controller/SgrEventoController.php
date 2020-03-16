@@ -38,150 +38,6 @@ class SgrEventoController extends AbstractController
 {
     
     /**
-     * @Route("/test",methods={"GET"})
-     */
-    public function test(Request $request)
-    {
-        dump( date_create_from_format('d-m-Y', '04-06-2020', new \DateTimeZone('Europe/Madrid'))->format('Y-m-d') );
-        //$string = new \DateTimeZone('Europe/Madrid')->format('d-m-Y');
-        //dump($string);
-        exit;
-    }
-    /**
-     * @Route("/ajax-getProfesores", methods={"GET"})
-     */
-    public function getProfesoresByAsignatura(Request $request)
-    {
-        if ($request->isXmlHttpRequest())
-        {
-            $profesores = new ArrayCollection();
-            $asignatura_id = $request->query->get('sgr_filters_sgr_eventos')['asignatura'];
-            $repositorySgrAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
-            $sgrAsignatura = $repositorySgrAsignatura->find($asignatura_id);
-            
-            if ($sgrAsignatura)
-            {
-                $grupos = $sgrAsignatura->getGrupos();
-                if ($grupos)
-                {
-                    foreach ($grupos as $grupo)
-                    {
-                        $profesors = $grupo->getSgrProfesors();
-                        if ($profesors)
-                        {
-                            foreach ($profesors as $profesor)
-                            {
-                                $profesores->add($profesor);
-                            }    
-                        }
-                    }
-                }
-            }
-            else
-                $profesores = $this->getDoctrine()->getRepository(SgrProfesor::class)->findAll();
-            
-            $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
-                            'options' => $profesores,
-                            'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
-                        ]);    
-            return $this->json($html);
-        }   
-        return new Response('');
-    }
-
-    /**
-     * @Route("/ajax-getAsignaturas", methods={"GET"})
-     */
-    public function getAsignaturasByTitulacion(Request $request)
-    {
-        if ($request->isXmlHttpRequest())
-        {
-            $asignaturas = new ArrayCollection();
-            $profesores = new ArrayCollection();
-
-            $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
-            $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
-            
-            $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
-            
-            if ($sgrTitulacion)
-            {
-                $asignaturas = $sgrTitulacion->getAsignaturas();
-                if ($asignaturas)
-                {
-                    foreach ($asignaturas as $asignatura)
-                    {
-                        $grupos = $asignatura->getGrupos(); 
-                        if ($grupos)
-                        {
-                            foreach ($grupos as $grupo)
-                            {
-                                $profesors = $grupo->getSgrProfesors();
-                                if ($profesors)
-                                {
-                                    foreach ($profesors as $profesor)
-                                    {
-                                        $profesores->add($profesor);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                $asignaturas = new ArrayCollection($this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll());
-                $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
-            }
-            
-            $curso = $request->query->get('sgr_filters_sgr_eventos')['curso'];
-            
-            if($curso)
-            {
-                $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
-                    return $asignatura->getCurso() ==  $curso;
-                });
-                if ($asignaturas)
-                {
-                    $profesores = new ArrayCollection();
-                    foreach ($asignaturas as $asignatura)
-                    {
-                        $grupos = $asignatura->getGrupos(); 
-                        if ($grupos)
-                        {
-                            foreach ($grupos as $grupo)
-                            {
-                                $profesors = $grupo->getSgrProfesors();
-                                if ($profesors)
-                                {
-                                    foreach ($profesors as $profesor)
-                                    {
-                                        $profesores->add($profesor);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
-                            'options' => $asignaturas,
-                            'default' => ['value' => '', 'nombre' => 'Seleccione Asignatura']
-                        ]);
-            $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
-                            'options' => $profesores,
-                            'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
-                        ]);    
-            
-            return $this->json($html);
-        }   
-        
-        return new Response('');
-    }
-
-    /**
      * @Route("/index/{page}", name="sgr_evento_index", defaults={"page"=1}, methods={"GET","POST"})
      */
     public function index(Request $request, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page ): Response
@@ -232,8 +88,9 @@ class SgrEventoController extends AbstractController
             $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $id_espacio, $id_actividad);
         }
 
+
         $pagination = $paginator->paginate(
-             $sgrEventos,
+            $sgrEventos,
             $page,//$request->query->getInt('page', 1),
             5
         );
@@ -379,6 +236,140 @@ class SgrEventoController extends AbstractController
         }
 
         return $this->redirectToRoute('sgr_evento_index');
+    }
+
+    /**
+     * @Route("/ajax/getProfesores", methods={"GET"})
+     */
+    public function getProfesoresByAsignatura(Request $request)
+    {
+        if ($request->isXmlHttpRequest())
+        {
+            $profesores = new ArrayCollection();
+            $asignatura_id = $request->query->get('sgr_filters_sgr_eventos')['asignatura'];
+            $repositorySgrAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
+            $sgrAsignatura = $repositorySgrAsignatura->find($asignatura_id);
+            
+            if ($sgrAsignatura)
+            {
+                $grupos = $sgrAsignatura->getGrupos();
+                if ($grupos)
+                {
+                    foreach ($grupos as $grupo)
+                    {
+                        $profesors = $grupo->getSgrProfesors();
+                        if ($profesors)
+                        {
+                            foreach ($profesors as $profesor)
+                            {
+                                $profesores->add($profesor);
+                            }    
+                        }
+                    }
+                }
+            }
+            else
+                $profesores = $this->getDoctrine()->getRepository(SgrProfesor::class)->findAll();
+            
+            $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $profesores,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
+                        ]);    
+            return $this->json($html);
+        }   
+        return new Response('');
+    }
+
+    /**
+     * @Route("/ajax/getAsignaturas", methods={"GET"})
+     */
+    public function getAsignaturasByTitulacion(Request $request)
+    {
+        if ($request->isXmlHttpRequest())
+        {
+            $asignaturas = new ArrayCollection();
+            $profesores = new ArrayCollection();
+
+            $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
+            $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
+            
+            $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
+            
+            if ($sgrTitulacion)
+            {
+                $asignaturas = $sgrTitulacion->getAsignaturas();
+                if ($asignaturas)
+                {
+                    foreach ($asignaturas as $asignatura)
+                    {
+                        $grupos = $asignatura->getGrupos(); 
+                        if ($grupos)
+                        {
+                            foreach ($grupos as $grupo)
+                            {
+                                $profesors = $grupo->getSgrProfesors();
+                                if ($profesors)
+                                {
+                                    foreach ($profesors as $profesor)
+                                    {
+                                        $profesores->add($profesor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                $asignaturas = new ArrayCollection($this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll());
+                $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
+            }
+            
+            $curso = $request->query->get('sgr_filters_sgr_eventos')['curso'];
+            
+            if($curso)
+            {
+                $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
+                    return $asignatura->getCurso() ==  $curso;
+                });
+                if ($asignaturas)
+                {
+                    $profesores = new ArrayCollection();
+                    foreach ($asignaturas as $asignatura)
+                    {
+                        $grupos = $asignatura->getGrupos(); 
+                        if ($grupos)
+                        {
+                            foreach ($grupos as $grupo)
+                            {
+                                $profesors = $grupo->getSgrProfesors();
+                                if ($profesors)
+                                {
+                                    foreach ($profesors as $profesor)
+                                    {
+                                        $profesores->add($profesor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $asignaturas,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Asignatura']
+                        ]);
+            $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $profesores,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
+                        ]);    
+            
+            return $this->json($html);
+        }   
+        
+        return new Response('');
     }
 
 }

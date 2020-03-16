@@ -13,11 +13,15 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\Length;
 
+use App\Entity\SgrTaxonomia;
+use App\Entity\SgrTermino;
 use App\Entity\SgrTitulacion;
 use App\Entity\SgrAsignatura;
 use App\Entity\SgrProfesor;
 use App\Entity\SgrEspacio;
 use App\Entity\SgrTipoActividad;
+
+//use App\Repository\SgrTaxonomiaRepository;
 
 class SgrFiltersSgrEventosType extends AbstractType
 {
@@ -25,13 +29,25 @@ class SgrFiltersSgrEventosType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('termino', EntityType::class, [
+                                    'label' => 'Término',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione término',
+                                    'class' => SgrTermino::class,
+                                    'choice_label' => 'nombre',
+                                ])
+            ->add('taxonomia', EntityType::class, [
+                                    'label' => 'Taxonomia',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione categoría',
+                                    'class' => SgrTaxonomia::class,
+                                    'choice_label' => 'nombre',
+                                ])
             ->add('titulacion', EntityType::class, [
                                     'label' => 'Titulación',
                                     'required' => false,
                                     'placeholder' => 'Seleccione Titulación',
-                                    // looks for choices from this entity
                                     'class' => SgrTitulacion::class,
-                                    // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
                                 ])
             ->add('curso', ChoiceType::class, [
@@ -81,7 +97,7 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     // looks for choices from this entity
                                     'class' => SgrEspacio::class,
                                     // uses the User.username property as the visible option string
-                                    'choice_label' => 'nombre',
+                                    'choice_label' => 'label',
                                 ])
             ->add('actividad', EntityType::class,[
                                     'label' => 'Actividad',
