@@ -26,10 +26,18 @@
         	</div>
     </div>
 	</div>
-	
+	<div class="row">{{ dump(aCalendarios) }}
+		
+	</div>
 	<div class="row">
 	<div class="col">
-		
+		{% set diasSemana = {1: 'Lunes', 2:'Martes', 3: 'Miércoles',4: 'Jueves',5: 'Viernes',6: 'Sábado' } %}
+	
+	<table class="table table-striped table-bordered">	
+	{%for cod, dia in diasSemana %}
+	<tr>
+		<th>{{ dia }}</th>
+		<td>
 	<table class="table table-striped table-bordered ">
 		<caption>Cuadrante de ocupación</caption>
 		<thead class="thead-dark">
@@ -72,38 +80,56 @@
 							</div>
 						
 							{% if not calendario.periods is empty %}
-
+								{% set bandera = 0 %}
+								{% set repe = false %}
 								{% for period in calendario.periods %}
+								
 									
+								{% for codDiaEvento in period.evento.dias %}
+										
+
+									
+									
+								{% if codDiaEvento == cod %}	
+
+									
+
+
 									{% set counter = ( counter | default(0) ) + 1 %}
 									
 									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
 
 
-	{% set h_inicio =  date( period.datePeriod.start|date('H:i') )  %}
-	{% set h_fin =  date( period.datePeriod.end|date('H:i') )  %}
-	{% set duration = (h_fin.diff(h_inicio).format('%H')*60 + h_fin.diff(h_inicio).format('%i')) %}
-	{% set w = 100*duration / 180 %}
-	
-	{% set h_cuadrante =  date( hour|date('H:i') )  %}
-	{% set diffInMinutes = (h_cuadrante.diff(h_inicio).format('%H')*60 + h_cuadrante.diff(h_inicio).format('%i')) %}
-	{% set offset = 100*diffInMinutes / 180 %}
-								
+									{% set h_inicio =  date( period.datePeriod.start|date('H:i') )  %}
+									{% set h_fin =  date( period.datePeriod.end|date('H:i') )  %}
+									{% set duration = (h_fin.diff(h_inicio).format('%H')*60 + h_fin.diff(h_inicio).format('%i')) %}
+									{% set w = 100*duration / 180 %}
+									
+									{% set h_cuadrante =  date( hour|date('H:i') )  %}
+									{% set diffInMinutes = (h_cuadrante.diff(h_inicio).format('%H')*60 + h_cuadrante.diff(h_inicio).format('%i')) %}
+									{% set offset = 100*diffInMinutes / 180 %}
+										{% if (bandera == period.datePeriod.start|date('H:i') ~ codDiaEvento) %}
+											{% set offset = offset  + 10 %}
+											{% set w = w - 10 %}
+										{% endif %}		
 										<div style="z-index: 2;
 											width: {{ w }}%;
 											position:absolute;
 											top:0px;
 											left:{{ offset }}%;
 											background-color: #bbb;
-											height: 50px;">
+											height: 58px;
+											border-left: 1px solid white">
 											
-											<a  href="#" tabindex="{{ counter }}" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="
+											<a  href="javascript:;" tabindex="{{ counter }}" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="
+											<p>Título: {{ period.evento.titulo }}</p>
 											<p>Actividad: {{ period.evento.actividad }}</p>
 											<p>f_inicio:{{ period.evento.fInicio|date('d-m-Y') }}, f_fin: {{ period.evento.fFin|date('d-m-Y') }}</p>
-											<p>h_inicio: {{ period.evento.hInicio|date('H:i')}}, h_fin {{ period.evento.hFin|date('H:i') }}</p>"
+											<p>h_inicio: {{ period.evento.hInicio|date('H:i')}}, h_fin {{ period.evento.hFin|date('H:i') }}</p>
+											<p>C.Dia: {{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>"
 											>	
-												<div class="badge badge-primary text-wrap p-2" style="width: 100%;height: 50px;">
-	  												<div class="align-middle">
+												<div class="badge badge-info text-wrap p-2" style="width: 100%;height: 58px;">
+	  												<div class="align-middle text-truncate">
 	  												{{ period.evento.titulo }}
 	  												</div>
 	  												<div class="align-bottom">
@@ -112,26 +138,31 @@
 	  												</div>	
 	  											</div>
   											</a>
-{% set f_inicio =  period.datePeriod.start %}
-{% set f_fin =  period.datePeriod.end %}
-{% set diff = f_inicio.diff(f_fin).format('%d') %}
+											{% set f_inicio =  period.datePeriod.start %}
+											{% set f_fin =  period.datePeriod.end %}
+											{% set diff = f_inicio.diff(f_fin).format('%d') %}
 
-{# numdaysView --> pasada desde controlador = número de días entre f_inicio y f_fin elegido por el usuario  #}
-{# dump(numDaysView) #}
-{% if diff == 0%}
-	{% set diff = 1 %}
-{% endif %}
-{% if numDaysView != 0 %}
-	{% set anchor = (diff * 100) / numDaysView %}
-{% else %}
-{# la diferencia entre f_inicio y f_fin es cero, osea, f_inicio = f_fin #}							{% set anchor = 100 %}
-{% endif %}
+											{# numdaysView --> pasada desde controlador = número de días entre f_inicio y f_fin elegido por el usuario  #}
+											{% if diff == 0%}
+												{% set diff = 1 %}
+											{% endif %}
+											{% if numDaysView != 0 %}
+												{% set anchor = (diff * 100) / numDaysView %}
+											{% else %}
+											{# la diferencia entre f_inicio y f_fin es cero, osea, f_inicio = f_fin #}							{% set anchor = 100 %}
+											{% endif %}
 
-{#dump(anchor)#}
+											{#dump(anchor)#}
+  											{#
   											<div style="height: 10px;background-color: red;width: {{ anchor  }}%;float:left;"></div>
 											<div style="height: 10px;background-color: green;width: Calc(100% - {{anchor}}%);float:left"></div>		
+											#}
 										</div>
+
+										{% set bandera = period.datePeriod.start|date('H:i') ~ codDiaEvento %}
 									{% endif %}
+								{% endif %}
+								{% endfor %}
 								{% endfor %}
 							{% endif %}
 						
@@ -143,6 +174,10 @@
 			{% endfor %}
 		</tbody>
 	</table>
+		</td>
+	{%endfor%}
+	</table>
+
 	</div><!-- /.col -->
 	</div><!-- /.row -->
 

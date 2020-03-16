@@ -65,13 +65,13 @@ class SgrFiltersSgrEventosType extends AbstractType
             ->add('f_inicio', TextType::class, array(
                 'required' => true,
                 'label' => 'Desde',
-                'data' => ( new \DateTime() )->format('d-m-Y'),
+                'data' => ( new \DateTime('01-09-2020') )->format('d/m/Y'),
                 //'constraints' => [new Length(['min' => 5])],
             ))
             ->add('f_fin', TextType::class, array(
                 'required' => true,
                 'label' => 'Hasta',
-                'data' => ( new \DateTime('+6 month') )->format('d-m-Y'),
+                'data' => ( new \DateTime('31-08-2021') )->format('d/m/Y'),
                 //'constraints' => [new Length(['min' => 5])],
             ))
             ->add('espacio', EntityType::class,[

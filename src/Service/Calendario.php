@@ -38,13 +38,21 @@ class Calendario extends AbstractController{
 	public function setPeriodsByDay(SgrEvento $sgrEvento, SgrFechasEvento $f_inicio)
 	{
 
-		$begin = $f_inicio->getFecha()->setTime($sgrEvento->getHInicio()->format('H'), $sgrEvento->getHInicio()->format('i'));
+		$addPeriod = true;
+		foreach ($this->periods as $period) {
+			if ( $period['evento']->getId() == $sgrEvento->getId() )
+				$addPeriod = false;
+		}
 		
-		$end = clone $begin;
-        $end->setTime($sgrEvento->getHFin()->format('H'), $sgrEvento->getHFin()->format('i'));
-        $interval = new \DateInterval('P1D');
-        
-        return $this->periods->add(['evento' => $sgrEvento, 'datePeriod' => new \DatePeriod($begin, $interval, $end) ]) ;
+		if ($addPeriod){
+			$begin = $f_inicio->getFecha()->setTime($sgrEvento->getHInicio()->format('H'), $sgrEvento->getHInicio()->format('i'));
+		
+			$end = clone $begin;
+        	$end->setTime($sgrEvento->getHFin()->format('H'), $sgrEvento->getHFin()->format('i'));
+        	$interval = new \DateInterval('P1D');
+        	$this->periods->add(['evento' => $sgrEvento, 'datePeriod' => new \DatePeriod($begin, $interval, $end) ]);
+        }
+        return $this->periods;
 	}
 
 	public function getPeriods(){

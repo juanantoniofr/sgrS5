@@ -53,15 +53,16 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
 
 
     public function findBetween($begin, $end){
-
+        //dump($begin->format('Y-m-d'));
+        //dump($end->format('Y-m-d'));
         $qb = $this->createQueryBuilder('sgr_fe')
                 ->andWhere('sgr_fe.fecha >= :begin')
                 ->andWhere('sgr_fe.fecha <= :end')
-                ->setParameter('begin',$begin)
-                ->setParameter('end',$end);
+                ->setParameter('begin',$begin->format('Y-m-d'))
+                ->setParameter('end',$end->format('Y-m-d'));
 
         $query = $qb->getQuery();
-
+        //dump($query);
         return $query->execute();
     }
 }
