@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @Route("/admin/sgr/espacio")
@@ -90,5 +92,30 @@ class SgrEspacioController extends AbstractController
         }
 
         return $this->redirectToRoute('sgr_espacio_index');
+    }
+
+    /**
+     * @Route("/ajax/getEspacios", name="sgr_ajax_espacios", methods={"GET"})
+     */
+    
+    public function getEspaciosByTermino(Request $request)
+    {
+        if ($request->isXmlHttpRequest())
+        {
+            $sgrEspacios = new ArrayCollection();
+            $termino_id = $request->query->get('sgr_filters_sgr_eventos')['termino'];
+            $sgrEspacioRepository = $this->getDoctrine()->getRepository(SgrEspacio::class);
+            $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $termino_id ]);
+
+            if ($sgrEspacios)
+            {
+                $html['sgrEspacios'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                                    'options' => $sgrEspacios,
+                                    'default' => ['value' => '', 'nombre' => 'Seleccione recurso']
+                        ]);    
+            return $this->json($html);
+            }
+        }
+        return new Response('');
     }
 }
