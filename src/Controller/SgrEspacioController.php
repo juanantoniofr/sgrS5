@@ -23,7 +23,8 @@ class SgrEspacioController extends AbstractController
     public function index(SgrEspacioRepository $sgrEspacioRepository): Response
     {
         return $this->render('sgr_espacio/index.html.twig', [
-            'sgr_espacios' => $sgrEspacioRepository->findAll(),
+            //'sgr_espacios' => $sgrEspacioRepository->findAll(),
+            'sgr_espacios' => $sgrEspacioRepository->findBy( array(), ['termino' => 'ASC', 'nombre' => 'ASC']),
         ]);
     }
 
