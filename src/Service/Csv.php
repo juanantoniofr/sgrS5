@@ -61,7 +61,7 @@ class Csv extends AbstractController{
             }
         }
 
-        $numfila = 0;
+        $numfila = 1;
         while ( ($fila = fgetcsv($manejador,0,',','"')) != NULL) {
             
             $filasCsv[] = $fila;
