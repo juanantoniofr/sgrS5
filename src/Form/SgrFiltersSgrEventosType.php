@@ -31,9 +31,9 @@ class SgrFiltersSgrEventosType extends AbstractType
     {
         $builder
             ->add('termino', EntityType::class, [
-                                    'label' => 'Término',
+                                    'label' => 'Categoría',
                                     'required' => false,
-                                    'placeholder' => 'Todo o Seleccione término',
+                                    'placeholder' => 'Todo o Seleccione Categoría',
                                     'class' => SgrTermino::class,
                                     'choice_label' => 'nombre',
                                 ])

@@ -35,7 +35,8 @@ class SgrCalendariosController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-            
+            //dump($data);
+            //exit;
             //filters by fechas
             if ($data['f_inicio'])
                 $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . '00:00', new \DateTimeZone('Europe/Madrid'));

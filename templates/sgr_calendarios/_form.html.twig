@@ -1,18 +1,20 @@
 {{ form_start(form) }}
 <fieldset>
 	<div class="form-row mb-1">
-		<div class="col-md-8">
-			<div class="form-group col-md-6">
+		<div class="col-md-9">
+			<div class="form-group col-md-3">
     			<label for="inputTermino">{{ form_label(form.termino) }}</label>
     				{{ form_widget(form.termino) }}
     		</div>
+    		
     		<div class="form-group col-md-12">
+    		
     			{{ form_widget(form.espacio) }}
     		</div>
     	</div>
     	
-    	<div class="col-md-4">
-	        <div class="form-group col-md-6">
+    	<div class="col-md-2">
+	        <div class="form-group col-md-12">
 	  			<label>{{ form_label(form.f_inicio) }}</label>
 		    	<div class='input-group date' id='datetimepicker-fi'>
 		           	{{ form_widget(form.f_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
@@ -24,7 +26,7 @@
 				</div>
 			</div>
 
-	        <div class="form-group col-md-6">
+	        <div class="form-group col-md-12">
 	  			<label>{{ form_label(form.f_fin) }}</label>
 		    	<div class='input-group date' id='datetimepicker-ff'>
 	    	       	{{ form_widget(form.f_fin, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
@@ -33,10 +35,26 @@
 	  				</div>
 				</div>
 			</div>
-	    </div>
+		</div>
+	    
 	</div>
-    <button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Mostrar eventos') }}</button>  
-
+	
+	<div class="row">
+		<div class="col-md-2 text-left">
+			<button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Mostrar eventos') }}</button>
+		</div>
+		<div class="col-md-5 text-center">
+			<button role="button" class="btn btn-success" id="sgr_filters_sgr_eventos_semana_anterior_submit"><i class="fas fa-angle-double-left"></i></button>
+		    <button role="button" class="btn btn-success" id="sgr_filters_sgr_eventos_semana_en_curso_submit">Semana en curso</button>
+		    <button role="button" class="btn btn-success" id="sgr_filters_sgr_eventos_semana_siguiente_submit"><i class="fas fa-angle-double-right"></i></button>
+	    </div>  
+		<div class = "col-md-5 text-right">
+			
+			<button type="button" class="btn btn-dark"><i class="fas fa-check-double"></i> Curso Completo	</button>
+	    	<button type="button" class="btn btn-dark"><i class="fas fa-check-double"></i> Primer Semestre</button>
+	    	<button type="button" class="btn btn-dark"><i class="fas fa-check-double"></i> Segundo Semestre</button>
+		</div>
+	</div>
 	{{ form_row(form._token) }}  
 </fieldset>  
 {{ form_end(form, {'render_rest': false}) }}
