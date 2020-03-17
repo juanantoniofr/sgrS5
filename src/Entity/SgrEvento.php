@@ -37,7 +37,7 @@ class SgrEvento
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\LessThan(propertyPath="f_fin",message="Debe ser menor que fecha hasta")
+     * @Assert\LessThanOrEqual(propertyPath="f_fin",message="Debe ser menor que fecha hasta")
     */
     private $f_inicio;
 

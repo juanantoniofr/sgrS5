@@ -31,33 +31,30 @@ class SgrCalendariosController extends AbstractController
     	$form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
 
-        //defaults values
-        //$aCalendarios = new ArrayCollection();
-        /*$begin = date_create_from_format('d/m/Y H:i', '01/09/2019 00:00', new \DateTimeZone('Europe/Madrid'));
-        $end = date_create_from_format('d/m/Y H:i', '31/08/2020 00:00', new \DateTimeZone('Europe/Madrid'));
-        $termino  =  2;*/ // id de 'Aula de Docencia';
-        //dump($form->isSubmitted());
-        //dump($form->isValid());
-        //dump($form->getErrors());
 
-        //exit;
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
             
+            //filters by fechas
             if ($data['f_inicio'])
                 $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . '00:00', new \DateTimeZone('Europe/Madrid'));
             if($data['f_fin'])
                 $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . '00:00', new \DateTimeZone('Europe/Madrid'));
-            if($data['termino'])
-                $termino = $data['termino'];
-            //dump($termino);
-            //exit;
-            $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-            $sgrEspacios = $sgrEspacioRepository->findByFilters($termino);
-            //dump($end->format('Y-m-d'));
-            //exit;
             
+            $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
+
+            //All espacios.
+            $sgrEspacios = $sgrEspacioRepository->findAll();
+
+            //filter by termino
+            if($data['termino'])
+                $sgrEspacios = $sgrEspacioRepository->findByFilters($data['termino']);
+            
+            //filter by espacio 
+            if( !$data['espacio']->isEmpty() )
+                $sgrEspacios = $sgrEspacioRepository->findBy(['id' => $data['espacio']->toArray()]);
+
             foreach ($sgrEspacios as $sgrEspacio){ 
             	
          		$calendario = new Calendario;
@@ -74,15 +71,13 @@ class SgrCalendariosController extends AbstractController
          		$aCalendarios[] = $calendario;
          	}
         }
-     	//dump($aCalendarios);
-        //exit;
 
         if (isset($aCalendarios))
             return $this->render( 'sgr_calendarios/index.html.twig',[ 
           		'aCalendarios' => $aCalendarios,
           		'numDaysView' => (int) $begin->diff($end)->format('%d'),
           		'form'  => $form->createView(),
-                'data'  => [ 'begin' => $begin , 'end' => $end, 'sgrTermino' => $sgrTerminoRepository->find($termino) ],
+                'data'  => [ 'begin' => $begin , 'end' => $end ],
           	]
           );
 
