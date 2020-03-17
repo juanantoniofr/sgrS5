@@ -59,7 +59,8 @@ class SgrFechasEventoRepository extends ServiceEntityRepository
                 ->andWhere('sgr_fe.fecha >= :begin')
                 ->andWhere('sgr_fe.fecha <= :end')
                 ->setParameter('begin',$begin->format('Y-m-d'))
-                ->setParameter('end',$end->format('Y-m-d'));
+                ->setParameter('end',$end->format('Y-m-d'))
+                ->orderBy('sgr_fe.fecha', 'ASC');
 
         $query = $qb->getQuery();
         //dump($query);
