@@ -99,21 +99,38 @@ class SgrEspacioController extends AbstractController
      * @Route("/ajax/getEspacios", name="sgr_ajax_espacios", methods={"GET"})
      */
     
-    public function getEspaciosByTermino(Request $request)
+    public function getEspaciosByTermino(Request $request, $inputType = 'checkBox')
     {
         if ($request->isXmlHttpRequest())
         {
             $sgrEspacios = new ArrayCollection();
             $termino_id = $request->query->get('sgr_filters_sgr_eventos')['termino'];
             $sgrEspacioRepository = $this->getDoctrine()->getRepository(SgrEspacio::class);
-            $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $termino_id ]);
+            if($termino_id)
+                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $termino_id ]);
+            else 
+                $sgrEspacios = $sgrEspacioRepository->findBy( array() );
 
             if ($sgrEspacios)
             {
-                $html['sgrEspacios'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                switch ($inputType) {
+                    
+                    case 'select':
+                        $template = 'sgr_form/optionsSelect.html.twig';
+                        break;
+                    case 'checkBox':
+                        $template = 'sgr_form/optionsCheckBox.html.twig';
+                        break;
+                    default:
+                        $template = 'sgr_form/optionsSelect.html.twig';
+                        break;
+                }
+
+                $html['sgrEspacios'] = $this->render($template, [
                                     'options' => $sgrEspacios,
                                     'default' => ['value' => '', 'nombre' => 'Seleccione recurso']
                         ]);    
+
             return $this->json($html);
             }
         }

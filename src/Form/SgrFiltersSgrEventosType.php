@@ -30,7 +30,7 @@ class SgrFiltersSgrEventosType extends AbstractType
             ->add('termino', EntityType::class, [
                                     'label' => 'Término',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione término',
+                                    'placeholder' => 'Todo o Seleccione término',
                                     'class' => SgrTermino::class,
                                     'choice_label' => 'nombre',
                                 ])
@@ -95,7 +95,10 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     // looks for choices from this entity
                                     'class' => SgrEspacio::class,
                                     // uses the User.username property as the visible option string
-                                    'choice_label' => 'label',
+                                    'choice_label' => 'nombre',
+                                    'expanded' => true,
+                                    'multiple' => true,
+                                    'attr' => ['class' => 'form-check-inline'],
                                 ])
             ->add('actividad', EntityType::class,[
                                     'label' => 'Actividad',

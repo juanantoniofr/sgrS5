@@ -20,7 +20,7 @@
 {% block body %}
 	<div class="row p-3">
 		<div class="col">
-		{{ include('sgr_calendarios/_form.html.twig', {'button_label': 'Mostrar eventos'}) }}
+			{{ include('sgr_calendarios/_form.html.twig', {'button_label': 'Mostrar eventos'}) }}
     	</div>
     </div>
 	
@@ -78,6 +78,7 @@
 						
 							{% if not calendario.periods is empty %}
 								{% set bandera = 0 %}
+
 								{% set repe = false %}
 								{% for period in calendario.periods %}
 								
@@ -92,7 +93,7 @@
 									
 
 
-									{% set counter = ( counter | default(0) ) + 1 %}
+									{# set counter = ( counter | default(0) ) + 1 #}
 									
 									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
 
@@ -118,7 +119,7 @@
 											height: 58px;
 											border-left: 1px solid white">
 											
-											<a  href="javascript:;" tabindex="{{ counter }}" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center'>
+											<a  href="javascript:;" data-animation="true" tabindex="{# counter #}0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center'>
 											<p><b>{{ period.evento.titulo }}</b></p>
 											<p>{{ period.evento.actividad }}</p>
 											<p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
@@ -131,8 +132,8 @@
 	  												{{ period.evento.titulo }}
 	  												</div>
 	  												<div class="align-bottom">
-	  														<span class="text-sm-left"><small class="align-bottom">{{ period.evento.hInicio|date('H:i') }}</small></span>
-	  														<span class="text-sm-right"><small class="align-bottom">{{ period.evento.hFin|date('H:i') }}</small></span>
+	  														<span class="text-sm-left">{{ period.evento.hInicio|date('H:i') }}</span>
+	  														<span class="text-sm-right">{{ period.evento.hFin|date('H:i') }}</span>
 	  												</div>	
 	  											</div>
   											</a>
@@ -185,10 +186,13 @@
 {% endblock %}
 
 {% block morescripts %}
+
 <script type="text/javascript">        
 	$(function () {
  		$('[data-toggle="popover"]').popover({
  			trigger: 'focus',
+ 			animation: true,
+ 			delay: { "show": 300, "hide": 100 },
   		});
  	});
 </script>

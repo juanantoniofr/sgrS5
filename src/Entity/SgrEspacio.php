@@ -203,9 +203,4 @@ class SgrEspacio
 
     }    
 
-    public function label(){
-
-        return $this->nombre . ' -> ' . $this->termino;
-    }
-
 }
