@@ -225,25 +225,5 @@
         });
     });
     
-    $('#sgr_filters_sgr_eventos_semana_en_curso_submit').click(function(e)
-    {
-        $('#sgr_filters_sgr_eventos_f_inicio').val(moment().day('Monday').format('D/M/YYYY'));
-        $('#sgr_filters_sgr_eventos_f_fin').val(moment().day('Saturday').format('D/M/YYYY'));
-    });
-
-    $('#sgr_filters_sgr_eventos_semana_anterior_submit').click(function(e)
-    {	
-    	$current = moment($('#sgr_filters_sgr_eventos_f_inicio').val(),'D/M/YYYY');
-    	$('#sgr_filters_sgr_eventos_f_inicio').val(moment($current).day('Monday').subtract(7,'days').format('D/M/YYYY'));
-        $('#sgr_filters_sgr_eventos_f_fin').val(moment($current).day('Saturday').subtract(7,'days').format('D/M/YYYY'));
-    });
-
-    $('#sgr_filters_sgr_eventos_semana_siguiente_submit').click(function(e)
-    {	
-    	$current = moment($('#sgr_filters_sgr_eventos_f_fin').val(),'D/M/YYYY');
-    	$('#sgr_filters_sgr_eventos_f_inicio').val(moment($current).day('Monday').add(7,'days').format('D/M/YYYY'));
-        $('#sgr_filters_sgr_eventos_f_fin').val(moment($current).day('Saturday').add(7,'days').format('D/M/YYYY'));
-    });
-    
 </script>
 {% endblock %}

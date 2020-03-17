@@ -37,14 +37,26 @@ class SgrCalendariosController extends AbstractController
             $data = $form->getData();
             //dump($data);
             //exit;
-            //filters by fechas
+            //filter by fechas
             if ($data['f_inicio'])
                 $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . '00:00', new \DateTimeZone('Europe/Madrid'));
             if($data['f_fin'])
                 $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . '00:00', new \DateTimeZone('Europe/Madrid'));
             
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
+            //dump($sgrFechasEvento);
+            //exit;
+            //filter by actividad
+            if( $data['actividad'] ) {
 
+                $actividad = $data['actividad'];
+                $aux = new ArrayCollection($sgrFechasEvento);    
+                $aux = $aux->filter(function($a) use ($actividad) {
+                    return $a->getEvento()->getActividad() == $actividad;
+                });    
+                $sgrFechasEvento = $aux->toArray();
+                
+            }
             //All espacios.
             $sgrEspacios = $sgrEspacioRepository->findAll();
 
@@ -62,9 +74,9 @@ class SgrCalendariosController extends AbstractController
          		$calendario->setSgrEspacio($sgrEspacio);
          		
          		$eventos = new ArrayCollection();
-    		    foreach ($sgrFechasEvento as $sgrFechaEvento)
+    		    
+                foreach ($sgrFechasEvento as $sgrFechaEvento)
                 {
-         			
          			if ($sgrFechaEvento->getEvento()->getEspacio() == $sgrEspacio)
          				$calendario->setPeriodsByDay( $sgrFechaEvento->getEvento(), $sgrFechaEvento);
          		}
