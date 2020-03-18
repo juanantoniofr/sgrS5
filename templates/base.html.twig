@@ -81,73 +81,20 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>       
         {# datepicker boostrap #}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>-->
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  
 
-        <script type="text/javascript">
-            //console.log($('#sgr_evento_f_inicio'));
-            $('#datetimepicker-fi').datetimepicker({
-                locale: 'es',
-                useCurrent: false,
-                format: 'L',
-                daysOfWeekDisabled: [0],
-                keepInvalid: true,
-                //defaultDate: moment(),
-                //minDate: moment().add(1, 'days'),
-            });
-            $('#datetimepicker-ff').datetimepicker({
-                locale: 'es',
-                useCurrent: false, /*Important!!*/
-                format: 'L',
-                daysOfWeekDisabled: [0],
-                keepInvalid: true,
-                //defaultDate: moment().add(30,'days'),
-                //inline: true,
-                //minDate: moment().add(1, 'days'),
-            });
-            $("#datetimepicker-fi").on("dp.change", function (e) {
-                
-                //e.date.add(7,'days');
-                if (e.date > $('#datetimepicker-ff').data("DateTimePicker").date())
-                    $('#datetimepicker-ff').data("DateTimePicker").date(e.date);
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+        -->
 
-                //$('#datetimepicker-ff').data("DateTimePicker").minDate(e.date);
-            });
-            $("#datetimepicker-ff").on("dp.change", function (e) {
-                
-                if (e.date < $('#datetimepicker-fi').data("DateTimePicker").date())
-                    $('#datetimepicker-fi').data("DateTimePicker").date(e.date);
-                //$('#datetimepicker-fi').data("DateTimePicker").maxDate(e.date);
-            });
-            $('#datetimepicker-hi').datetimepicker({
-                locale: 'es',
-                useCurrent:false,
-                format: 'LT',
-                enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
-                stepping: 15,
-                defaultDate: moment(),
-            });
-            $('#datetimepicker-hf').datetimepicker({
-                locale: 'es',
-                useCurrent: false,
-                format: 'LT',
-                enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
-                stepping: 15,
-                defaultDate: moment().add(1,'hours'),
-            });
-            $("#datetimepicker-hi").on("dp.change", function (e) {
-                
-                e.date.add(1,'hours');
-                $('#datetimepicker-hf').data("DateTimePicker").minDate(e.date);
-            });
-            $("#datetimepicker-hf").on("dp.change", function (e) {
-                
-                $('#datetimepicker-hi').data("DateTimePicker").maxDate(e.date);
-            });
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script type="text/javascript" src="/build/es.js"></script>
+  
 
-            {# bosstrap file input #}
-        </script>
 
+
+        
         {# Dinamyc file input bootstrap #}
         <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
         <script type="text/javascript">

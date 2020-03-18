@@ -1,4 +1,4 @@
-
+$(function () {
         
         var $titulacion = $('#sgr_filters_sgr_eventos_titulacion');
         var $curso = $('#sgr_filters_sgr_eventos_curso');
@@ -83,3 +83,4 @@
                 }
             });
         });
+});

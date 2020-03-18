@@ -5,8 +5,12 @@
 {% block stylesheets %}
     
     
-    <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
+  <!--  <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
     <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
+	-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+  
+
 
     <!-- 
     
@@ -189,7 +193,7 @@
 {% endblock %}
 
 {% block morescripts %}
-
+	
 	<script type="text/javascript">        
 		$(function () {
 	 		$('[data-toggle="popover"]').popover({
@@ -199,11 +203,12 @@
 	  		});
 	 	});
 	</script>
-
-	<script src="/build/formFiltersInput.js"></script>
+	<script type="text/javascript" src="/build/formFiltersInput.js"></script>
+	<script type="text/javascript" src="/build/datetimepickerInit.js"></script>
 
     <!-- 
-        <script src="/reservasfgh/public/build/formFiltersInput.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
     -->
 
 {% endblock %}
