@@ -16,7 +16,7 @@ use App\Form\SgrFiltersSgrEventosType;
 use App\Service\Calendario;
 
 /**
- * @Route("/admin/sgr/calendario/")
+ * @Route("/admin/sgr/calendario")
  */
 class SgrCalendariosController extends AbstractController
 {

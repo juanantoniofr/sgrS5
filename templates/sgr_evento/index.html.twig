@@ -2,6 +2,19 @@
 
 {% block title %}Sgr: Eventos{% endblock %}
 
+{% block stylesheets %}
+    
+    <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
+
+    <!-- 
+    
+    <link href="/reservasfgh/public/build/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="/reservasfgh/public/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
+    
+    -->
+{% endblock %}
+
 {% block body %}
     <h1>Eventos</h1>
     {% for label, messages in app.flashes %}
@@ -23,7 +36,8 @@
     <!-- Collapsible element -->
     <div class="collapse" id="Filtros">
         <div class="mt-3 mb-3">
-            {{ include('sgr_evento/_formFilters.html.twig', {'button_label': 'Filtrar eventos'}) }}
+            {# include('sgr_evento/_formFilters.html.twig', {'button_label': 'Filtrar eventos'}) #}
+            {{ include('sgr_form/_formFiltersSrgEvento.html.twig', {'button_label': 'Filtrar eventos'}) }}
         </div>
     </div>
     <!-- / Collapsible element -->    
@@ -83,79 +97,11 @@
 
     <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_new') }}">Nuevo evento</a>
 {% endblock %}
+
 {% block morescripts %}
-<script type="text/javascript">
-        
-        var $titulacion = $('#sgr_filters_sgr_eventos_titulacion');
-        var $curso = $('#sgr_filters_sgr_eventos_curso');
-        
-        $( '#sgr_filters_sgr_eventos_titulacion, #sgr_filters_sgr_eventos_curso' ).change(function(e) {
-            // ... retrieve the corresponding form.
-            e.preventDefault();
-            var $form = $(this).closest('form');
-            // Simulate form data, but only include the selected titulacion value.
-            var data = {};
-            data[$titulacion.attr('name')] = $titulacion.val();
-            data[$curso.attr('name')] = $curso.val();        
-            // Submit data via AJAX to the form's action path.
-            $.ajax({
-                url : '/admin/sgr/evento/ajax/getAsignaturas',
-                type: 'GET',//$form.attr('method'),
-                data : data,
-                success: function(html) {
-                    //console.log(html.profesores.content);
-                    //console.log(html.asignaturas.content);
-                    $('#sgr_filters_sgr_eventos_asignatura').html(html.asignaturas.content).fadeOut().fadeIn();
-                    $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
+    <script src="/build/formFiltersInput.js"></script>
 
-                },
-                error: function(xhr, ajaxOptions, thrownError){
-                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
-                }
-            });
-        });
-
-        var $asignatura = $('#sgr_filters_sgr_eventos_asignatura');
-        
-        $asignatura.change(function(e){
-
-            e.preventDefault();
-            // ... retrieve the corresponding form.
-            var $form = $(this).closest('form');
-            // Simulate form data, but only include the selected titulacion value.
-            var data = {};
-            data[$asignatura.attr('name')] = $asignatura.val();
-
-           // Submit data via AJAX to the form's action path.
-            $.ajax({
-                url : '/admin/sgr/evento/ajax/getProfesores',
-                type: 'GET',//$form.attr('method'),
-                data : data,
-                success: function(html) {
-                    console.log(html.profesores.content);
-                    //console.log(html.asignaturas.content);
-                    $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
-
-                },
-                error: function(xhr, ajaxOptions, thrownError){
-                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
-                }
-            }); 
-        });
-
-        $('#sgr_filters_sgr_eventos_submit').click(function(e)
-        {
-            
-            var $textInputf_inicio = $('#sgr_filters_sgr_eventos_f_inicio').val();
-            var $aDate = moment($textInputf_inicio, 'DD-MM-YYYY', true);
-            var $valid = $aDate.isValid();  //returns true or false
-            
-            if (!$valid)
-            {
-                e.preventDefault();
-                alert('Fecha inicio no válida');
-            }
-        });
-              
-</script>
+    <!-- 
+        <script src="/reservasfgh/public/build/formFiltersInput.js"></script>
+    -->
 {% endblock %}
