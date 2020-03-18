@@ -16,6 +16,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
+use App\Form\DataTransformer\DateTimeTransformer;
+use App\Form\DataTransformer\TimeTransformer;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+//use Symfony\Component\PropertyAccess\PropertyAccess;
+
 use App\Entity\SgrTaxonomia;
 use App\Entity\SgrTermino;
 use App\Entity\SgrTitulacion;
@@ -26,6 +31,14 @@ use App\Entity\SgrTipoActividad;
 
 class SgrFiltersSgrEventosType extends AbstractType
 {
+    private $transformerDateTime;
+    private $transformerTime;
+
+    public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime)
+    {
+        $this->transformerDateTime = $transformerDateTime;
+        $this->transformerTime = $transformerTime;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -82,17 +95,18 @@ class SgrFiltersSgrEventosType extends AbstractType
             ->add('f_inicio', TextType::class, array(
                                     'required' => true,
                                     'label' => 'Desde',
-                                    'data' => ( new \DateTime('01-09-2019') )->format('d/m/Y'),
+                                    //'data' => date_create_from_format('d/m/Y', '01/09/2019', new \DateTimeZone('Europe/Madrid')),
+                                    //'property_path' => '[f_inicio]',
                                     'constraints' => [  new NotBlank(),
-                                                        new LessThanOrEqual([ 'propertyPath' => 'root["f_fin"]' ]), 
+                                                        new LessThanOrEqual( ['propertyPath' => 'parent.all[f_fin].data' ] ), 
                                                         ],
             ))
             ->add('f_fin', TextType::class, array(
                                     'required' => true,
                                     'label' => 'Hasta',
-                                    'data' => ( new \DateTime('31-08-2020') )->format('d/m/Y'),
+                                    //'data' =>  date_create_from_format('d/m/Y', '31/08/2020', new \DateTimeZone('Europe/Madrid')) ,
                                     'constraints' => [  new NotBlank(),
-                                                        new GreaterThanOrEqual([ 'propertyPath' => 'root["f_inicio"]' ]), 
+                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' ] ), 
                                                         ],
             ))
             ->add('espacio', EntityType::class,[
@@ -118,7 +132,19 @@ class SgrFiltersSgrEventosType extends AbstractType
                                 ])
         ;
 
+        $builder->get('f_inicio')
+            ->addModelTransformer($this->transformerDateTime);
+        $builder->get('f_fin')
+            ->addModelTransformer($this->transformerDateTime);
+
    
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => null,
+        ]);
     }
 
 }
