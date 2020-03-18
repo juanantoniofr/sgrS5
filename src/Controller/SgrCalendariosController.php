@@ -33,7 +33,7 @@ class SgrCalendariosController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-            dump($form);
+            dump($data);
             exit;
             //filter by fechas
             if ($data['f_inicio'])

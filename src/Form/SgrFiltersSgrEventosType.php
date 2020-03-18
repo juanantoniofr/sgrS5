@@ -15,11 +15,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\Date;
 
 use App\Form\DataTransformer\DateTimeTransformer;
 use App\Form\DataTransformer\TimeTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-//use Symfony\Component\PropertyAccess\PropertyAccess;
 
 use App\Entity\SgrTaxonomia;
 use App\Entity\SgrTermino;
@@ -78,44 +78,33 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'label' => 'Asignatura',
                                     'required' => false,
                                     'placeholder' => 'Seleccione Asignatura',
-                                    // looks for choices from this entity
                                     'class' => SgrAsignatura::class,
-                                    // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
                                 ])
             ->add('profesor', EntityType::class,[
                                     'label' => 'Profesor',
                                     'required' => false,
                                     'placeholder' => 'Seleccione Profesor',
-                                    // looks for choices from this entity
                                     'class' => SgrProfesor::class,
-                                    // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
                                 ])
             ->add('f_inicio', TextType::class, array(
                                     'required' => true,
                                     'label' => 'Desde',
-                                    //'data' => date_create_from_format('d/m/Y', '01/09/2019', new \DateTimeZone('Europe/Madrid')),
-                                    //'property_path' => '[f_inicio]',
-                                    'constraints' => [  new NotBlank(),
-                                                        new LessThanOrEqual( ['propertyPath' => 'parent.all[f_fin].data' ] ), 
-                                                        ],
+                                    'constraints' => [ new NotBlank(), ],
             ))
             ->add('f_fin', TextType::class, array(
                                     'required' => true,
                                     'label' => 'Hasta',
-                                    //'data' =>  date_create_from_format('d/m/Y', '31/08/2020', new \DateTimeZone('Europe/Madrid')) ,
                                     'constraints' => [  new NotBlank(),
-                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' ] ), 
+                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o menor que fecha desde"] ), 
                                                         ],
             ))
             ->add('espacio', EntityType::class,[
                                     'label' => 'Espacio',
                                     'required' => false,
                                     'placeholder' => 'Seleccione Espacio',
-                                    // looks for choices from this entity
                                     'class' => SgrEspacio::class,
-                                    // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
                                     'expanded' => true,
                                     'multiple' => true,
@@ -125,9 +114,7 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'label' => 'Actividad',
                                     'required' => false,
                                     'placeholder' => 'Seleccione Actividad',
-                                    // looks for choices from this entity
                                     'class' => SgrTipoActividad::class,
-                                    // uses the User.username property as the visible option string
                                     'choice_label' => 'actividad',
                                 ])
         ;
