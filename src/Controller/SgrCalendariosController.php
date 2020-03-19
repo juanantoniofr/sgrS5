@@ -33,38 +33,84 @@ class SgrCalendariosController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-            dump($data);
-            exit;
+            //dump($data);
+            //exit;
             //filter by fechas
             if ($data['f_inicio'])
-                $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . '00:00', new \DateTimeZone('Europe/Madrid'));
+                $begin = $data['f_inicio'];
             if($data['f_fin'])
-                $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . '00:00', new \DateTimeZone('Europe/Madrid'));
+                $end = $data['f_fin'];
+
             
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
             //dump($sgrFechasEvento);
-            //exit;
+            
             //filter by actividad
-            if( $data['actividad'] ) {
-
+            if( $data['actividad'])
+            {
                 $actividad = $data['actividad'];
-                $aux = new ArrayCollection($sgrFechasEvento);    
-                $aux = $aux->filter(function($a) use ($actividad) {
-                    return $a->getEvento()->getActividad() == $actividad;
+                $aux = new ArrayCollection($sgrFechasEvento);
+                $aux = $aux->filter(function($item) use ($actividad) {
+                    return $item->getEvento()->getActividad() == $actividad;
                 });    
                 $sgrFechasEvento = $aux->toArray();
                 
             }
+            
+            //filter by titulación
+            if ($data['titulacion'] && $sgrFechasEvento)
+            {
+                $titulacion = $data['titulacion'];
+                $aux = new ArrayCollection($sgrFechasEvento);
+                $aux = $aux->filter(function($item) use($titulacion){
+                    return $item->getEvento()->getTitulacion() == $titulacion; 
+                });
+                $sgrFechasEvento = $aux->toArray();
+            }
+
+            //filter by asignatura
+            if ($data['asignatura'] && $sgrFechasEvento)
+            {
+                $asignatura = $data['asignatura'];
+                $aux = new ArrayCollection($sgrFechasEvento);
+                $aux = $aux->filter(function($item) use($asignatura){
+                    return $item->getEvento()->getAsignatura() == $asignatura; 
+                });
+                $sgrFechasEvento = $aux->toArray();
+            }
+
+            //filter by profesor
+            if ($data['profesor'] && $sgrFechasEvento)
+            {
+                $profesor = $data['profesor'];
+                $aux = new ArrayCollection($sgrFechasEvento);
+                $aux = $aux->filter(function($item) use($profesor){
+                    return $item->getEvento()->getProfesor() == $profesor; 
+                });
+                $sgrFechasEvento = $aux->toArray();
+            }
+          
             //All espacios.
             $sgrEspacios = $sgrEspacioRepository->findAll();
 
             //filter by termino
+            //dump($data);
+            //exit;
             if($data['termino'])
-                $sgrEspacios = $sgrEspacioRepository->findByFilters($data['termino']);
+                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $data['termino'] ]);
             
-            //filter by espacio 
-            if( !$data['espacio']->isEmpty() )
-                $sgrEspacios = $sgrEspacioRepository->findBy(['id' => $data['espacio']->toArray()]);
+            //filter by espacio
+            //dump($data['espacio']->isEmpty());
+            //exit; 
+            if( !$data['espacio']->isEmpty())
+            {
+                $espacios = $data['espacio'];
+                $sgrEspacios = ( new ArrayCollection
+                  ($sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) {
+                    return $espacios->contains($sgrEspacio);
+                }
+              );//(['nombre' => $data['espacio'] ]);
+            }
 
             foreach ($sgrEspacios as $sgrEspacio){ 
             	

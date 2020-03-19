@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Doctrine\ORM\EntityManagerInterface;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
@@ -28,16 +29,21 @@ use App\Entity\SgrAsignatura;
 use App\Entity\SgrProfesor;
 use App\Entity\SgrEspacio;
 use App\Entity\SgrTipoActividad;
+use App\Entity\SgrEvento;
 
 class SgrFiltersSgrEventosType extends AbstractType
 {
     private $transformerDateTime;
     private $transformerTime;
 
-    public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime)
+    private $entityManager;
+
+    public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime, EntityManagerInterface $entityManager)
     {
         $this->transformerDateTime = $transformerDateTime;
         $this->transformerTime = $transformerTime;
+
+        $this->entityManager = $entityManager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -124,7 +130,31 @@ class SgrFiltersSgrEventosType extends AbstractType
         $builder->get('f_fin')
             ->addModelTransformer($this->transformerDateTime);
 
-   
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                
+                $data = $event->getData();
+                $form = $event->getForm();
+                if ($data['termino']){
+                    
+                    $choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $data['termino'] ]);    
+                    $form->add('espacio', EntityType::class,[
+                            'label' => 'Espacio',
+                            'required' => false,
+                            'placeholder' => 'Seleccione Espacio',
+                            'class' => SgrEspacio::class,
+                            'choices' => $choices,
+                            'choice_label' => 'nombre',
+                            'expanded' => true,
+                            'multiple' => true,
+                            'attr' => ['class' => 'form-check-inline'],
+                        ]);
+            
+                    
+                }
+            }
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver)

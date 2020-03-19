@@ -33,11 +33,11 @@ class DateTimeTransformer implements DataTransformerInterface
     {
         
         //if (!$datetime) {
-        if (!date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid'))){
+        if (!date_create_from_format('d/m/Y', $datetime , new \DateTimeZone('Europe/Madrid'))){
               throw new TransformationFailedException();
             //return;
         }
 
-        return date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid'));
+        return date_create_from_format('d/m/Y H:i', $datetime . '00:00', new \DateTimeZone('Europe/Madrid'));
     }
 }
