@@ -30,7 +30,6 @@ class SgrProfesorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
 
     /*
     public function findOneBySomeField($value): ?SgrProfesor

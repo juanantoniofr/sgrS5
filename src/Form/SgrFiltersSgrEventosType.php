@@ -12,6 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
@@ -132,11 +135,15 @@ class SgrFiltersSgrEventosType extends AbstractType
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) {
+            function (FormEvent $event)
+            {
                 
                 $data = $event->getData();
                 $form = $event->getForm();
-                if ($data['termino']){
+                //dump($data['titulacion']);
+                //exit;
+                if ($data['termino'])
+                {
                     
                     $choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $data['termino'] ]);    
                     $form->add('espacio', EntityType::class,[
@@ -150,8 +157,52 @@ class SgrFiltersSgrEventosType extends AbstractType
                             'multiple' => true,
                             'attr' => ['class' => 'form-check-inline'],
                         ]);
-            
+                }
+
+                if ($data['titulacion'])
+                {
+
+                    $asignaturas = $this->entityManager->getRepository(SgrAsignatura::class)->findBy([ 'sgrTitulacion' => $data['titulacion'] ]);
+                    $form->add('asignatura', EntityType::class, [
+                                    'label' => 'Asignatura',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione Asignatura',
+                                    'class' => SgrAsignatura::class,
+                                    'choices' => $asignaturas, 
+                                    'choice_label' => 'nombre',
+                                ]);
                     
+                    $profesores = new ArrayCollection();
+                    if ($asignaturas)
+                    {
+                        foreach ($asignaturas as $asignatura)
+                        {
+                            $grupos = $asignatura->getGrupos(); 
+                            if ($grupos)
+                            {
+                                foreach ($grupos as $grupo)
+                                {
+                                    $profesors = $grupo->getSgrProfesors();
+                                    if ($profesors)
+                                    {
+                                        foreach ($profesors as $profesor)
+                                        {
+                                            $profesores->add($profesor);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(!$profesores->isEmpty())
+                        $form->add('profesor', EntityType::class,[
+                                    'label' => 'Profesor',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione Profesor',
+                                    'class' => SgrProfesor::class,
+                                    'choices' => $profesores,
+                                    'choice_label' => 'nombre',
+                                ]);
                 }
             }
         );
