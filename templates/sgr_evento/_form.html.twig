@@ -1,66 +1,72 @@
 {{ form_start(form) }}
 
 	<fieldset>
+	
 	<legend>Evento</legend>  
-	<div class="form-group p-3">
-    	<label for="inputAddress">{{ form_label(form.titulo) }}</label>
-    	{{ form_widget(form.titulo) }}
-  	</div>
-	<div class="form-row p-3">
-    	<div class="form-group col-md-6">
-    		<label for="inputTitulo">{{ form_label(form.actividad) }}</label>
-    		{{ form_widget(form.actividad) }}
-    	</div>
-    	<div class="form-group col-md-6">
-    		<label for="inputPassword4">{{ form_label(form.espacio) }}</label>
-    		{{ form_widget(form.espacio) }}
-    	</div>
-  	</div>
+	
+		<div class="form-group p-3">
+	    	<label for="inputAddress">{{ form_label(form.titulo) }}</label>
+	    	{{ form_widget(form.titulo) }}
+	  	</div>
+	
+		<div class="form-row p-3">
+	    	<div class="form-group col-md-6">
+	    		<label for="inputTitulo">{{ form_label(form.actividad) }}</label>
+	    		{{ form_widget(form.actividad) }}
+	    	</div>
+	    	<div class="form-group col-md-6">
+	    		<label for="inputPassword4">{{ form_label(form.espacio) }}</label>
+	    		{{ form_widget(form.espacio) }}
+	    	</div>
+	  	</div>
 
-  	<div class="form-row p-3">
-    	
-  		<div class="form-group col-md-4">
-  			<label>{{ form_label(form.f_inicio) }}</label>
-	    	<div class='input-group date' id='datetimepicker-fi'>
-	           	{{ form_widget(form.f_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-	            <div class="input-group-append input-group-addon">
-	    			<span class="input-group-text">
-	    				<i class="fas fa-calendar-alt"></i>
-	    			</span>
-	  			</div>
+	  	<div class="form-row p-3">
+	    	
+	  		<div class="form-group col-md-4">
+	  			<label>{{ form_label(form.f_inicio) }}</label>
+		    	<div class='input-group date' id='datetimepicker-fi'>
+		           	{{ form_widget(form.f_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
+		            <div class="input-group-append input-group-addon">
+		    			<span class="input-group-text">
+		    				<i class="fas fa-calendar-alt"></i>
+		    			</span>
+		  			</div>
+				</div>
 			</div>
+
+	    	<div class="form-group col-md-4">
+	    		<label for="inputTitulo">{{ form_label(form.h_inicio) }}</label>
+	    		<div class='input-group date' id='datetimepicker-hi'>
+	                {{ form_widget(form.h_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
+	   	            <div class="input-group-append input-group-addon">
+	   	            	<span class="input-group-text">
+	                		<i class="fas fa-clock"></i>
+	                	</span>
+	            	</div>	
+	            </div>
+	    	</div>
+
+	    	<div class="form-group col-md-4">
+	    		<label for="inputTitulo">{{ form_label(form.h_fin) }}</label>
+	    		<div class='input-group date' id='datetimepicker-hf'>
+	                {{ form_widget(form.h_fin, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
+	   	            <div class="input-group-append input-group-addon">
+	   	            	<span class="input-group-text">
+	                		<i class="fas fa-clock"></i>
+	                	</span>
+	            	</div>	
+	            </div>
+	    	</div>
+
 		</div>
-
-    	<div class="form-group col-md-4">
-    		<label for="inputTitulo">{{ form_label(form.h_inicio) }}</label>
-    		<div class='input-group date' id='datetimepicker-hi'>
-                {{ form_widget(form.h_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-   	            <div class="input-group-append input-group-addon">
-   	            	<span class="input-group-text">
-                		<i class="fas fa-clock"></i>
-                	</span>
-            	</div>	
-            </div>
-    	</div>
-
-    	<div class="form-group col-md-4">
-    		<label for="inputTitulo">{{ form_label(form.h_fin) }}</label>
-    		<div class='input-group date' id='datetimepicker-hf'>
-                {{ form_widget(form.h_fin, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-   	            <div class="input-group-append input-group-addon">
-   	            	<span class="input-group-text">
-                		<i class="fas fa-clock"></i>
-                	</span>
-            	</div>	
-            </div>
-    	</div>
-
-	</div>
 	</fieldset>
 	
 	<fieldset>
-	<legend>Repetir</legend>
+
+		<legend>Repetir</legend>
+
 		<div class="form-row p-3">
+	    	
 	    	<div class="form-group col-md-6">
 	    		<div class="form-check">
 	      			
@@ -70,6 +76,7 @@
 	      			{{ form_widget(form.dias) }}
 	    		</div>
 	    	</div>
+	  		
 	  		<div class="form-group col-md-3">
 	  			<label>{{ form_label(form.f_fin) }}</label>
 		    	<div class='input-group date' id='datetimepicker-ff'>
@@ -81,27 +88,34 @@
 			</div>
 	  	</div>
   	</fieldset>
+  	
   	<fieldset>
-  	<legend>Opcional</legend>
+  	
+  		<legend>Opcional</legend>
+		
 		<div class="form-row p-3">
+		
 			<div class="form-group col-md-3">
 				<div class="form-group">
 			    	<label for="inputAddress2">{{ form_label(form.titulacion) }}</label>
 			    	{{ form_widget(form.titulacion) }}
 			  	</div>
 			</div>
+		
 			<div class="form-group col-md-3">
 				<div class="form-group">
 			    	<label for="inputAddress2">{{ form_label(form.asignatura) }}</label>
 			    	{{ form_widget(form.asignatura) }}
 			  	</div>
 			</div>
+		
 			<div class="form-group col-md-3">
 				<div class="form-group">
 			    	<label for="inputAddress2">{{ form_label(form.grupoAsignatura) }}</label>
 			    	{{ form_widget(form.grupoAsignatura) }}
 			  	</div>
 			</div>
+		
 			<div class="form-group col-md-3">
 				<div class="form-group">
 			    	<label for="inputAddress2">{{ form_label(form.profesor) }}</label>
@@ -112,7 +126,7 @@
 	</fieldset>
 	{{ form_widget(form) }}
     
-    <button class="btn btn-primary" role="button">{{ button_label|default('Salvar') }}</button>
+    <!-- <button class="btn btn-primary" role="button">{{ button_label|default('Salvar') }}</button> -->	
 
 	
 {{ form_end(form, {'render_rest': false}) }}

@@ -12,7 +12,8 @@ use App\Repository\SgrTerminoRepository;
 use App\Repository\SgrFechasEventoRepository;
 
 use App\Form\SgrFiltersSgrEventosType;
-
+use App\Form\SgrEventoType;
+use App\Entity\SgrEvento;
 use App\Service\Calendario;
 
 /**
@@ -30,6 +31,10 @@ class SgrCalendariosController extends AbstractController
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
 
+        //for modal new SgrEvento
+        $sgrEvento = new SgrEvento();
+        $formNewSgrEvento = $this->createForm(SgrEventoType::class, $sgrEvento);
+        
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
@@ -129,17 +134,22 @@ class SgrCalendariosController extends AbstractController
          	}
         }
 
-        if (isset($aCalendarios))
+        if (isset($aCalendarios)){
+
+            
             return $this->render( 'sgr_calendarios/index.html.twig',[ 
           		'aCalendarios' => $aCalendarios,
           		'numDaysView' => (int) $begin->diff($end)->format('%d'),
           		'form'  => $form->createView(),
+                'formNewSgrEvento' => $formNewSgrEvento->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
           	]
           );
-
+        }
+        
         return $this->render( 'sgr_calendarios/index.html.twig',[ 
                 'form'  => $form->createView(),
+                'formNewSgrEvento' => $formNewSgrEvento->createView(),
             ]);
     }
 }

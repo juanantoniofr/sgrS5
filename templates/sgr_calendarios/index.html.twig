@@ -27,9 +27,9 @@
 	
 	<div id="filtros">
 		<div class="mt-3 mb-3">
+
 			{# include('sgr_calendarios/_form.html.twig', {'button_label': 'Mostrar eventos'}) #}
             {{ include('sgr_form/_formFiltersSrgEvento.html.twig', {'button_label': 'Filtrar eventos'}) }}
-
     	</div>
     </div>
 	
@@ -79,7 +79,9 @@
 							
 							<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
 								{% for i in range(0,1) %}
-									<div style="float: left;width: 50%;height: 100%;border-left: 1px dotted gray;"></div>	
+								<a href="javascript:;" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal">
+									<div style="float: left;width: 50%;height: 100%;border-left: 1px dotted gray;"></div>
+								</a>	
 								{% endfor %}
 
 							</div>
@@ -98,10 +100,6 @@
 									
 								{% if codDiaEvento == cod %}	
 
-									
-
-
-									{# set counter = ( counter | default(0) ) + 1 #}
 									
 									{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
 
@@ -189,6 +187,8 @@
             Seleccione criterios de busqueda... 
         </div>
 	{%endif%}
+
+	{{ include('sgr_modal/_formNewEvento.html.twig', {form: formNewSgrEvento}) }}
 	
 {% endblock %}
 
@@ -205,10 +205,23 @@
 	</script>
 	<script type="text/javascript" src="/build/formFiltersInput.js"></script>
 	<script type="text/javascript" src="/build/datetimepickerInit.js"></script>
+	<script type="text/javascript" src="/build/hinclude.js"></script>
+	
+	<script type="text/javascript">
+
+  		$(function() {
+
+    		$('.divModal').click(function(e){
+    			e.preventDefault();
+      			$('#exampleModal').modal('show');
+    		}); 
+  		});
+</script>
 
     <!-- 
         <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
         <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/hinclude.js"></script>
     -->
 
 {% endblock %}
