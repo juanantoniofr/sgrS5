@@ -4,20 +4,8 @@
 
 {% block stylesheets %}
     
-    
-  <!--  <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
-    <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
-	-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
   
-
-
-    <!-- 
-    
-    <link href="/reservasfgh/public/build/bootstrap-datetimepicker.css" rel="stylesheet">
-    <link href="/reservasfgh/public/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
-    
-    -->
 {% endblock %}
 
 
@@ -79,7 +67,7 @@
 							
 							<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
 								{% for i in range(0,1) %}
-								<a href="javascript:;" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal">
+								<a href="javascript:;" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal" data-espacio="{{calendario.sgrEspacio.id}}">
 									<div style="float: left;width: 50%;height: 100%;border-left: 1px dotted gray;"></div>
 								</a>	
 								{% endfor %}
@@ -214,6 +202,9 @@
     		$('.divModal').click(function(e){
     			e.preventDefault();
       			$('#exampleModal').modal('show');
+      			var $espacio = $('#sgr_evento_espacio');
+      			$espacio.val($(this).data('espacio'));
+      			console.log($(this).data('espacio'));
     		}); 
   		});
 </script>

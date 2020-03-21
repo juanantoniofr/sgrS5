@@ -24,21 +24,19 @@
 	    	
 	  		<div class="form-group col-md-4">
 	  			<label>{{ form_label(form.f_inicio) }}</label>
-		    	<div class='input-group date' id='datetimepicker-fi'>
-		           	{{ form_widget(form.f_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-		            <div class="input-group-append input-group-addon">
-		    			<span class="input-group-text">
-		    				<i class="fas fa-calendar-alt"></i>
-		    			</span>
+		    	<div class='input-group date' id='datetimepicker-fi-newSgrEvento' data-target-input="nearest">
+		    		{{ form_widget(form.f_inicio, {'attr': {'class': 'datetimepicker-input'}}) }}
+		            <div class="input-group-append" data-target="#datetimepicker-fi-newSgrEvento" data-toggle="datetimepicker">
+		    			<span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
 		  			</div>
 				</div>
 			</div>
 
 	    	<div class="form-group col-md-4">
 	    		<label for="inputTitulo">{{ form_label(form.h_inicio) }}</label>
-	    		<div class='input-group date' id='datetimepicker-hi'>
-	                {{ form_widget(form.h_inicio, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-	   	            <div class="input-group-append input-group-addon">
+	    		<div class='input-group date' id='datetimepicker-hi' data-target-input="nearest">
+	                {{ form_widget(form.h_inicio, {'attr': {'class': 'datetimepicker-input input-inline'}}) }}
+	   	            <div class="input-group-append" data-target="#datetimepicker-hi" data-toggle="datetimepicker">
 	   	            	<span class="input-group-text">
 	                		<i class="fas fa-clock"></i>
 	                	</span>
@@ -48,9 +46,9 @@
 
 	    	<div class="form-group col-md-4">
 	    		<label for="inputTitulo">{{ form_label(form.h_fin) }}</label>
-	    		<div class='input-group date' id='datetimepicker-hf'>
-	                {{ form_widget(form.h_fin, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-	   	            <div class="input-group-append input-group-addon">
+	    		<div class='input-group date' id='datetimepicker-hf' data-target-input="nearest">
+	                {{ form_widget(form.h_fin, {'attr': {'class': 'datetimepicker-input input-inline'}}) }}
+	   	            <div class="input-group-append" data-target="#datetimepicker-hf" data-toggle="datetimepicker">
 	   	            	<span class="input-group-text">
 	                		<i class="fas fa-clock"></i>
 	                	</span>
@@ -79,11 +77,11 @@
 	  		
 	  		<div class="form-group col-md-3">
 	  			<label>{{ form_label(form.f_fin) }}</label>
-		    	<div class='input-group date' id='datetimepicker-ff'>
-	    	       	{{ form_widget(form.f_fin, {'attr': {'class': 'form-control input-inline datetimepicker'}}) }}
-	            	<div class="input-group-append input-group-addon">
-	    				<span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-	  				</div>
+		    	<div class='input-group date' id='datetimepicker-ff-newSgrEvento' data-target-input="nearest">
+		    		{{ form_widget(form.f_fin, {'attr': {'class': 'datetimepicker-input'}}) }}
+		            <div class="input-group-append" data-target="#datetimepicker-ff-newSgrEvento" data-toggle="datetimepicker">
+		    			<span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+		  			</div>
 				</div>
 			</div>
 	  	</div>

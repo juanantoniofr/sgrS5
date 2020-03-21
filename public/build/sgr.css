@@ -18,4 +18,5 @@ fieldset {
 legend {
 	margin: 10px 0;
 	border-bottom: 1px solid #aaa;
+	font-size:1em;
 }
