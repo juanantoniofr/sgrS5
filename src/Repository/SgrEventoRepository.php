@@ -59,32 +59,15 @@ class SgrEventoRepository extends ServiceEntityRepository
         //exit;
         return $query->execute();
     }
-    // /**
-    //  * @return SgrEvento[] Returns an array of SgrEvento objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    
+    public function findAllOrderByUpdateAt(){
 
-    /*
-    public function findOneBySomeField($value): ?SgrEvento
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $qb = $this->createQueryBuilder('sgr_e')
+                ->orderBy('sgr_e.updatedAt', 'DESC');
+
+        $query = $qb->getQuery();
+            
+            //->setMaxResults(10)
+        return $query->execute();
     }
-    */
 }

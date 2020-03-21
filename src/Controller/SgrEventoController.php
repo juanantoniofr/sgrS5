@@ -46,8 +46,8 @@ class SgrEventoController extends AbstractController
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
 
-        $sgrEventos = $sgrEventoRepository->findAll();
-        
+        //$sgrEventos = $sgrEventoRepository->findAll();
+        $sgrEventos = $sgrEventoRepository->findAllOrderByUpdateAt();
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();

@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\Validator\Constraints\Length;
 
@@ -65,7 +66,7 @@ class SgrEventoType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'HH-mm',
+                    'data-format' => 'H:i',
                 ),
             ))
             //->add('h_fin',null,['label' => 'Hasta'])
@@ -76,7 +77,7 @@ class SgrEventoType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'HH:mm',
+                    'data-format' => 'H:i',
                 ),
             ))
             ->add('dias', ChoiceType::class, [
@@ -101,6 +102,7 @@ class SgrEventoType extends AbstractType
             ->add('asignatura')
             ->add('grupoAsignatura')
             ->add('profesor')
+            ->add('submit', SubmitType::class, [ 'label' => 'Salvar' ])
 
             
 
