@@ -123,13 +123,27 @@ class SgrEventoController extends AbstractController
             $sgrEvento->setUpdatedAt();
 
             //setFfin para eventos no periódicos (sin repetición)
-            if(!$sgrEvento->getFFin()) $sgrEvento->setFFin($sgrEvento->getFInicio());
+            //if(!$sgrEvento->getFFin()) $sgrEvento->setFFin($sgrEvento->getFInicio());
             
             //setDias para eventos no periódicos (sin repetición)
             if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
 
             $evento->setEvento($form->getData());
-            $fechasEvento = $evento->calculateFechasEvento();
+            $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+            //dump($fechasEvento);
+
+            $dias = array();
+            $fechasEvento->forAll(function($index, $fechaEvento) use (&$dias){
+                //dump(in_array($fechaEvento->format('w'), $dias));
+                if ( !in_array($fechaEvento->format('w'), $dias) )
+                    $dias[] = $fechaEvento->format('w');
+            
+                return true;
+            });
+            $sgrEvento->setDias($dias);
+            //dump($dias);
+
+            //exit;
             //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
             if ($evento->solapa(true))
             
@@ -183,17 +197,35 @@ class SgrEventoController extends AbstractController
             foreach ($sgrEvento->getFechas() as $fecha) {
                 $sgrEvento->removeFecha($fecha);
             }
+            //dump($sgrEvento);
+            //dump($form->getData());
+            //dump($sgrEvento->getFFin() != $sgrEvento->getFInicio());
+            //exit;
+
+            //setFfin para eventos no periódicos (sin repetición)
+            if(!$sgrEvento->getFFin()) $sgrEvento->setFFin($sgrEvento->getFInicio());
             
-            //setFfin y setDias para eventos no periódicos (sin repetición)
-            if($sgrEvento->getFFin() 
-                != $sgrEvento->getFInicio()) {
-            
-                $sgrEvento->setFFin($sgrEvento->getFInicio());
-                $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
-            }
+            //setDias para eventos no periódicos (sin repetición)
+            if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+
 
             $evento->setEvento($form->getData());
-            $fechasEvento = $evento->calculateFechasEvento();
+            //$fechasEvento = $evento->calculateFechasEvento();
+            $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+            //dump($fechasEvento);
+
+            $dias = array();
+            $fechasEvento->forAll(function($index, $fechaEvento) use (&$dias){
+                //dump($fechaEvento->format('w'));
+                if ( !in_array($fechaEvento->format('w'), $dias) )
+                    $dias[] = $fechaEvento->format('w');
+
+                return true;
+            });
+            $sgrEvento->setDias($dias);
+            //dump($dias);
+
+            //exit;
             //Si hay solapamiento, volvemos al formulario, con true flashea el error si lo hay
             if ($evento->solapa(true))
             
