@@ -44,7 +44,7 @@ class SgrEventoType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'dd-mm-yyyy',
+                    'data-format' => 'dd/mm/yyyy',
                 ),
             ))
             ->add('f_fin', TextType::class, array(
@@ -54,7 +54,7 @@ class SgrEventoType extends AbstractType
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
                     'data-provide' => 'datepicker',
-                    'data-format' => 'dd-mm-yyyy',
+                    'data-format' => 'dd/mm/yyyy',
                 ),
             ))
 

@@ -8,43 +8,43 @@
     <table class="table table-striped">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th class="col-md-1 text-right">Id:</th>
                 <td>{{ sgr_evento.id }}</td>
             </tr>
             <tr>
-                <th>Titulo</th>
+                <th class="col-md-1 text-right">Titulo:</th>
                 <td>{{ sgr_evento.titulo }}</td>
             </tr>
             <tr>
-                <th>Estado</th>
+                <th class="col-md-1 text-right">Estado:</th>
                 <td>{{ sgr_evento.estado|capitalize }}</td>
             </tr>
             <tr>
-                <th>Desde</th>
+                <th class="col-md-1 text-right">Desde:</th>
                 <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('d-m-Y') : '' }}</td>
             </tr>
             <tr>
-                <th>Hasta</th>
+                <th class="col-md-1 text-right">Hasta:</th>
                 <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('d-m-Y') : '' }}</td>
             </tr>
             <tr>
-                <th>De</th>
+                <th class="col-md-1 text-right">De:</th>
                 <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i') : '' }}</td>
             </tr>
             <tr>
-                <th>A</th>
+                <th class="col-md-1 text-right">A:</th>
                 <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i') : '' }}</td>
             </tr>
             <tr>
-                <th>Todos los</th>
+                <th class="col-md-1 text-right" >Todos los:</th>
                 <td> {{ sgr_evento.getDiasStringFormat|join(', ',' y ')}} </td>
             </tr>
             <tr>
-                <th>CreatedAt</th>
+                <th class="col-md-1 text-right">CreatedAt:</th>
                 <td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
-                <th>UpdatedAt</th>
+                <th class="col-md-1 text-right">UpdatedAt:</th>
                 <td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
         </tbody>

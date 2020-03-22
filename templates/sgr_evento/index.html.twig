@@ -4,17 +4,7 @@
 
 {% block stylesheets %}
     
-    <!--  <link href="/build/bootstrap-datetimepicker.css" rel="stylesheet">
-    <link href="/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
-    -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-  
-    <!-- 
-    
-    <link href="/reservasfgh/public/build/bootstrap-datetimepicker.css" rel="stylesheet">
-    <link href="/reservasfgh/public/build/bootstrap-datetimepicker-standalone.min.css" rel="stylesheet">
-    
-    -->
 {% endblock %}
 
 {% block body %}
@@ -71,8 +61,8 @@
                 <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('d-m-Y') : '' }}</td>
                 <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('d-m-Y') : '' }}</td>
                 <td>{{ sgr_evento.getDiasStringFormat|join(', ',' y ')}} </td>
-                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i:s') : '' }}</td>
-                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i:s') : '' }}</td>
+                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i') : '' }}</td>
+                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i') : '' }}</td>
                 <!--<td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>-->
                 <!--<td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>-->
                 <td>{{ sgr_evento.espacio }}</td>
