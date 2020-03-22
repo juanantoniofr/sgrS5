@@ -187,54 +187,40 @@ class Evento extends AbstractController
     public function calculateFechasEvento()
     {
 
-        $adt = [];
+        $fechas = [];
 
-        if ( !$this->sgrEvento->getDias() ){
-            $weekDays[] =  $this->sgrEvento->getFInicio()->format('w'); // 0=sunday, 1=Monday, 2=Tuesday, ....
-        }
-        else {
-            $weekDays = $this->sgrEvento->getDias(); //getDias devuelve el array dias
-        }
-        
-        $days = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         $start = $this->sgrEvento->getFInicio();
-        //dump($start->format('l') );
-        $end = $this->sgrEvento->getFFin();
-        
-        //reserva puntual sin repetición
-        if (!$end || $start == $end){
-            $adt[] = $start;
-            return $adt; //array de object datetime
+        $end = clone $this->sgrEvento->getFFin();
+        $end->add(new \DateInterval('PT24H'));
+        $interval = new \DateInterval('P1D');
+        $period = new \DatePeriod($start, $interval, $end);
+        //dump($period);
+        if ( !$this->sgrEvento->getDias() ){
+            $this->setDias([ $start->format('w') ]);
         }
-        
-        $interval = new \DateInterval('P7D');
 
-        foreach ($weekDays as $day) {
+        foreach ($period as $day) {
 
-            if ( $start->format('l') ==  $days[$day] ){
-        	       		
-        		$aBegin[] = $start;
-        	}
-        	else {
-        	
-        		$newstart = clone $start;//->modify($days[$day]);
-        		$aBegin[] = $newstart->modify($days[$day]);
-        	}
+            if ( in_array($day->format('w'), $this->sgrEvento->getDias()) ) 
+                $fechas[] = $day;
 
         }
-        
-        foreach ($aBegin as $begin) {
-        	$aPeriod[] = new \DatePeriod($begin, $interval, $end);
-        }
-        
-        
-        //Para cada dt (datetime) en el periodo entre begin y end con un incremento (intervalo) de 7 días
-        foreach ($aPeriod as $period) {
-            foreach ($period as $dt) {
-           		$adt[] = $dt;
-        	}
-        }
-        return $adt;
+
+        return $fechas;
+    }
+
+    public function calculateDias($fechasEvento)
+    {
+        //concordar dias[] con fechasEventos
+        $dias = array();
+        $fechasEvento->forAll(function($index, $fechaEvento) use (&$dias){
+            
+            if ( !in_array($fechaEvento->format('w'), $dias) )
+                    $dias[] = $fechaEvento->format('w');
+                    return true;
+            });
+
+        return $dias;
     }
 
     public function ToArray(Array $fechas){

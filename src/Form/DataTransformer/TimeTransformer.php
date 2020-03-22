@@ -36,6 +36,6 @@ class TimeTransformer implements DataTransformerInterface
             return;
         }
 
-        return date_create_from_format('H:i', $time, new \DateTimeZone('Europe/Madrid'));
+        return date_create_from_format('Y/m/d H:i', '1970/1/1 ' . $time, new \DateTimeZone('Europe/Madrid'));
     }
 }
