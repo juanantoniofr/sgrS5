@@ -250,7 +250,10 @@ class SgrEventoController extends AbstractController
         if ($request->isXmlHttpRequest())
         {
             $profesores = new ArrayCollection();
-            $asignatura_id = $request->query->get('sgr_filters_sgr_eventos')['asignatura'];
+            
+            $request->query->has('sgr_evento') ? $data = 'sgr_evento' : $data = 'sgr_filters_sgr_eventos';
+
+            $asignatura_id = $request->query->get($data)['asignatura'];
             $repositorySgrAsignatura = $this->getDoctrine()->getRepository(SgrAsignatura::class);
             $sgrAsignatura = $repositorySgrAsignatura->find($asignatura_id);
             
@@ -294,7 +297,10 @@ class SgrEventoController extends AbstractController
             $asignaturas = new ArrayCollection();
             $profesores = new ArrayCollection();
 
-            $titulacion_id = $request->query->get('sgr_filters_sgr_eventos')['titulacion'];
+            //return $this->json($request->query->all());
+            $request->query->has('sgr_evento') ? $data = 'sgr_evento' : $data = 'sgr_filters_sgr_eventos';
+
+            $titulacion_id = $request->query->get($data)['titulacion'];
             $repositorySgrTitulacion = $this->getDoctrine()->getRepository(SgrTitulacion::class);
             
             $sgrTitulacion = $repositorySgrTitulacion->find($titulacion_id);
@@ -307,6 +313,7 @@ class SgrEventoController extends AbstractController
                     foreach ($asignaturas as $asignatura)
                     {
                         $grupos = $asignatura->getGrupos(); 
+                        
                         if ($grupos)
                         {
                             foreach ($grupos as $grupo)
@@ -330,10 +337,10 @@ class SgrEventoController extends AbstractController
                 $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
             }
             
-            $curso = $request->query->get('sgr_filters_sgr_eventos')['curso'];
             
-            if($curso)
+            if( array_key_exists('curso', $request->query->get($data)) && $request->query->get($data)['curso'] )
             {
+                $curso = $data['curso'];
                 $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
                     return $asignatura->getCurso() ==  $curso;
                 });
@@ -361,6 +368,7 @@ class SgrEventoController extends AbstractController
                 }
             }
 
+
             $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $asignaturas,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Asignatura']
@@ -368,8 +376,8 @@ class SgrEventoController extends AbstractController
             $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $profesores,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
-                        ]);    
-            
+                        ]);   
+            //$html = 'hola';
             return $this->json($html);
         }   
         

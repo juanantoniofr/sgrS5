@@ -150,6 +150,11 @@ class SgrGrupoAsignatura
         return $this;
     }
 
+    public function nombreCompuesto(){
+
+        return 'Gpr' . $this->nombre . '-' .$this->getSgrAsignatura();
+    }
+
     public function __toString(){
 
         return $this->nombre;

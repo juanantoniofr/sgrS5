@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\SgrEvento;
+use App\Entity\SgrGrupoAsignatura;
 use App\Form\DataTransformer\DateTimeTransformer;
 use App\Form\DataTransformer\TimeTransformer;
 use Symfony\Component\Form\AbstractType;
@@ -95,12 +96,18 @@ class SgrEventoType extends AbstractType
                                 return ['class' => 'tinymce'];
                             },
                             'attr' => ['class' => 'form-check-inline'],
-                            'label' => 'Los',
+                            'label' => 'Los días: ',
             ])
             //Opcionales
             ->add('titulacion')
             ->add('asignatura')
-            ->add('grupoAsignatura')
+            ->add('grupoAsignatura', null ,[
+                            'label' => 'Grupo',
+                            'required' => false,
+                            'choice_label' => 'nombreCompuesto',
+                            'expanded' => false,
+                            'multiple' => false,
+                             ])
             ->add('profesor')
             ->add('submit', SubmitType::class, [ 'label' => 'Salvar' ])
 

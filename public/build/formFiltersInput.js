@@ -1,26 +1,44 @@
 $(function () {
         
-        var $titulacion = $('#sgr_filters_sgr_eventos_titulacion');
-        var $curso = $('#sgr_filters_sgr_eventos_curso');
+        if ( $('form[name="sgr_evento"]').length) //form new//edit sgr_evento
+        {
+            $form = 'sgr_evento';
+        }
+        else if ( $('form[name="sgr_filters_sgr_eventos"]').length ) //form filters)
+        {
+            $form = sgr_filters_sgr_eventos;
+        } 
         
-        $( '#sgr_filters_sgr_eventos_titulacion, #sgr_filters_sgr_eventos_curso' ).change(function(e) {
+        console.log('#'+$form+'_titulacion');
+        $('#'+$form+'_titulacion').length ? $titulacion = $('#'+$form+'_titulacion') : $titulacion = null;
+        $('#'+$form+'_curso').length ? $curso = $('#'+$form+'_curso') : $curso = null;
+        $('#'+$form+'_asignatura').length ? $asignatura = $('#'+$form+'_asignatura') : $asignatura = null;
+        $('#'+$form+'_profesor').length ? $profesor = $('#'+$form+'_profesor') : $profesor = null;
+        $('#'+$form+'_termino').length ? $termino = $('#'+$form+'_termino') : $termino = null;
+        $('#'+$form+'_espacio').length ? $espacio = $('#'+$form+'_espacio') : $espacio = null;
+            var $espacio = $('#'+$form+'_espacio');
+        
+        console.log($titulacion.val());
+        
+        $( $titulacion, $curso ).change(function(e) {
             // ... retrieve the corresponding form.
             e.preventDefault();
             var $form = $(this).closest('form');
             // Simulate form data, but only include the selected titulacion value.
             var data = {};
-            data[$titulacion.attr('name')] = $titulacion.val();
-            data[$curso.attr('name')] = $curso.val();        
+            //console.log($titulacion);
+            $titulacion !== null ? data[$titulacion.attr('name')] = $titulacion.val() : data[$form+'[titulacion]'] = null;
+            $curso !== null ? data[$curso.attr('name')] = $curso.val() : data[$form+'[curso]'] = null;        
+            //console.log(data);
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 url : '/admin/sgr/evento/ajax/getAsignaturas',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {
-                    //console.log(html.profesores.content);
-                    //console.log(html.asignaturas.content);
-                    $('#sgr_filters_sgr_eventos_asignatura').html(html.asignaturas.content).fadeOut().fadeIn();
-                    $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
+                    //console.log(html);
+                    $asignatura.html(html.asignaturas.content).fadeOut().fadeIn();
+                    $profesor.html(html.profesores.content).fadeOut().fadeIn();
 
                 },
                 error: function(xhr, ajaxOptions, thrownError){
@@ -29,16 +47,14 @@ $(function () {
             });
         });
 
-        var $asignatura = $('#sgr_filters_sgr_eventos_asignatura');
-        
-        $asignatura.change(function(e){
+        $( $asignatura ).change(function(e){
 
             e.preventDefault();
             // ... retrieve the corresponding form.
             var $form = $(this).closest('form');
             // Simulate form data, but only include the selected titulacion value.
             var data = {};
-            data[$asignatura.attr('name')] = $asignatura.val();
+            $asignatura !== null ? data[$asignatura.attr('name')] = $asignatura.val() : data[$form+'[asignatura]'] = null;
 
            // Submit data via AJAX to the form's action path.
             $.ajax({
@@ -48,7 +64,7 @@ $(function () {
                 success: function(html) {
                     console.log(html.profesores.content);
                     //console.log(html.asignaturas.content);
-                    $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
+                    $profesor.html(html.profesores.content).fadeOut().fadeIn();
 
                 },
                 error: function(xhr, ajaxOptions, thrownError){
@@ -56,16 +72,15 @@ $(function () {
                 }
             }); 
         });
-
-        var $termino = $('#sgr_filters_sgr_eventos_termino');
-        
-        $( '#sgr_filters_sgr_eventos_termino' ).change(function(e) {
+    
+        //if (null != $termino)
+        $( $termino ).change(function(e) {
             // ... retrieve the corresponding form.
             e.preventDefault();
             var $form = $(this).closest('form');
             // Simulate form data, but only include the selected titulacion value.
             var data = {};
-            data[$termino.attr('name')] = $termino.val();
+            $termino !== null ? data[$termino.attr('name')] = $termino.val() : data[$form+'[termino]'] = null;
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 url : '/admin/sgr/espacio/ajax/getEspacios',
@@ -74,7 +89,7 @@ $(function () {
                 success: function(html) {
                     //console.log(html.sgrEspacios.content);//.espacio.content);
                     //console.log(html.asignaturas.content);
-                    $('#sgr_filters_sgr_eventos_espacio').html(html.sgrEspacios.content).fadeOut().fadeIn();
+                    $espacio.html(html.sgrEspacios.content).fadeOut().fadeIn();
                    // $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
 
                 },
