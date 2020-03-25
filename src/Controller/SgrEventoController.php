@@ -68,18 +68,18 @@ class SgrEventoController extends AbstractController
 
             $f_inicio = '';
             if ($data['f_inicio'])
-                $f_inicio = date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
+                $f_inicio = $data['f_inicio'];//date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
             
             $f_fin = '';
             if ($data['f_fin'])
-                $f_fin = date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
+                $f_fin = $data['f_fin'];//date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
             
             $id_espacio = '';
-            if ($data['espacio'])
+            if ($data['espacio']->isEmpty() === false)
                 $id_espacio = $data['espacio']->getId();
 
             $id_actividad = '';
-            if ($data['actividad'])
+            if ($data['actividad']) 
                 $id_actividad = $data['actividad']->getId();
 
             //dump($data['actividad']->getId());
@@ -296,8 +296,8 @@ class SgrEventoController extends AbstractController
         {
             $asignaturas = new ArrayCollection();
             $profesores = new ArrayCollection();
+            $gruposAsignatura = new ArrayCollection();
 
-            //return $this->json($request->query->all());
             $request->query->has('sgr_evento') ? $data = 'sgr_evento' : $data = 'sgr_filters_sgr_eventos';
 
             $titulacion_id = $request->query->get($data)['titulacion'];
@@ -318,6 +318,7 @@ class SgrEventoController extends AbstractController
                         {
                             foreach ($grupos as $grupo)
                             {
+                                $gruposAsignatura->add($grupo);
                                 $profesors = $grupo->getSgrProfesors();
                                 if ($profesors)
                                 {
@@ -335,6 +336,7 @@ class SgrEventoController extends AbstractController
             {
                 $asignaturas = new ArrayCollection($this->getDoctrine()->getRepository(SgrAsignatura::class)->findAll());
                 $profesores = new ArrayCollection($this->getDoctrine()->getRepository(SgrProfesor::class)->findAll());
+                $grupoAsignatura = new ArrayCollection($this->getDoctrine()->getRepository(SgrGrupoAsignatura::class)->findAll());
             }
             
             
@@ -354,6 +356,8 @@ class SgrEventoController extends AbstractController
                         {
                             foreach ($grupos as $grupo)
                             {
+                                $gruposAsignatura->add($grupo);
+
                                 $profesors = $grupo->getSgrProfesors();
                                 if ($profesors)
                                 {
@@ -368,6 +372,16 @@ class SgrEventoController extends AbstractController
                 }
             }
 
+            //get Grupos de asignaturas.
+            /*foreach ($asignaturas as $asignatura) {
+                
+                $grupos = $asignatura->getGrupos();
+                foreach ($grupos as $grupo) {
+                    
+
+                }
+            }*/
+
 
             $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $asignaturas,
@@ -376,7 +390,11 @@ class SgrEventoController extends AbstractController
             $html['profesores'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $profesores,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Profesor']
-                        ]);   
+                        ]);
+            $html['grupos'] = $this->render('sgr_form/optionsSelect.html.twig', [
+                            'options' => $gruposAsignatura,
+                            'default' => ['value' => '', 'nombre' => 'Seleccione Grupo']
+                        ]);
             //$html = 'hola';
             return $this->json($html);
         }   

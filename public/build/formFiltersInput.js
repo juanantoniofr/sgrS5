@@ -6,14 +6,15 @@ $(function () {
         }
         else if ( $('form[name="sgr_filters_sgr_eventos"]').length ) //form filters)
         {
-            $form = sgr_filters_sgr_eventos;
+            $form = 'sgr_filters_sgr_eventos';
         } 
         
-        console.log('#'+$form+'_titulacion');
+        console.log($form);
         $('#'+$form+'_titulacion').length ? $titulacion = $('#'+$form+'_titulacion') : $titulacion = null;
         $('#'+$form+'_curso').length ? $curso = $('#'+$form+'_curso') : $curso = null;
         $('#'+$form+'_asignatura').length ? $asignatura = $('#'+$form+'_asignatura') : $asignatura = null;
         $('#'+$form+'_profesor').length ? $profesor = $('#'+$form+'_profesor') : $profesor = null;
+        $('#'+$form+'_grupoAsignatura').length ? $grupoAsignatura = $('#'+$form+'_grupoAsignatura') : $grupoAsignatura = null;
         $('#'+$form+'_termino').length ? $termino = $('#'+$form+'_termino') : $termino = null;
         $('#'+$form+'_espacio').length ? $espacio = $('#'+$form+'_espacio') : $espacio = null;
             var $espacio = $('#'+$form+'_espacio');
@@ -37,8 +38,9 @@ $(function () {
                 data : data,
                 success: function(html) {
                     //console.log(html);
-                    $asignatura.html(html.asignaturas.content).fadeOut().fadeIn();
-                    $profesor.html(html.profesores.content).fadeOut().fadeIn();
+                    $asignatura ? $asignatura.html(html.asignaturas.content).fadeOut().fadeIn() : null;
+                    $profesor ? $profesor.html(html.profesores.content).fadeOut().fadeIn() : null;
+                    $grupoAsignatura ? $grupoAsignatura.html(html.grupos.content).fadeOut().fadeIn() : null;
 
                 },
                 error: function(xhr, ajaxOptions, thrownError){

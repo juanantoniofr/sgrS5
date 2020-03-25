@@ -57,7 +57,8 @@ class SgrGrupoAsignatura
 
     public function getNombre(): ?string
     {
-        return $this->nombre;
+        return 'Gpr' . $this->nombre . '-' .$this->getSgrAsignatura();
+        //return $this->nombre;
     }
 
     public function setNombre(string $nombre): self
@@ -150,7 +151,7 @@ class SgrGrupoAsignatura
         return $this;
     }
 
-    public function nombreCompuesto(){
+    public function getNombreCompuesto(){
 
         return 'Gpr' . $this->nombre . '-' .$this->getSgrAsignatura();
     }

@@ -6,6 +6,7 @@ use App\Entity\SgrEvento;
 use App\Entity\SgrGrupoAsignatura;
 use App\Form\DataTransformer\DateTimeTransformer;
 use App\Form\DataTransformer\TimeTransformer;
+//use App\Form\DataTransformer\GrupoAsignaturaTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,11 +22,13 @@ class SgrEventoType extends AbstractType
 
     private $transformerDateTime;
     private $transformerTime;
+    //private $transformerGrupoAsignaturas;
 
     public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime)
     {
         $this->transformerDateTime = $transformerDateTime;
         $this->transformerTime = $transformerTime;
+        //$this->transformerGrupoAsignaturas = $transformerGrupoAsignaturas;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -104,7 +107,7 @@ class SgrEventoType extends AbstractType
             ->add('grupoAsignatura', null ,[
                             'label' => 'Grupo',
                             'required' => false,
-                            'choice_label' => 'nombreCompuesto',
+                            'choice_label' => 'nombre',
                             'expanded' => false,
                             'multiple' => false,
                              ])
