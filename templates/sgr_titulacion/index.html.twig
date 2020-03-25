@@ -12,6 +12,7 @@
                 <th>Codigo</th>
                 <th>Nombre</th>
                 <th>Tipo</th>
+                <th>Asignaturas</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,6 +23,7 @@
                 <td>{{ sgr_titulacion.codigo }}</td>
                 <td>{{ sgr_titulacion.nombre }}</td>
                 <td>{{ sgr_titulacion.tipo }}</td>
+                <td>{{ sgr_titulacion.asignaturas|join(', ',' y ')}}</td>
                 <td>
                     <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_titulacion_show', {'id': sgr_titulacion.id}) }}">Ver</a>
                     <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_titulacion_edit', {'id': sgr_titulacion.id}) }}">Editar</a>

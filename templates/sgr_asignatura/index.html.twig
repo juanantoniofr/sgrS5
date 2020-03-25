@@ -4,6 +4,10 @@
 
 {% block body %}
     <h1>Asignaturas</h1>
+    
+    <a class="btn btn-primary m-2" type="button" href="{{ path('sgr_asignatura_new') }}">Nueva asignatura</a>
+    <a class="btn btn-secondary m-2" type="button" href="{{ path('sgr_grupo_asignatura_index') }}"> Gestionar Grupos</a>
+
 
     <table class="table table-striped">
         <thead class="thead-dark">
@@ -45,5 +49,4 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" type="button" href="{{ path('sgr_asignatura_new') }}">Nueva asignatura</a>
 {% endblock %}

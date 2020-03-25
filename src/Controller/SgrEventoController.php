@@ -92,7 +92,7 @@ class SgrEventoController extends AbstractController
         $pagination = $paginator->paginate(
             $sgrEventos,
             $page,//$request->query->getInt('page', 1),
-            5
+            10
         );
 
         return $this->render('sgr_evento/index.html.twig', [

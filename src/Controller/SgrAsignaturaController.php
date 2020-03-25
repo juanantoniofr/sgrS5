@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\SgrAsignatura;
+use App\Entity\SgrGrupoAsignatura;
 use App\Form\SgrAsignaturaType;
 use App\Repository\SgrAsignaturaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +32,9 @@ class SgrAsignaturaController extends AbstractController
     public function new(Request $request): Response
     {
         $sgrAsignatura = new SgrAsignatura();
+        
+        //$grupo = new SgrGrupoAsignatura();
+        
         $form = $this->createForm(SgrAsignaturaType::class, $sgrAsignatura);
         $form->handleRequest($request);
 

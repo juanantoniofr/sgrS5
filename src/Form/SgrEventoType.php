@@ -62,7 +62,6 @@ class SgrEventoType extends AbstractType
                 ),
             ))
 
-            //->add('h_inicio',null,['label' => 'De'])
             ->add('h_inicio', TextType::class, array(
                 'required' => true,
                 'label' => 'Hora inicio',
@@ -73,7 +72,6 @@ class SgrEventoType extends AbstractType
                     'data-format' => 'H:i',
                 ),
             ))
-            //->add('h_fin',null,['label' => 'Hasta'])
             ->add('h_fin', TextType::class, array(
                 'required' => true,
                 'label' => 'Hora fin',
@@ -107,7 +105,11 @@ class SgrEventoType extends AbstractType
             ->add('grupoAsignatura', null ,[
                             'label' => 'Grupo',
                             'required' => false,
-                            'choice_label' => 'nombre',
+                            //'choice_value' => 'nombre',
+                            'choice_label' => 'fullName',
+                            /*'choice_label' => function(?SgrGrupoAsignatura $grupo) {
+                                return $grupo ? $grupo->getFullName() : '';
+                            },*/
                             'expanded' => false,
                             'multiple' => false,
                              ])
