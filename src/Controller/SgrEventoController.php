@@ -250,6 +250,7 @@ class SgrEventoController extends AbstractController
         if ($request->isXmlHttpRequest())
         {
             $profesores = new ArrayCollection();
+            $grupos = new ArrayCollection();
             
             $request->query->has('sgr_evento') ? $data = 'sgr_evento' : $data = 'sgr_filters_sgr_eventos';
 

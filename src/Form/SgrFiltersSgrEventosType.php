@@ -73,6 +73,7 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'placeholder' => 'Seleccione Titulación',
                                     'class' => SgrTitulacion::class,
                                     'choice_label' => 'nombre',
+                                    'attr' => ['class' => 'titulacion' ],
                                 ])
             ->add('curso', ChoiceType::class, [
                                     'label' => 'Curso',
