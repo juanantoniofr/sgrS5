@@ -1,6 +1,6 @@
 $(function () {
         
-        if ( $('form[name="sgr_evento"]').length) //form new//edit sgr_evento
+        /*if ( $('form[name="sgr_evento"]').length) //form new//edit sgr_evento
         {
             $form = 'sgr_evento';
         }
@@ -18,30 +18,32 @@ $(function () {
         $('#'+$form+'_termino').length ? $termino = $('#'+$form+'_termino') : $termino = null;
         $('#'+$form+'_espacio').length ? $espacio = $('#'+$form+'_espacio') : $espacio = null;
             var $espacio = $('#'+$form+'_espacio');
-        
+        */
         //console.log($titulacion.val());
         
-        //$( $titulacion, $curso ).change(function(e) {
-        $( '#sgr_evento_titulacion, #sgr_filters_sgr_eventos_titulacion').change(function(e) {
+        $( '#sgr_evento_titulacion, #sgr_filters_sgr_eventos_curso, #sgr_filters_sgr_eventos_titulacion').change(function(e) {
             
+            // ... retrieve the corresponding form name.
             var $form = $(this).closest('form');
             var $form_name = $form.attr('name');
-            //console.log($(this).val());
-            /*$('#'+$form+'_titulacion').length ? $titulacion = $('#'+$form+'_titulacion') : $titulacion = null;
-            */
+            console.log($form_name);
+            
+            //.... set object input form
+            $('#'+$form_name+'_titulacion').length ? $titulacion = $('#'+$form_name+'_titulacion') : $titulacion = null;
             $('#'+$form_name+'_curso').length ? $curso = $('#'+$form_name+'_curso') : $curso = null;
             $('#'+$form_name+'_asignatura').length ? $asignatura = $('#'+$form_name+'_asignatura') : $asignatura = null;
             $('#'+$form_name+'_profesor').length ? $profesor = $('#'+$form_name+'_profesor') : $profesor = null;
             $('#'+$form_name+'_grupoAsignatura').length ? $grupoAsignatura = $('#'+$form_name+'_grupoAsignatura') : $grupoAsignatura = null;
-            // ... retrieve the corresponding form.
+            
             e.preventDefault();
             
-            // Simulate form data, but only include the selected titulacion value.
+            // Simulate form data, but only include the selected for titulacion (and/or) titulacion and curso input selects.
             var data = {};
             //console.log($titulacion);
-            data[$(this).attr('name')] = $(this).val();
+            //data[$(this).attr('name')] = $(this).val();
+            $titulacion ? data[$titulacion.attr('name')] = $titulacion.val() : data[$form_name+'[titulacion]'] = null;
             $curso ? data[$curso.attr('name')] = $curso.val() : data[$form_name+'[curso]'] = null;
-            //console.log(data);
+            console.log(data);
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 url : '/admin/sgr/evento/ajax/getAsignaturas',
@@ -92,7 +94,6 @@ $(function () {
             }); 
         });
     
-        //if (null != $termino)
         $( '#sgr_filters_sgr_eventos_termino' ).change(function(e) {
             
             // ... retrieve the corresponding form.

@@ -343,7 +343,7 @@ class SgrEventoController extends AbstractController
             
             if( array_key_exists('curso', $request->query->get($data)) && $request->query->get($data)['curso'] )
             {
-                $curso = $data['curso'];
+                $curso = $request->query->get($data)['curso'];
                 $asignaturas = $asignaturas->filter(function($asignatura) use ($curso){
                     return $asignatura->getCurso() ==  $curso;
                 });
@@ -373,16 +373,6 @@ class SgrEventoController extends AbstractController
                 }
             }
 
-            //get Grupos de asignaturas.
-            /*foreach ($asignaturas as $asignatura) {
-                
-                $grupos = $asignatura->getGrupos();
-                foreach ($grupos as $grupo) {
-                    
-
-                }
-            }*/
-
 
             $html['asignaturas'] = $this->render('sgr_form/optionsSelect.html.twig', [
                             'options' => $asignaturas,
@@ -396,7 +386,7 @@ class SgrEventoController extends AbstractController
                             'options' => $gruposAsignatura,
                             'default' => ['value' => '', 'nombre' => 'Seleccione Grupo']
                         ]);
-            //$html = 'hola';
+        
             return $this->json($html);
         }   
         

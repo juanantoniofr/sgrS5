@@ -176,7 +176,6 @@
 	{%endif%}
 
 	{{ include('sgr_modal/_formNewEvento.html.twig', {form: formNewSgrEvento}) }}
-	
 {% endblock %}
 
 {% block morescripts %}
@@ -190,28 +189,38 @@
 	  		});
 	 	});
 	</script>
+	
 	<script type="text/javascript" src="/build/formFiltersInput.js"></script>
 	<script type="text/javascript" src="/build/datetimepickerInit.js"></script>
 	<script type="text/javascript" src="/build/hinclude.js"></script>
-	
+	<!-- 
+        <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/hinclude.js"></script>
+    -->
+
 	<script type="text/javascript">
 
   		$(function() {
 
     		$('.divModal').click(function(e){
     			e.preventDefault();
-      			$('#exampleModal').modal('show');
+      			$('#newSgrEventoModal').modal('show');
+
+      			//get inputs object for form modal new sgr_evento
       			var $espacio = $('#sgr_evento_espacio');
-      			$espacio.val($(this).data('espacio'));
+      			var $f_inicio = $('#sgr_evento_f_inicio');
+      			var $f_fin = $('#sgr_evento_f_fin');
+
       			console.log($(this).data('espacio'));
+      			console.log($('#sgr_filters_sgr_eventos_f_inicio').val());
+
+      			
+      			//set default values
+      			$('#sgr_evento_submit').hide();
+      			$espacio.val($(this).data('espacio'));
+      			
     		}); 
   		});
-</script>
-
-    <!-- 
-        <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/hinclude.js"></script>
-    -->
-
+	</script>
 {% endblock %}

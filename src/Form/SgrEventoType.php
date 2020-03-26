@@ -100,11 +100,14 @@ class SgrEventoType extends AbstractType
                             'label' => 'Los días: ',
             ])
             //Opcionales
-            ->add('titulacion')
-            ->add('asignatura')
+            ->add('titulacion',null,[
+                            'placeholder' => 'Todas o Seleccione Titulación',])
+            ->add('asignatura',null,[
+                            'placeholder' => 'Todas o Seleccione Asignatura',])
             ->add('grupoAsignatura', null ,[
                             'label' => 'Grupo',
                             'required' => false,
+                            'placeholder' => 'Todas o Seleccione Grupo',
                             //'choice_value' => 'nombre',
                             'choice_label' => 'fullName',
                             /*'choice_label' => function(?SgrGrupoAsignatura $grupo) {
@@ -113,7 +116,8 @@ class SgrEventoType extends AbstractType
                             'expanded' => false,
                             'multiple' => false,
                              ])
-            ->add('profesor')
+            ->add('profesor',null,[
+                            'placeholder' => 'Todos o Seleccione Profesor',])
             ->add('submit', SubmitType::class, [ 'label' => 'Salvar' ])
 
             

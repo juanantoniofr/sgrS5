@@ -63,21 +63,21 @@ class SgrFiltersSgrEventosType extends AbstractType
             ->add('taxonomia', EntityType::class, [
                                     'label' => 'Taxonomia',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione categoría',
+                                    'placeholder' => 'Todas o Seleccione categoría',
                                     'class' => SgrTaxonomia::class,
                                     'choice_label' => 'nombre',
                                 ])
             ->add('titulacion', EntityType::class, [
                                     'label' => 'Titulación',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione Titulación',
+                                    'placeholder' => 'Todas o Seleccione Titulación',
                                     'class' => SgrTitulacion::class,
                                     'choice_label' => 'nombre',
                                     'attr' => ['class' => 'titulacion' ],
                                 ])
             ->add('curso', ChoiceType::class, [
                                     'label' => 'Curso',
-                                    'placeholder' => 'Seleccione Curso',
+                                    'placeholder' => 'Todos o Seleccione Curso',
                                     'required' => false,
                                     'choices'  => [
                                         'Primero' => 1,
@@ -88,14 +88,14 @@ class SgrFiltersSgrEventosType extends AbstractType
             ->add('asignatura', EntityType::class, [
                                     'label' => 'Asignatura',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione Asignatura',
+                                    'placeholder' => 'Todas o Seleccione Asignatura',
                                     'class' => SgrAsignatura::class,
                                     'choice_label' => 'nombre',
                                 ])
             ->add('profesor', EntityType::class,[
                                     'label' => 'Profesor',
                                     'required' => false,
-                                    'placeholder' => 'Seleccione Profesor',
+                                    'placeholder' => 'Todos o Seleccione Profesor',
                                     'class' => SgrProfesor::class,
                                     'choice_label' => 'nombre',
                                 ])
