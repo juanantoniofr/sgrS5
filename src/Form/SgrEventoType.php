@@ -89,12 +89,13 @@ class SgrEventoType extends AbstractType
                                             'Miércoles' => 3,
                                             'Jueves' => 4,
                                             'Viernes' => 5,
+                                            'Sábado' => 6,
                                         ],
                             'expanded'  => true,
                             'multiple'  => true,
                             'choice_attr' => function($choice, $key, $value) {
                                 // adds a class like attending_yes, attending_no, etc
-                                return ['class' => 'tinymce'];
+                                return ['class' => 'tinymce sgr_evento_dias'];
                             },
                             'attr' => ['class' => 'form-check-inline'],
                             'label' => 'Los días: ',

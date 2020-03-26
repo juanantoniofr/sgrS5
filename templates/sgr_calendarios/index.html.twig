@@ -66,7 +66,7 @@
 							
 							<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
 								{% for i in range(0,1) %}
-								<a href="javascript:;" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal" data-espacio="{{calendario.sgrEspacio.id}}">
+								<a href="javascript:;" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal" data-espacio="{{calendario.sgrEspacio.id}}" data-codigodia="{{ cod -1 }}" data-hinicio="{{ hour|date('H:i') }}" data-hfin="{{ (hour+step)|date('H:i') }}">
 									<div style="float: left;width: 50%;height: 100%;border-left: 1px dotted gray;"></div>
 								</a>	
 								{% endfor %}
@@ -112,7 +112,7 @@
 											height: 58px;
 											border-left: 1px solid white">
 											
-											<a  href="javascript:;" data-animation="true" tabindex="{# counter #}0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center'>
+											<a  href="javascript:;" data-animation="true" tabindex="0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center'>
 											<p><b>{{ period.evento.titulo }}</b></p>
 											<p>{{ period.evento.actividad }}</p>
 											<p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
@@ -207,20 +207,35 @@
     			e.preventDefault();
       			$('#newSgrEventoModal').modal('show');
 
-      			//get inputs object for form modal new sgr_evento
-      			var $espacio = $('#sgr_evento_espacio');
-      			var $f_inicio = $('#sgr_evento_f_inicio');
-      			var $f_fin = $('#sgr_evento_f_fin');
+      			//get inputs val for input f_inicio && f_fin from form sgr_evento sgr_filters_sgr_eventos and set at form sgr_evento
+      			$('#sgr_filters_sgr_eventos_f_inicio') ? $f_inicio = $('#sgr_filters_sgr_eventos_f_inicio').val() : null;
+      			$f_inicio ? $('#sgr_evento_f_inicio').val($f_inicio) : null;
 
-      			console.log($(this).data('espacio'));
-      			console.log($('#sgr_filters_sgr_eventos_f_inicio').val());
+      			$('#sgr_filters_sgr_eventos_f_fin') ? $('#sgr_evento_f_fin').val($('#sgr_filters_sgr_eventos_f_fin').val()) : null;
 
+      			//get espacio from $(this).data and set at form sgr_evento
+      			$(this).data('espacio') ? $('#sgr_evento_espacio').val($(this).data('espacio')) : null; 
       			
-      			//set default values
+      			//get codigodia from $(this).data and set at form sgr_evento
+      			$('.sgr_evento_dias').each(function(){ $(this).prop('checked', false); });
+      			$(this).data('codigodia') !== false ? $('#sgr_evento_dias_'+$(this).data('codigodia')).prop('checked', true) : null;
+
+      			//get inputs hinicio
+      			$(this).data('hinicio') ? $('#sgr_evento_h_inicio').val($(this).data('hinicio')) : null;
+      			//get inputs hinicio
+      			$(this).data('hfin') ? $('#sgr_evento_h_fin').val($(this).data('hfin')) : null;
+      			
+      			//hide submit formType SgreventoType.php
       			$('#sgr_evento_submit').hide();
-      			$espacio.val($(this).data('espacio'));
+      			//$espacio.val($(this).data('espacio'));
       			
-    		}); 
+    		});
+
+    		$('#newSgrEventoModal_submit').click(function(e){
+    			e.preventDefault();
+    			$form = $('#sgr_evento');
+    			console.log($form);
+    		});
   		});
 	</script>
 {% endblock %}
