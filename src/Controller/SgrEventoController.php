@@ -109,8 +109,16 @@ class SgrEventoController extends AbstractController
         $sgrEvento = new SgrEvento();
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
-
+        
+        //exit;    
         if ($form->isSubmitted() && $form->isValid()) {
+            
+                
+
+
+                //dump($refererPathInfo);
+                //return $this->redirect($referer);
+                
             $entityManager = $this->getDoctrine()->getManager();
             
             //setUser 
@@ -149,6 +157,15 @@ class SgrEventoController extends AbstractController
 
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
+
+                //if access controller from calendarios/index.html
+                $referer = $request->headers->get('referer'); // get the referer, it can be empty!
+                dump($referer);
+                exit;
+                
+                if (!\is_string($referer) || !$referer) {
+                    return 'vacio';
+                }
 
             return $this->redirectToRoute('sgr_evento_index');
         }

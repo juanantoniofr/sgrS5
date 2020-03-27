@@ -18,7 +18,7 @@
 </ul>
 
 <div class="modal fade" id="theModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">My modal</h5>
@@ -91,7 +91,8 @@
 							
 							<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
 								{% for i in range(0,1) %}
-								<a href="javascript:;" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal" data-espacio="{{calendario.sgrEspacio.id}}" data-codigodia="{{ cod -1 }}" data-hinicio="{{ hour|date('H:i') }}" data-hfin="{{ (hour+step)|date('H:i') }}">
+								{# href="javascript:;"" #}
+								<a href="{{path('sgr_evento_new')}}" data-toggle="___modal" data-target="#___newSgrEventoModal" data-whatever="__@mdo" class="__divModal__" data-espacio="{{calendario.sgrEspacio.id}}" data-codigodia="{{ cod -1 }}" data-hinicio="{{ hour|date('H:i') }}" data-hfin="{{ (hour+step)|date('H:i') }}">
 									<div style="float: left;width: 50%;height: 100%;border-left: 1px dotted gray;"></div>
 								</a>	
 								{% endfor %}
@@ -230,6 +231,7 @@
 
     		$('.divModal').click(function(e){
     			e.preventDefault();
+
 
 
       			$('#newSgrEventoModal').modal('show');
