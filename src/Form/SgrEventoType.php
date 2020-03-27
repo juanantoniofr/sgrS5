@@ -35,7 +35,7 @@ class SgrEventoType extends AbstractType
     {
         $builder
             //Requeridos
-            ->add('titulo')
+            ->add('titulo',null,['required' => true])
             ->add('actividad')
             ->add('espacio',null,['required' => true])
             //Calendario

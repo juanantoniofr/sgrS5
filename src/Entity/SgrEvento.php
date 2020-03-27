@@ -27,6 +27,13 @@ class SgrEvento
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 0,
+     *      max = 50,
+     *      minMessage = "El título debe tener más de {{ limit }} caracteres",
+     *      maxMessage = "El título puede tener como máximo {{ limit }} caracteres",
+     *      allowEmptyString = false
+     * )
      */
     private $titulo;
 

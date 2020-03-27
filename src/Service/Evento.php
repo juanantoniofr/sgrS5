@@ -163,9 +163,20 @@ class Evento extends AbstractController
             //dump($this->sgrEvento->getEspacio());
             //dump($fecha->getEvento()->getEspacio());
             //dump($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio());
-            if ($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio() &&
-                $fecha->getEvento()->getHInicio()->format('H:i') <= $this->sgrEvento->getHInicio()->format('H:i') &&
-                $fecha->getEvento()->getHFin()->format('H:i') > $this->sgrEvento->getHInicio()->format('H:i') ){
+            if (
+                $fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio()
+                &&
+                (
+                    ($this->sgrEvento->getHInicio()->format('H:i') < $fecha->getEvento()->getHInicio()->format('H:i') &&
+                     $this->sgrEvento->getHFin()->format('H:i') > $fecha->getEvento()->getHInicio()->format('H:i')
+                    )
+                    ||
+                    ($this->sgrEvento->getHInicio()->format('H:i') >= $fecha->getEvento()->getHInicio()->format('H:i') &&
+                    $this->sgrEvento->getHInicio()->format('H:i') < $fecha->getEvento()->getHFin()->format('H:i')
+                    )
+                )
+                )
+            {
                 $solapa = true;
                 if ($flash_errors)
                     $this->addFlash(
@@ -176,6 +187,7 @@ class Evento extends AbstractController
             }
                 
         }
+        
         return $solapa;
     }
 
@@ -195,6 +207,7 @@ class Evento extends AbstractController
         $interval = new \DateInterval('P1D');
         $period = new \DatePeriod($start, $interval, $end);
         //dump($period);
+        //dump(!$this->sgrEvento->getDias());
         if ( !$this->sgrEvento->getDias() ){
             $this->setDias([ $start->format('w') ]);
         }
@@ -223,7 +236,8 @@ class Evento extends AbstractController
         return $dias;
     }
 
-    public function ToArray(Array $fechas){
+    public function ToArray(Array $fechas)
+    {
         
         $result = [];
         foreach ($fechas as $fecha) {
