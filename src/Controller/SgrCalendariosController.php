@@ -15,6 +15,7 @@ use App\Form\SgrFiltersSgrEventosType;
 use App\Form\SgrEventoType;
 use App\Entity\SgrEvento;
 use App\Service\Calendario;
+use App\Service\Evento;
 
 /**
  * @Route("/admin/sgr/calendario")
@@ -28,14 +29,19 @@ class SgrCalendariosController extends AbstractController
     */
     public function index(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
     {
-        $form = $this->createForm(SgrFiltersSgrEventosType::class);
-        $form->handleRequest($request);
-
+        
         //for modal new SgrEvento
         $sgrEvento = new SgrEvento();
         $formNewSgrEvento = $this->createForm(SgrEventoType::class, $sgrEvento);
-        
+        $formNewSgrEvento->handleRequest($request);
+
+        //for filters calendario de eventos        
+        $form = $this->createForm(SgrFiltersSgrEventosType::class);
+        $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+
+            //dump($form->getData());
 
             $data = $form->getData();
             //dump($data);
@@ -152,4 +158,25 @@ class SgrCalendariosController extends AbstractController
                 'formNewSgrEvento' => $formNewSgrEvento->createView(),
             ]);
     }
+
+    /**
+        * @Route("/ajax/new/evento", methods={"GET"})
+    */
+    public function new(Request $request, Evento $evento)
+    {
+
+        $data = $request->query->get('sgr_evento');
+
+        $respuesta['message'] = 'Error';
+        $r = $this->forward('App\Controller\SgrEventoController::save',[ 'data' => new ArrayCollection($data), 'evento' => new Evento ]);
+        dump($r);
+        exit;
+        if( $r )
+        {
+            $respuesta['message'] = 'Evento Salvado con éxito';
+        }
+
+        return $this->json($respuesta);
+    }
+
 }

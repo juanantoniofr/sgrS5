@@ -393,4 +393,67 @@ class SgrEventoController extends AbstractController
         return new Response('');
     }
 
+
+    public function save(ArrayCollection $data, Evento $evento ): Response
+    {
+        
+        $sgrEvento = new SgrEvento;
+        $entityManager = $this->getDoctrine()->getManager();
+
+        dump($data);
+        //exit;
+
+        //setUser 
+        $sgrEvento->setUser($this->getUser());
+            
+        //setEstado
+        $sgrEvento->setEstado('aprobado');
+            
+        //setUpdatedAt
+        $sgrEvento->setUpdatedAt();
+
+        //SetFInicio
+        $sgrEvento->setFInicio( date_create_from_format('d/m/Y H:i', $data->get('f_inicio') . '00:00', new \DateTimeZone('Europe/Madrid')) );
+        //setFFin
+        $sgrEvento->setFFin( date_create_from_format('d/m/Y H:i', $data->get('f_fin') . '00:00', new \DateTimeZone('Europe/Madrid')) );
+        //SetHInicio
+        $sgrEvento->setHInicio( date_create_from_format('Y/m/d H:i', '1970/1/1 ' . $data->get('h_inicio'), new \DateTimeZone('Europe/Madrid')) );
+        //setFFin
+        $sgrEvento->setHFin( date_create_from_format('Y/m/d H:i', '1970/1/1 ' . $data->get('h_fin'), new \DateTimeZone('Europe/Madrid')) );
+        //
+        dump($sgrEvento);
+        exit;
+        //Si dias[] es vacio
+        //if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+
+        $evento->setEvento($sgrEvento);
+        $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+       
+        $dias = $evento->calculateDias($fechasEvento);
+        $sgrEvento->setDias($dias);
+       
+        $evento->setEvento($sgrEvento);
+        dump($sgrEvento);
+        exit;
+        //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
+        if ($evento->solapa(true))
+        
+            return $this->render('sgr_evento/new.html.twig', [
+                    'sgr_evento' => $sgrEvento,
+                    'form' => $form->createView(),
+            ]);
+        
+        foreach ($fechasEvento as $dt) {
+            $sgrFechasEvento = new sgrFechasEvento();
+            $sgrFechasEvento->setFecha($dt);
+            $entityManager->persist($sgrFechasEvento);
+            $sgrEvento->addFecha($sgrFechasEvento);
+        }
+
+        $entityManager->persist($sgrEvento);
+        $entityManager->flush();
+
+            
+        return [ 'result ' => true ];
+    }
 }

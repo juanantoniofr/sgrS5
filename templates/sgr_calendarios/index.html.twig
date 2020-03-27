@@ -226,16 +226,42 @@
       			$(this).data('hfin') ? $('#sgr_evento_h_fin').val($(this).data('hfin')) : null;
       			
       			//hide submit formType SgreventoType.php
-      			$('#sgr_evento_submit').hide();
+      			//$('#sgr_evento_submit').hide();
       			//$espacio.val($(this).data('espacio'));
       			
     		});
 
-    		$('#newSgrEventoModal_submit').click(function(e){
+    		$('#sgr_evento_submit').click(function(e){
+    			
     			e.preventDefault();
-    			$form = $('#sgr_evento');
-    			console.log($form);
+    			//$('form[name="sgr_evento"]').submit();
+    			$('form[name="sgr_evento"]').attr('method','GET');
+    			$('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
+    			$('form[name="sgr_evento"]').submit();
+    			
     		});
+
+    		$('form[name="sgr_evento"]').submit(function(e){
+
+    			//e.preventDefault();
+    			/*
+    			var data = $(this).serialize();
+    			$.ajax({
+	                url : '/admin/sgr/calendario/ajax/new/evento',
+	                type: 'GET',//$form.attr('method'),
+	                data : data,
+	                success: function(html) {
+	                    console.log(html);
+	                },
+	                error: function(xhr, ajaxOptions, thrownError){
+	                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
+	                }
+           		});
+           		*/
+
+    		});
+
+
   		});
 	</script>
 {% endblock %}
