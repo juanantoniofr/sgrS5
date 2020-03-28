@@ -11,32 +11,6 @@
 {% block body %}
 	<h1>Calendarios</h1>
 
-	<ul class="nav flex-row" id="menu">
-    <li>
-        <a href="#theModal" class="nav-link" data-remote="{{path('sgr_evento_new')}}" data-toggle="modal" data-target="#theModal">Modal</a>
-    </li>
-</ul>
-
-<div class="modal fade" id="theModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">My modal</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ... remote content from "data-remote" loads here ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
-            </div>
-        </div>
-    </div>
-</div>
-	
 	<div id="filtros">
 		<div class="mt-3 mb-3">
 
@@ -91,8 +65,7 @@
 							
 							<div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
 								{% for i in range(0,1) %}
-								{# href="javascript:;"" #}
-								<a href="{{path('sgr_evento_new')}}" data-toggle="___modal" data-target="#___newSgrEventoModal" data-whatever="__@mdo" class="__divModal__" data-espacio="{{calendario.sgrEspacio.id}}" data-codigodia="{{ cod -1 }}" data-hinicio="{{ hour|date('H:i') }}" data-hfin="{{ (hour+step)|date('H:i') }}">
+									<a href="#newSgrEventoModal" data-remote="{{path('sgr_calendarios_new')}}" data-toggle="modal" data-target="#newSgrEventoModal" data-whatever="@mdo" class="divModal" data-espacio="{{calendario.sgrEspacio.id}}" data-codigodia="{{ cod -1 }}" data-hinicio="{{ hour|date('H:i') }}" data-hfin="{{ (hour+step)|date('H:i') }}">
 									<div style="float: left;width: 50%;height: 100%;border-left: 1px dotted gray;"></div>
 								</a>	
 								{% endfor %}
@@ -201,7 +174,27 @@
         </div>
 	{%endif%}
 
-	{{ include('sgr_modal/_formNewEvento.html.twig', {form: formNewSgrEvento}) }}
+	{# include('sgr_modal/_formNewEvento.html.twig', {form: formNewSgrEvento}) #}
+	<div class="modal fade" id="newSgrEventoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newSgrEventoModalLabel">Calendarios: Nuevo Evento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ... remote content from "data-remote" loads here ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block morescripts %}
@@ -229,46 +222,57 @@
 
   		$(function() {
 
-    		$('.divModal').click(function(e){
-    			e.preventDefault();
+    		$('#newSgrEventoModal').on('show.bs.modal', function (e){
+    			//e.preventDefault();
+    			//alert('asdad');
+    			var button = $(e.relatedTarget);
+			    var modal = $(this);
+			    console.log(e.relatedTarget);
 
+			    // load content from HTML string
+			    //modal.find('.modal-body').html("Nice modal body baby...");
+			    var data = {};
+			    // or, load content from value of data-remote url
+			    modal.find('.modal-body').load(button.data("remote"),button,function(){
+			    	
+			    	$('#sgr_filters_sgr_eventos_f_inicio') ? $f_inicio = $('#sgr_filters_sgr_eventos_f_inicio').val() : null;
+      				$f_inicio ? $('#sgr_evento_f_inicio').val($f_inicio) : null;
 
+      				$('#sgr_filters_sgr_eventos_f_fin') ? $('#sgr_evento_f_fin').val($('#sgr_filters_sgr_eventos_f_fin').val()) : null;
 
-      			$('#newSgrEventoModal').modal('show');
+	      			button.data('espacio') ? $('#sgr_evento_espacio').val(button.data('espacio')) : null; 
 
-      			//get inputs val for input f_inicio && f_fin from form sgr_evento sgr_filters_sgr_eventos and set at form sgr_evento
-      			$('#sgr_filters_sgr_eventos_f_inicio') ? $f_inicio = $('#sgr_filters_sgr_eventos_f_inicio').val() : null;
-      			$f_inicio ? $('#sgr_evento_f_inicio').val($f_inicio) : null;
+	      			$('.sgr_evento_dias').each(function(){ button.prop('checked', false); });
+    	  			button.data('codigodia') !== false ? $('#sgr_evento_dias_'+button.data('codigodia')).prop('checked', true) : null;
 
-      			$('#sgr_filters_sgr_eventos_f_fin') ? $('#sgr_evento_f_fin').val($('#sgr_filters_sgr_eventos_f_fin').val()) : null;
-
-      			//get espacio from $(this).data and set at form sgr_evento
-      			$(this).data('espacio') ? $('#sgr_evento_espacio').val($(this).data('espacio')) : null; 
+    	  			button.data('hinicio') ? $('#sgr_evento_h_inicio').val(button.data('hinicio')) : null;
       			
-      			//get codigodia from $(this).data and set at form sgr_evento
-      			$('.sgr_evento_dias').each(function(){ $(this).prop('checked', false); });
-      			$(this).data('codigodia') !== false ? $('#sgr_evento_dias_'+$(this).data('codigodia')).prop('checked', true) : null;
+    	  			button.data('hfin') ? $('#sgr_evento_h_fin').val(button.data('hfin')) : null;
 
-      			//get inputs hinicio
-      			$(this).data('hinicio') ? $('#sgr_evento_h_inicio').val($(this).data('hinicio')) : null;
-      			//get inputs hinicio
-      			$(this).data('hfin') ? $('#sgr_evento_h_fin').val($(this).data('hfin')) : null;
-      			
-      			//hide submit formType SgreventoType.php
-      			//$('#sgr_evento_submit').hide();
-      			//$espacio.val($(this).data('espacio'));
-      			
+    	  			$('#sgr_evento_submit').click(function(e){
+    			
+    					e.preventDefault();
+    					//$('form[name="sgr_evento"]').attr('method','POST');
+    					$('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
+    					$('form[name="sgr_evento"]').submit();
+    					/*var data = $('form[name="sgr_evento"]').serialize();
+		    			$.ajax({
+			                url : '/admin/sgr/calendario/ajax/new/evento',
+			                type: 'GET',//$form.attr('method'),
+			                data : data,
+			                success: function(respuesta) {
+			                    console.log(respuesta);
+			                },
+			                error: function(xhr, ajaxOptions, thrownError){
+			                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
+			                }
+		           		});*/
+
+    				});
+      			});
     		});
 
-    		$('#sgr_evento_submit').click(function(e){
-    			
-    			e.preventDefault();
-    			$('form[name="sgr_evento"]').submit();
-    			$('form[name="sgr_evento"]').attr('method','POST');
-    			$('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
-    			$('form[name="sgr_evento"]').submit();
-    			
-    		});
+    		
 
     		$('form[name="sgr_evento"]').submit(function(e){
 
@@ -290,7 +294,7 @@
 
     		});
 
-    		$('#theModal').on('show.bs.modal', function (e) {
+    		/*$('#theModal').on('show.bs.modal', function (e) {
 
 			    var button = $(e.relatedTarget);
 			    var modal = $(this);
@@ -301,7 +305,7 @@
 			    // or, load content from value of data-remote url
 			    modal.find('.modal-body').load(button.data("remote"));
 
-			});
+			});*/
 
 
   		});

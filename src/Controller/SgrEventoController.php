@@ -113,12 +113,6 @@ class SgrEventoController extends AbstractController
         //exit;    
         if ($form->isSubmitted() && $form->isValid()) {
             
-                
-
-
-                //dump($refererPathInfo);
-                //return $this->redirect($referer);
-                
             $entityManager = $this->getDoctrine()->getManager();
             
             //setUser 

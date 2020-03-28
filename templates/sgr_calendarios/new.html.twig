@@ -1,0 +1,23 @@
+{% block body %}
+    <h1>Nuevo Evento</h1>
+	{% for label, messages in app.flashes %}
+    	{% for message in messages %}
+        	<div class="alert alert-{{ label }}" role="alert">
+            	{{ message }}
+        	</div>
+    	{% endfor %}
+	{% endfor %}
+    
+    {{ include('sgr_evento/_form.html.twig') }}
+{% endblock %}
+
+{% block morescripts %}
+    
+    <script type="text/javascript" src="/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
+
+    <!-- 
+        <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+        <script type="text/javascript" scr="/reservasfgh/public/build/datetimepickerInit.js"></script>
+    -->
+{% endblock %}

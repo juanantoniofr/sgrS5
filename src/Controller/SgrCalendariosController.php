@@ -6,6 +6,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 use App\Repository\SgrEspacioRepository;
 use App\Repository\SgrTerminoRepository;
@@ -31,11 +32,6 @@ class SgrCalendariosController extends AbstractController
     public function index(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
     {
         
-        //for modal new SgrEvento
-        $sgrEvento = new SgrEvento();
-        $formNewSgrEvento = $this->createForm(SgrEventoType::class, $sgrEvento);
-        $formNewSgrEvento->handleRequest($request);
-
         //for filters calendario de eventos        
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
@@ -148,7 +144,6 @@ class SgrCalendariosController extends AbstractController
           		'aCalendarios' => $aCalendarios,
           		'numDaysView' => (int) $begin->diff($end)->format('%d'),
           		'form'  => $form->createView(),
-                'formNewSgrEvento' => $formNewSgrEvento->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
           	]
           );
@@ -156,91 +151,71 @@ class SgrCalendariosController extends AbstractController
         
         return $this->render( 'sgr_calendarios/index.html.twig',[ 
                 'form'  => $form->createView(),
-                'formNewSgrEvento' => $formNewSgrEvento->createView(),
-            ]);
+                ]);
     }
 
     /**
-        * @Route("/ajax/new/evento", methods={"GET","POST"})
+        * @Route("/ajax/new/evento", name="sgr_calendarios_new", methods={"GET","POST"})
     */
-    public function new(Request $request, Evento $evento, SgrEspacioRepository $sgrEspacioRepository)
+    public function new(Request $request, Evento $evento)
     {
-
-        $data = $request->query->get('sgr_evento');
-        /*if (!$data->isValid()){
-
-            dump($data);
-
-        }*/
         $sgrEvento = new SgrEvento();
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
-        dump($form);
-        dump($form->isValid());
-        exit;
-
-        $data = $request->query->get('sgr_evento');
-
-        $respuesta['message'] = 'Error';
-        $data = new ArrayCollection($data);
-        $sgrEvento = new SgrEvento;
-        $entityManager = $this->getDoctrine()->getManager();
-
-        //dump($data);
-        //exit;
-        //set espacio
-        $sgrEvento->setEspacio( $sgrEspacioRepository->find($data->get('espacio')) );
-        //setUser 
-        $sgrEvento->setUser($this->getUser());
+        //exit;    
+        if ($form->isSubmitted() && $form->isValid()) {
             
-        //setEstado
-        $sgrEvento->setEstado('aprobado');
+            //return new Response('hola');
+            //dump($form);
+            //exit;
+            $entityManager = $this->getDoctrine()->getManager();
             
-        //setUpdatedAt
-        $sgrEvento->setUpdatedAt();
+            //setUser 
+            $sgrEvento->setUser($this->getUser());
+            
+            //setEstado
+            $sgrEvento->setEstado('aprobado');
+            
+            //setUpdatedAt
+            $sgrEvento->setUpdatedAt();
 
-        //SetFInicio
-        $sgrEvento->setFInicio( date_create_from_format('d/m/Y H:i', $data->get('f_inicio') . '00:00', new \DateTimeZone('Europe/Madrid')) );
-        //setFFin
-        $sgrEvento->setFFin( date_create_from_format('d/m/Y H:i', $data->get('f_fin') . '00:00', new \DateTimeZone('Europe/Madrid')) );
-        //SetHInicio
-        $sgrEvento->setHInicio( date_create_from_format('Y/m/d H:i', '1970/1/1 ' . $data->get('h_inicio'), new \DateTimeZone('Europe/Madrid')) );
-        //setFFin
-        $sgrEvento->setHFin( date_create_from_format('Y/m/d H:i', '1970/1/1 ' . $data->get('h_fin'), new \DateTimeZone('Europe/Madrid')) );
-        //Si $data['dias'] es vacio
-        $data->get('dias') ? $sgrEvento->setDias( $data->get('dias') ) : $sgrEvento->setDias([ $SgrEvento->getFInicio()->format('w') ]);
-        //set fechasEvento
-        $evento->setEvento($sgrEvento);
-        $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-        $fechasEvento->forAll(function($key, $fechaEvento) use(&$sgrEvento, $entityManager) {
-            $sgrFechasEvento = new sgrFechasEvento();
-            $sgrFechasEvento->setFecha($fechaEvento);
-            $entityManager->persist($sgrFechasEvento);
-            $sgrEvento->addFecha($sgrFechasEvento);
-            return true;
-        });
-        //set dias
-        $dias = $evento->calculateDias($fechasEvento);
-        $sgrEvento->setDias($dias);
-        
-        $evento->setEvento($sgrEvento);
-        //dump($evento);
-        //dump($sgrEvento);
-        //dump($fechasEvento);   
-        //dump($evento->solapa(false));
-        if ($evento->solapa(false)){
-            $respuesta['result'] = 'error';
-            $respuesta['message'] = 'El evento no se pudo guardar. Existe solapamientos...';
-            return $this->json($respuesta);
+            //Si dias[] es vacio
+            if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+
+            $evento->setEvento($sgrEvento);
+            $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+           
+            $dias = $evento->calculateDias($fechasEvento);
+            $sgrEvento->setDias($dias);
+           
+            $evento->setEvento($sgrEvento);
+            //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
+            if ($evento->solapa(true))
+                return new Response('solapa');
+                /*return $this->render('sgr_evento/new.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'form' => $form->createView(),
+                ]);*/
+            
+            foreach ($fechasEvento as $dt) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dt);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
+
+            $entityManager->persist($sgrEvento);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('sgr_calendarios_index');
         }
-
-
-        $entityManager->persist($sgrEvento);
-        $entityManager->flush();
+        //dump('hola');
+        //exit;
         
-        $respuesta['result'] = 'success';
-        $respuesta['message'] = 'Evento Salvado con éxito...';
-        return $this->json($respuesta);
+        return $this->render('sgr_calendarios/new.html.twig', [
+            'sgr_evento' => $sgrEvento,
+            'form' => $form->createView(),
+        ]);
     }
 
 }
