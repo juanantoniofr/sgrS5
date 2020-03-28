@@ -227,7 +227,7 @@
     			//alert('asdad');
     			var button = $(e.relatedTarget);
 			    var modal = $(this);
-			    console.log(e.relatedTarget);
+			    //console.log(e.relatedTarget);
 
 			    // load content from HTML string
 			    //modal.find('.modal-body').html("Nice modal body baby...");
@@ -252,22 +252,20 @@
     	  			$('#sgr_evento_submit').click(function(e){
     			
     					e.preventDefault();
-    					//$('form[name="sgr_evento"]').attr('method','POST');
+    					
+    					//Add input hide
+    					input = jQuery('<input name="filters[termino]" type="hidden" value="'+$('#sgr_filters_sgr_eventos_termino').val()+'">');
+    					/*input = jQuery('<input name="filters" type="hidden" value="'+
+    						JSON.stringify($('form[name="sgr_filters_sgr_eventos"]'))
+    						+'">');
+    					*/
+    					console.log(input);
+    					//console.log($('form[name="sgr_filters_sgr_eventos"]'));
+    					jQuery('form[name="sgr_evento"]').append(input);
+    					//console.log($('form[name="sgr_evento"]'));
     					$('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
     					$('form[name="sgr_evento"]').submit();
-    					/*var data = $('form[name="sgr_evento"]').serialize();
-		    			$.ajax({
-			                url : '/admin/sgr/calendario/ajax/new/evento',
-			                type: 'GET',//$form.attr('method'),
-			                data : data,
-			                success: function(respuesta) {
-			                    console.log(respuesta);
-			                },
-			                error: function(xhr, ajaxOptions, thrownError){
-			                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
-			                }
-		           		});*/
-
+    					
     				});
       			});
     		});

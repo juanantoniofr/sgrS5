@@ -166,8 +166,8 @@ class SgrCalendariosController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             
             //return new Response('hola');
-            //dump($form);
-            //exit;
+            dump( $request );
+            exit;
             $entityManager = $this->getDoctrine()->getManager();
             
             //setUser 
