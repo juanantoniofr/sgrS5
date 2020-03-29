@@ -110,7 +110,7 @@ $(function () {
                 success: function(html) {
                     //console.log(html.sgrEspacios.content);//.espacio.content);
                     //console.log(html.asignaturas.content);
-                    $espacio.html(html.sgrEspacios.content).fadeOut().fadeIn();
+                    $('#sgr_filters_sgr_eventos_espacio').html(html.sgrEspacios.content).fadeOut().fadeIn();
                    // $('#sgr_filters_sgr_eventos_profesor').html(html.profesores.content).fadeOut().fadeIn();
 
                 },

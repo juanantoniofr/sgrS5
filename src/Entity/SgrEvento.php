@@ -34,6 +34,7 @@ class SgrEvento
      *      maxMessage = "El título puede tener como máximo {{ limit }} caracteres",
      *      allowEmptyString = false
      * )
+     *  @Assert\NotBlank
      */
     private $titulo;
 
