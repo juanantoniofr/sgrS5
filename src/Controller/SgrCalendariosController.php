@@ -159,88 +159,83 @@ class SgrCalendariosController extends AbstractController
     */
     public function new(Request $request, Evento $evento)
     {
+
+        $sgrEvento = new SgrEvento();
+        $form = $this->createForm(SgrEventoType::class, $sgrEvento);
+        $form->handleRequest($request);
         
         
-
-        //if ($request->isXmlHttpRequest()){
-
-                    $sgrEvento = new SgrEvento();
-                    $form = $this->createForm(SgrEventoType::class, $sgrEvento);
-                    $form->handleRequest($request);
-                    
-                    
-                    //return $this->json(dump( $form->isSubmitted() && $form->isValid() ));
-                    //exit;
-                    if ( $form->isSubmitted() && !$form->isValid()) {
-
-                        return $this->json('fornmulario no válido');
-                    }
-                    if ( $form->isSubmitted() && $form->isValid()) {
-                        //return $this->json(dump(  && $form->isValid() ));
-                        //exit;    
-                        //return new Response('hola');
-                        //dump($form);
-                        //exit;
-                        $entityManager = $this->getDoctrine()->getManager();
-                        
-                        //setUser 
-                        $sgrEvento->setUser($this->getUser());
-                        
-                        //setEstado
-                        $sgrEvento->setEstado('aprobado');
-                        
-                        //setUpdatedAt
-                        $sgrEvento->setUpdatedAt();
-
-                        //Si dias[] es vacio
-                        if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
-
-                        $evento->setEvento($sgrEvento);
-                        $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-                       
-                        $dias = $evento->calculateDias($fechasEvento);
-                        $sgrEvento->setDias($dias);
-                       
-                        $evento->setEvento($sgrEvento);
-                        //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
-                        if ($evento->solapa(true)){
-                            //echo "solapa";
-                            //exit;
-                            //return new Response('solapa');
-                            return $this->json(false);
-
-                            //Flash resultado 
-                            //exit;
-                            }
-                            /*return $this->render('sgr_evento/new.html.twig', [
-                                    'sgr_evento' => $sgrEvento,
-                                    'form' => $form->createView(),
-                            ]);*/
-                        
-                        foreach ($fechasEvento as $dt) {
-                            $sgrFechasEvento = new sgrFechasEvento();
-                            $sgrFechasEvento->setFecha($dt);
-                            $entityManager->persist($sgrFechasEvento);
-                            $sgrEvento->addFecha($sgrFechasEvento);
-                        }
-
-                        $entityManager->persist($sgrEvento);
-                        $entityManager->flush();
-                        //return new Response('éxito'); //$this->redirectToRoute('sgr_calendarios_index');
-                        return $this->json(true);
-                        //Flash resultado 
-                        //exit;
-                    }
-                
-                    return $this->render('sgr_calendarios/new.html.twig', [
-                            'sgr_evento' => $sgrEvento,
-                            'form' => $form->createView(),
-                        ]);
-        //        }
-        //dump('hola');
+        //return $this->json(dump( $form->isSubmitted() && $form->isValid() ));
         //exit;
+        if ( $form->isSubmitted() && !$form->isValid()) {
+
+            $html = $this->render('sgr_calendarios/_errors.html.twig', [
+                    'errors' => $form->getErrors(true),
+                ]);
+            return $this->json($html);
+        }
+        if ( $form->isSubmitted() && $form->isValid()) {
+            //return $this->json(dump(  && $form->isValid() ));
+            //exit;    
+            //return new Response('hola');
+            //dump($form);
+            //exit;
+            $entityManager = $this->getDoctrine()->getManager();
+            
+            //setUser 
+            $sgrEvento->setUser($this->getUser());
+            
+            //setEstado
+            $sgrEvento->setEstado('aprobado');
+            
+            //setUpdatedAt
+            $sgrEvento->setUpdatedAt();
+
+            //Si dias[] es vacio
+            if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+
+            $evento->setEvento($sgrEvento);
+            $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+           
+            $dias = $evento->calculateDias($fechasEvento);
+            $sgrEvento->setDias($dias);
+           
+            $evento->setEvento($sgrEvento);
+            //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
+            if ($evento->solapa(true)){
+                //echo "solapa";
+                //exit;
+                //return new Response('solapa');
+                return $this->json(false);
+
+                //Flash resultado 
+                //exit;
+                }
+                /*return $this->render('sgr_evento/new.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'form' => $form->createView(),
+                ]);*/
+            
+            foreach ($fechasEvento as $dt) {
+                $sgrFechasEvento = new sgrFechasEvento();
+                $sgrFechasEvento->setFecha($dt);
+                $entityManager->persist($sgrFechasEvento);
+                $sgrEvento->addFecha($sgrFechasEvento);
+            }
+
+            $entityManager->persist($sgrEvento);
+            $entityManager->flush();
+            //return new Response('éxito'); //$this->redirectToRoute('sgr_calendarios_index');
+            return $this->json(true);
+            //Flash resultado 
+            //exit;
+        }
+    
+        return $this->render('sgr_calendarios/new.html.twig', [
+                'sgr_evento' => $sgrEvento,
+                'form' => $form->createView(),
+                ]);
         return new Response('');
-        
     }
 
 }

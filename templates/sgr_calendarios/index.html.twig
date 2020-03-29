@@ -275,14 +275,17 @@
 	                type: 'POST',//$form.attr('method'),
 	                data : data,
 	                success: function(respuesta) {
-	                    console.log(respuesta);
+	                    //console.log(respuesta);
 	                    if (respuesta == true){
 	                    	modal.hide();
 	                    	$('form[name="sgr_filters_sgr_eventos"]').submit();
 
 	                    }
-	                    else
+	                    else{
+	                    	$('#errors').hide().html(respuesta.content).fadeIn('slow','linear');
+	                    	
 	                    	console.log(respuesta);
+	                    }
 
 	                },
 	                error: function(xhr, ajaxOptions, thrownError){

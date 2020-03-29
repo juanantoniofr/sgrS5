@@ -17,7 +17,7 @@ $(function () {
 	$('#datetimepicker-hi, #datetimepicker-hf').datetimepicker({
 		format: 'LT',
 		locale: 'es',
-		disabledTimeIntervals: [ [moment().hour(-1), moment().hour(8)], [moment().hour(21), moment().hour(23)] ],
+		disabledTimeIntervals: [ [moment().hour(-1), moment().hour(8)], [moment().hour(22), moment().hour(23)] ],
 		//enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
         stepping: 15,
         //defaultDate: false,

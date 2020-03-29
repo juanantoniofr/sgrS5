@@ -42,7 +42,7 @@ class SgrEventoType extends AbstractType
             ->add('f_inicio', TextType::class, array(
                 'required' => true,
                 'label' => 'Fecha inicio',
-                'invalid_message' => 'Esto no es una fecha válida',
+                'invalid_message' => 'Fecha inicio no es una fecha válida',
                 //'constraints' => [new Lenght(['min' => 3])],
                 'translation_domain' => 'App',
                 'attr' => array(
@@ -54,6 +54,7 @@ class SgrEventoType extends AbstractType
             ->add('f_fin', TextType::class, array(
                 'required' => false,
                 'label' => 'Hasta',
+                'invalid_message' => 'Fecha fin no es una fecha válida',
                 'translation_domain' => 'App',
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
@@ -65,6 +66,7 @@ class SgrEventoType extends AbstractType
             ->add('h_inicio', TextType::class, array(
                 'required' => true,
                 'label' => 'Hora inicio',
+                'invalid_message' => 'Hora inicio no es una hora válida',
                 'translation_domain' => 'App',
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',
@@ -75,6 +77,7 @@ class SgrEventoType extends AbstractType
             ->add('h_fin', TextType::class, array(
                 'required' => true,
                 'label' => 'Hora fin',
+                'invalid_message' => 'Hora fin no es una hora válida',
                 'translation_domain' => 'App',
                 'attr' => array(
                     'class' => 'form-control input-inline datetimepicker',

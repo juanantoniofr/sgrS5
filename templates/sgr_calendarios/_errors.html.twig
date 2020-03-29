@@ -1,0 +1,13 @@
+{% if errors is defined %}
+<div class="alert alert-danger">
+    
+    <h5>Formulario con errores</h5>
+	<ul>
+		{% for error in errors %}
+			<li>
+				{{  error.message }}
+			</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
