@@ -18,6 +18,28 @@
     	{% endfor %}
 	{% endfor %}
 
+    {% if solapes is defined and solapes is not empty%}
+        <div class="alert alert-danger" role="alert">
+            <h3>Evento con solapamientos</h3>
+            <ul>
+            {% for solape in solapes %}
+                <li>El día <b>{{ solape.fecha|date('d-m-Y') }}</b> solapa con el evento: <b>{{ solape.evento.titulo }}</b></li>    
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if errors is defined and errors is not empty%}
+        <div class="alert alert-danger" role="alert">
+            <h3>Revise errores en el formulario</h3>
+            <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>    
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     {{ include('sgr_evento/_form.html.twig') }}
 
     <a href="{{ path('sgr_evento_index') }}">Volver a la lista</a>

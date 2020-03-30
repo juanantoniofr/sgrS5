@@ -175,11 +175,7 @@ class SgrCalendariosController extends AbstractController
             return $this->json($html);
         }
         if ( $form->isSubmitted() && $form->isValid()) {
-            //return $this->json(dump(  && $form->isValid() ));
-            //exit;    
-            //return new Response('hola');
-            //dump($form);
-            //exit;
+            $errors = array();
             $entityManager = $this->getDoctrine()->getManager();
             
             //setUser 
@@ -191,8 +187,16 @@ class SgrCalendariosController extends AbstractController
             //setUpdatedAt
             $sgrEvento->setUpdatedAt();
 
-            //Si dias[] es vacio
-            if(!$sgrEvento->getDias()) $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]);
+            if(!$sgrEvento->getDias() )
+                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[] = 'Selección de días no válida';
+
+            if (empty($errors)){
+                $evento->setEvento($sgrEvento);
+                $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+           
+                $dias = $evento->calculateDias($fechasEvento);
+                empty($dias) ? $errors[] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
+            }
 
             $evento->setEvento($sgrEvento);
             $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
@@ -202,11 +206,16 @@ class SgrCalendariosController extends AbstractController
            
             $evento->setEvento($sgrEvento);
             //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
-            if ($evento->solapa(true)){
-                //echo "solapa";
-                //exit;
-                //return new Response('solapa');
-                return $this->json(false);
+            if ( !$evento->hasSolape()->isEmpty() || !empty($errors) )
+            {
+            
+                $html =  $this->render('sgr_calendarios/_errors.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'solapes' => $evento->hasSolape(),
+                        'errors' => $errors,
+                        'form' => $form->createView(),
+                ]);
+                return $this->json($html);
 
                 //Flash resultado 
                 //exit;

@@ -52,7 +52,8 @@
         {% for fila in filas %}
             <tr>
                 <td>
-                    {% if fila.validations.existAula and not fila.validations.solapa and fila.validations.solapaCsv is empty and fila.validations.valuesNotValid is empty %}
+                    {# dump(fila.validations) #}
+                    {% if fila.validations.existAula and fila.validations.solapa is empty and fila.validations.solapaCsv is empty and fila.validations.valuesNotValid is empty %}
                         <span class="text-success"><b><i class="fas fa-check"></i> Evento salvado con éxito.</b></span>
                     {% else %}
                         <span class="text-danger"><b>Fila con errores.</b></span><br />
@@ -65,8 +66,14 @@
                     {% else %}
                         {% if fila.validations.solapaCsv %}
                                 <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Solapamiento con la/s fila/s: {{ fila.validations.solapaCsv|join(', ', ' y ') }}</span>
-                        {% elseif fila.validations.solapa %}
-                                    <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado</span>
+                        {% elseif fila.validations.solapa is not empty %}
+                                    <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado las fechas: 
+                                        <ul>
+                                        {% for sgrfecha in fila.validations.solapa%}
+                                            <li>{{ sgrfecha.fecha|date('d-m-Y') }} ({{ sgrfecha.evento.titulo }})</li> 
+                                        {% endfor %}
+                                        </ul>
+                                    </span>
                         {% endif %}
                         
                                                 

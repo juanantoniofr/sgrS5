@@ -12,6 +12,8 @@ use App\Entity\SgrGrupoAsignatura;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 class Evento extends AbstractController
 {
@@ -143,30 +145,30 @@ class Evento extends AbstractController
     }
 
     /**
-     * devuleve true si $this->sgrEvento solapa con cualquier otro evento en el mismo espacio
-     * @return bool
+     * Comprueba si $this->sgrEvento (evento candidato a salvar a BD -edit/new en SgrEventoController or index en SgrUploadCSVController) solapa con algún evento ya en BD
+     * @return ArrayCollection(sgrFechasEvento)|vacio si no hay solapamientos
     */
-    public function solapa($flash_errors = false){
+    public function hasSolape(){
 
-        $solapa = false;
+        $solapes = new ArrayCollection();
         //Array de objetos DateTime entre from f_inicio to f_fin 
         $dateTimeFechasEvento = $this->ToArray($this->calculateFechasEvento());
-        //dump($this);
-        //dump($dateTimeFechasEvento);
+        //Initialize
+
         //Array de object SgrFechaEventos
         $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
         //dump($result);
-        //exit;
-        //$result -> array con las fechas que coincide con alguna de las fechas del evento $this->sgrEvento
         foreach ($result as $fecha) {
-            //dump($this->sgrEvento->getHInicio()->format('H:i'));
-            //dump($this->sgrEvento->getEspacio());
-            //dump($fecha->getEvento()->getEspacio());
-            //dump($fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio());
+        //$result -> array con las fechas que coincide con alguna de las fechas del evento $this->sgrEvento
+            //$this->sgrEvento->initialize();//->getEspacio()->initialize();
+            //dump( $fecha->getEvento());//->getEspacio() );
+            //dump( $this->sgrEvento);//->getEspacio() );
             if (
+                //Si coinciden en el mismo recurso (espacio)
                 $fecha->getEvento()->getEspacio() == $this->sgrEvento->getEspacio()
                 &&
                 (
+                    //Y si Solapan las horas de realización del evento
                     ($this->sgrEvento->getHInicio()->format('H:i') < $fecha->getEvento()->getHInicio()->format('H:i') &&
                      $this->sgrEvento->getHFin()->format('H:i') > $fecha->getEvento()->getHInicio()->format('H:i')
                     )
@@ -177,18 +179,21 @@ class Evento extends AbstractController
                 )
                 )
             {
-                $solapa = true;
-                if ($flash_errors)
+                //$solapa = true;
+                /*if ($flash_errors)
                     $this->addFlash(
                             'danger',
                             'Espacio ocupado el día ' . $fecha->getFecha()->format('d-m-Y')
                     );
-
+                */
+                //dump($fecha);
+                $solapes->add($fecha); //ArrayCollection de objetos SgrFechasEvento
             }
                 
         }
-        
-        return $solapa;
+        //dump($solapes);
+        //exit;
+        return $solapes;
     }
 
     /**

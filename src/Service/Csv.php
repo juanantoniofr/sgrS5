@@ -75,7 +75,8 @@ class Csv extends AbstractController{
             }
             $row['numfilaCsv'] = $numfila;
             $row['validations']['existAula'] = false;
-            $row['validations']['solapa'] = true;
+            $row['validations']['solapa'] = new ArrayCollection;//ArrayCollection();//true;
+            //$row['validations']['hasSolape'] = new ArrayCollection();
             $row['validations']['solapaCsv'] = array();
             $row['validations']['valuesNotValid'] = array();
             $rows[] = $row;

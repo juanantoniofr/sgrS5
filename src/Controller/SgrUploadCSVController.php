@@ -107,11 +107,11 @@ class SgrUploadCSVController extends AbstractController
                     $row['validations']['existAula'] = true;
                     $row[$key] = $row;
                 }
-                                
+                //dump( $csv->passValidations($row) );                
                 if ($csv->passValidations($row)){
-                    
+                    //dump($espacio);
                     $sgrEvento->setEspacio($espacio);
-                    
+                    //dump($sgrEvento);
                     $evento->setEvento($sgrEvento);
                     $evento->setFechaDesde($row['F_DESDE']);
                     $evento->setFechaHasta($row['F_HASTA']);
@@ -120,13 +120,13 @@ class SgrUploadCSVController extends AbstractController
                     $evento->setDias($row['C.DIA']);
                    
                     //set validations solapa
-                    $row['validations']['solapa'] = $evento->solapa();
+                    $row['validations']['solapa'] = $evento->hasSolape();//$evento->solapa();
                     //update rowsCsv
                     $rowsCsv[$key]=$row;
                     
                     //Si no hay solapamientos
-                    //añadir ! /*!*/
-                    if (!$row['validations']['solapa']){
+                    //ArrayCollection solapamientos ($row['validations']['solapa']) es vacio.
+                    if ( ($row['validations']['solapa'])->isEmpty() ){
                         //set Profesor
                         $evento->setProfesor($row['PROFESOR'], $entityManager, $repositoryProfesor);
                         
