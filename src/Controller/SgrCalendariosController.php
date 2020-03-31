@@ -148,13 +148,14 @@ class SgrCalendariosController extends AbstractController
           		'form'  => $form->createView(),
                 //'formViewDay' => $form->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
+                'view'  => 'custom',
           	]
           );
         }
         
         return $this->render( 'sgr_calendarios/index.html.twig',[ 
                 'form'  => $form->createView(),
-                //'formViewDay' => $form->createView(),
+                'view'  => 'custom',
                 ]);
     }
 

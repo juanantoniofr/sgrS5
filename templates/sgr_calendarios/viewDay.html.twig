@@ -196,25 +196,25 @@
 {% block morescripts %}
     
     <script type="text/javascript">        
-        $(function () {
+        /*$(function () {
             $('[data-toggle="popover"]').popover({
                 trigger: 'focus',
                 animation: true,
                 delay: { "show": 300, "hide": 100 },
             });
-        });
+        });*/
     </script>
     
     <script type="text/javascript" src="/build/formFiltersInput.js"></script>
 
     <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
-    <script type="text/javascript" src="/build/datetimepicker-calendarViews.js"></script>
+    <script type="text/javascript" src="/build/datetimepicker-calendarViewDay.js"></script>
 
     
     <!-- 
         <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
         <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViews.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewDay.js"></script>
 
         
     -->
@@ -222,6 +222,10 @@
     <script type="text/javascript">
 
         $(function() {
+
+            $('#showMoreFilters').click( function(e){
+                e.preventDefault();//     toggle: false
+            });
 
             $('#newSgrEventoModal').on('show.bs.modal', function (e){
                 //e.preventDefault();

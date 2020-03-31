@@ -14,7 +14,6 @@
 	<div id="filtros">
 		<div class="mt-3 mb-3">
 
-			{# include('sgr_calendarios/_form.html.twig', {'button_label': 'Mostrar eventos'}) #}
             {{ include('sgr_form/_formFiltersSrgEvento.html.twig', {'button_label': 'Filtrar eventos'}) }}
     	</div>
     </div>
@@ -211,17 +210,21 @@
 	
 	<script type="text/javascript" src="/build/formFiltersInput.js"></script>
 	<script type="text/javascript" src="/build/datetimepickerInit.js"></script>
-	<script type="text/javascript" src="/build/datetimepicker-calendarViews.js"></script>
+	<script type="text/javascript" src="/build/datetimepicker-calendarViewCustom.js"></script>
 
     <!-- 
         <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
         <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViews.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewCustom.js"></script>
 
         
     -->
 
 	<script type="text/javascript">
+
+		$('#showMoreFilters').click( function(e){
+                e.preventDefault();//     toggle: false
+         });
 
   		$(function() {
 
@@ -336,8 +339,6 @@
 			    modal.find('.modal-body').load(button.data("remote"));
 
 			});*/
-
-
   		});
 	</script>
 {% endblock %}
