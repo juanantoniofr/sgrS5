@@ -2,7 +2,7 @@ $(function () {
 	
 	//************************************************************
     //******* Init view Calendarios and new/edit sgrEvento *******
-	$('#datetimepicker-fi, #datetimepicker-fi-newSgrEvento').datetimepicker({
+	$('#datetimepicker-fi, #datetimepicker-fi-newSgrEvento, #datetimepicker-fviewday').datetimepicker({
 		format: 'L',
 		locale: 'es',
 		autoclose: true,
@@ -107,4 +107,6 @@ $(function () {
     $('#datetimepicker-hi').datetimepicker( 'date', moment().set('hour',8).set('minutes',30) );
     $('#datetimepicker-hf').datetimepicker( 'date', moment().set('hour',21).set('minutes',30) );
 	
+
+    $('#datetimepicker-fviewday').datetimepicker( 'date', moment(new Date()) );
 });

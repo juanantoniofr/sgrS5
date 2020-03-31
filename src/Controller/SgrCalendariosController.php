@@ -34,6 +34,7 @@ class SgrCalendariosController extends AbstractController
         
         //for filters calendario de eventos        
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
+        //$formViewDay
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -145,6 +146,7 @@ class SgrCalendariosController extends AbstractController
           		'aCalendarios' => $aCalendarios,
           		'numDaysView' => (int) $begin->diff($end)->format('%d'),
           		'form'  => $form->createView(),
+                //'formViewDay' => $form->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
           	]
           );
@@ -152,6 +154,7 @@ class SgrCalendariosController extends AbstractController
         
         return $this->render( 'sgr_calendarios/index.html.twig',[ 
                 'form'  => $form->createView(),
+                //'formViewDay' => $form->createView(),
                 ]);
     }
 
@@ -174,12 +177,12 @@ class SgrCalendariosController extends AbstractController
             //All espacios.
             $sgrEspacios = $sgrEspacioRepository->findAll();
 
-            dump($sgrFechasEvento);
+            //dump($sgrFechasEvento);
 
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
 
-            dump($aCalendarios);
-            exit;
+            //dump($aCalendarios);
+            //exit;
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -266,7 +269,9 @@ class SgrCalendariosController extends AbstractController
               );//(['nombre' => $data['espacio'] ]);
             }
 
-            foreach ($sgrEspacios as $sgrEspacio){ 
+            $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
+
+            /*foreach ($sgrEspacios as $sgrEspacio){ 
                 
                 $calendario = new Calendario;
                 $calendario->setSgrEspacio($sgrEspacio);
@@ -280,7 +285,7 @@ class SgrCalendariosController extends AbstractController
                 }
                 
                 $aCalendarios[] = $calendario;
-            }
+            }*/
         }
 
         if (isset($aCalendarios)){
@@ -291,12 +296,14 @@ class SgrCalendariosController extends AbstractController
                 'numDaysView' => (int) $begin->diff($end)->format('%d'),
                 'form'  => $form->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
+                'formViewDay' => $this->createForm(SgrFiltersSgrEventosType::class)->createView(),
             ]
           );
         }
         
         return $this->render( 'sgr_calendarios/viewDay.html.twig',[ 
                 'form'  => $form->createView(),
+                'formViewDay' => $this->createForm(SgrFiltersSgrEventosType::class)->createView(),
                 ]);
     }
 
