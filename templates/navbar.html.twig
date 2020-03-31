@@ -27,10 +27,20 @@
                     <li>
                         <a class="btn btn-secondary mx-3" href="{{path('sgr_uploadCSV_index')}}"> <i class="fas fa-upload mr-1"></i>Upload CSV</a>
                     </li>
-                    <li>
-                        <a class="btn btn-secondary mx-3" href="{{path('sgr_calendarios_index')}}"> <i class="far fa-calendar mr-1"></i> Calendarios</a>
-                    </li>
-                
+                    
+
+                    <div class="dropdown mx-3">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="far fa-calendar mr-1"></i>Calendarios
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{{path('sgr_calendarios_view_day')}}">Vista Diaria</a>
+                            <a class="dropdown-item" href="{{path('sgr_calendarios_index')}}">Personalizada</a>
+                        </div>
+                    </div>
+                    
+
+
                     <div class="dropdown mx-3">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="far fa-calendar-check mr-1"></i>Eventos
