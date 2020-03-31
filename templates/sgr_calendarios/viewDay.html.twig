@@ -16,19 +16,7 @@
             {{ include('sgr_form/_formFiltersSrgEvento.html.twig', {'button_label': 'Filtrar eventos'}) }}
         </div>
     </div>
-    <div class="container mb-3">
-        <nav class="navbar navbar-expand-sm navbar-light bg-light d-flex justify-content-center">
-            <a class="navbar-brand" href="#">  << Anterior </a>
-            <a class="navbar-brand" href="#"> 
-                {{ include('sgr_calendarios/_formViewDay.html.twig', {'button_label': 'Filtrar eventos'}) }}
-            </a>
-            
-            <a class="navbar-brand" href="#"> Siguiente >> </a>
-            
-        </nav>
-
-    </div>    
-    
+ 
     {% set diasSemana = {1: 'Lunes', 2:'Martes', 3: 'Miércoles',4: 'Jueves',5: 'Viernes',6: 'Sábado' } %}
     {% if aCalendarios is defined %}
     <table class="table table-striped table-bordered">  
@@ -218,12 +206,17 @@
     </script>
     
     <script type="text/javascript" src="/build/formFiltersInput.js"></script>
+
     <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
-    <script type="text/javascript" src="/build/hinclude.js"></script>
+    <script type="text/javascript" src="/build/datetimepicker-calendarViews.js"></script>
+
+    
     <!-- 
         <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
         <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/hinclude.js"></script>
+        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViews.js"></script>
+
+        
     -->
 
     <script type="text/javascript">

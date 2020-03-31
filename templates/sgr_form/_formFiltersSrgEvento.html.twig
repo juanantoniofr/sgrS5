@@ -20,7 +20,7 @@
     	</div>
     	
     	<div class="col-md-2 p-2">
-
+    		
             <div class="form-group col-md-8 float-right">
             	<label>{{ form_label(form.f_inicio) }}</label>
                 <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
@@ -31,6 +31,7 @@
                 </div>
             </div>
 			
+			{% if view is defined and view != 'day' %}
 			<div class="form-group col-md-8 float-right">
             	<label>{{ form_label(form.f_fin) }}</label>
                 <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
@@ -40,6 +41,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
 	</div>
 	<div class="form-row mb-1">

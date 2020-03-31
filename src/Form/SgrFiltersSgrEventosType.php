@@ -101,12 +101,12 @@ class SgrFiltersSgrEventosType extends AbstractType
                                 ])
             ->add('f_inicio', TextType::class, array(
                                     'required' => true,
-                                    'label' => 'Desde',
+                                    'label' => 'Fecha inicio',
                                     'constraints' => [ new NotBlank(), ],
             ))
             ->add('f_fin', TextType::class, array(
                                     'required' => true,
-                                    'label' => 'Hasta',
+                                    'label' => 'Fecha fin',
                                     'constraints' => [  new NotBlank(),
                                                         new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o menor que fecha desde"] ), 
                                                         ],

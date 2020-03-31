@@ -296,14 +296,14 @@ class SgrCalendariosController extends AbstractController
                 'numDaysView' => (int) $begin->diff($end)->format('%d'),
                 'form'  => $form->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
-                'formViewDay' => $this->createForm(SgrFiltersSgrEventosType::class)->createView(),
+                'view' => 'day',
             ]
           );
         }
         
         return $this->render( 'sgr_calendarios/viewDay.html.twig',[ 
                 'form'  => $form->createView(),
-                'formViewDay' => $this->createForm(SgrFiltersSgrEventosType::class)->createView(),
+                'view' => 'day',
                 ]);
     }
 
