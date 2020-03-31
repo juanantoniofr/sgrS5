@@ -16,6 +16,11 @@ use Symfony\Component\Validator\Constraints\Length;
 use App\Entity\SgrEquipamiento;
 use App\Entity\SgrTermino;
 
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\Date;
+
 //use Symfony\Component\Validator\Constraints\Date;
 use App\Entity\SgrAsignatura; //??
 use App\Entity\SgrProfesor; //??
@@ -57,47 +62,31 @@ class SgrSearchSgrEspacioType extends AbstractType
                                     'choice_label' => 'nombre',
                                 ])            
             ->add('f_inicio', TextType::class, array(
-                'required' => true,
-                'label' => 'Fecha inicio',
-                'invalid_message' => 'Esto no es una fecha válida',
-                //'constraints' => [new Lenght(['min' => 3])],
-                'translation_domain' => 'App',
-                'attr' => array(
-                    'class' => 'form-control input-inline datetimepicker',
-                    'data-provide' => 'datepicker',
-                    'data-format' => 'hh:mm',
-                    
-                ),
+                                    'required' => true,
+                                    'label' => 'Fecha inicio',
+                                    'invalid_message' => 'Esto no es una fecha válida',
+                                    //'constraints' => [new Lenght(['min' => 3])],
+                                    'translation_domain' => 'App',
+                                    'attr' => array(
+                                        'class' => 'form-control input-inline datetimepicker',
+                                        'data-provide' => 'datepicker',
+                                        'data-format' => 'hh:mm',
+                                        
+                                    ),
             ))
-            ->add('f_fin', TextType::class, array(
-                'required' => true,
-                'label' => 'Hasta',
-                'translation_domain' => 'App',
-                'attr' => array(
-                    'class' => 'form-control input-inline datetimepicker',
-                    'data-provide' => 'datepicker',
-                    'data-format' => 'hh:mm',
-                ),
-            ))
-            /*
-            ->add('dias', ChoiceType::class, [
-                            'choices' => [
-                                            'Lunes' => 1,
-                                            'Martes' => 2,
-                                            'Miércoles' => 3,
-                                            'Jueves' => 4,
-                                            'Viernes' => 5,
-                                        ],
-                            'expanded'  => true,
-                            'multiple'  => true,
-                            'choice_attr' => function($choice, $key, $value) {
-                                // adds a class like attending_yes, attending_no, etc
-                                return ['class' => 'tinymce'];
-                            },
-                            'attr' => array('class' => 'form-check-inline'),
-                            'label' => 'Los días: ',
+            ->add('f_fin', TextType::class, [
+                                    'required' => true,
+                                    'label' => 'Hasta',
+                                    'translation_domain' => 'App',
+                                    'attr' => [
+                                        'class' => 'form-control input-inline datetimepicker',
+                                        'data-provide' => 'datepicker',
+                                        'data-format' => 'hh:mm',
+                                    ],
+                                    'constraints' => [  new NotBlank(),
+                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o menor que fecha inicio"] ), 
+                                    ],
             ])
-            */
             ->add('h_inicio', TextType::class, array(
                     'required' => true,
                     'label' => 'Hora inicio',

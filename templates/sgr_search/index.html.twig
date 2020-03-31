@@ -37,10 +37,10 @@
     <h1>Listado de Espacios</h1>
     {% if data is defined  %} 
         <div class="alert alert-success p-4" role="alert">
-            <h5>Resultados para los términos de busqueda:</h5>
+            <h5>Términos de busqueda:</h5>
             {% for key, input in data %}
                 {% if not input is null  %}
-                   <b>{{ key }}</b>={{ input }}, 
+                   <b>{{ key }}</b> => {{ input }}, 
                 {% endif %}
             {% endfor %}
             
@@ -76,9 +76,9 @@
                             {% for solape in sgr_espacio.solapes%}
 
                                 <span class="text-danger">
-                                {{ solape.fecha|format_datetime('full','none', locale='es')|capitalize }}
-                                    -> </span>
-                                    <a href = "{{ path('sgr_evento_edit', {'id': solape.evento.id}) }}">{{ solape.evento.titulo }}</a> ({{ solape.evento.hinicio|format_datetime('none','short', locale='es') }} - {{ solape.evento.hfin|format_datetime('none','short', locale='es') }})
+                                {{ solape.fecha|format_datetime('full','none', locale='es')|capitalize }} ({{ solape.evento.hinicio|format_datetime('none','short', locale='es') }}-{{ solape.evento.hfin|format_datetime('none','short', locale='es') }})
+                                    => </span>
+                                    <a href = "{{ path('sgr_evento_edit', {'id': solape.evento.id}) }}">{{ solape.evento.titulo }}</a> 
                                 </br>
                             {% endfor %}
                         
@@ -124,6 +124,12 @@
     
 {% endblock %}
 {% block morescripts %}
-    
+    <!-- borrar
     <script type="text/javascript" src="/build/es.js"></script>
+-->
+    <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
+
+    <!-- 
+        <script type="text/javascript" scr="/reservasfgh/public/build/datetimepickerInit.js"></script>
+    -->
 {% endblock %}

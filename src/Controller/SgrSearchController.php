@@ -33,6 +33,7 @@ class SgrSearchController extends AbstractController
 
             $data = $form->getData();
 
+
             $termino = '';
             if($data['termino'])
                 $termino = $data['termino'];
@@ -76,10 +77,7 @@ class SgrSearchController extends AbstractController
                 $f_inicio = clone date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
             
             $f_fin = new \DateTimeZone('Europe/Madrid');
-            if (!$data['f_fin'])
-                //Si no existe, hacemos f_fin igual a f_inicio
-                $f_fin = clone $f_inicio;
-            else 
+            if ($data['f_fin']) 
                 $f_fin = clone date_create_from_format('d/m/Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));
             
             if ( $f_inicio->diff($f_fin)->format('%a') <= 0 )
@@ -136,8 +134,6 @@ class SgrSearchController extends AbstractController
         }
 
         return $this->render('sgr_search/index.html.twig', [
-            //'sgr_eventos'   => $sgrEventos,
-            //'pagination' => $pagination,
             'form'       => $form->createView(),
         ]);
     }

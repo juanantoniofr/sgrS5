@@ -20,6 +20,7 @@ $(function () {
 		disabledTimeIntervals: [ [moment().hour(-1), moment().hour(8)], [moment().hour(22), moment().hour(23)] ],
 		//enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 ],
         stepping: 15,
+        autoclose:true,
         //defaultDate: false,
         //useCurrent:false,
 	});
@@ -101,7 +102,9 @@ $(function () {
         //alert(moment().set('year',$current_year).set('month',7).set('date',31));
 		$('#datetimepicker-fi').datetimepicker( 'date', moment().set('year',$current_year-1).set('month',8).set('date',1) );
 		$('#datetimepicker-ff').datetimepicker( 'date', moment().set('year',$current_year).set('month',7).set('date',31) );
+    }
 
-	}
+    $('#datetimepicker-hi').datetimepicker( 'date', moment().set('hour',8).set('minutes',30) );
+    $('#datetimepicker-hf').datetimepicker( 'date', moment().set('hour',21).set('minutes',30) );
 	
 });
