@@ -50,7 +50,7 @@
             <div class="form-group col-md-8">
                 {% if view is defined and view == 'day' %}
                     <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha' }) }}</label>
-                {% else %}
+                {% elseif view is not defined %}
                     <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
                 {% endif %}
                 <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
@@ -61,7 +61,7 @@
                 </div>
             </div>
             
-            {% if view is defined and view != 'day' %}
+            {% if view is not defined or view != 'day' %}
             <div class="form-group col-md-8">
                 <label>{{ form_label(form.f_fin) }}</label>
                 <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
@@ -92,8 +92,8 @@
     	
 	</div>
     
-    <div class="form-row mb-1">
-		<div class="col-md-2 text-left">
+    <div class="form-row d-flex justify-content-end mb-1">
+		<div class="col-md-12 text-right">
 			<button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Mostrar eventos') }}</button>
 		</div>
 	</div>

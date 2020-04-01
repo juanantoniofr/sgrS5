@@ -148,14 +148,14 @@ class SgrCalendariosController extends AbstractController
           		'form'  => $form->createView(),
                 //'formViewDay' => $form->createView(),
                 'data'  => [ 'begin' => $begin , 'end' => $end ],
-                'view'  => 'custom',
+                //'view'  => 'custom',
           	]
           );
         }
         
         return $this->render( 'sgr_calendarios/index.html.twig',[ 
                 'form'  => $form->createView(),
-                'view'  => 'custom',
+                //'view'  => 'custom',
                 ]);
     }
 
@@ -289,9 +289,10 @@ class SgrCalendariosController extends AbstractController
             }*/
         }
 
-        if (isset($aCalendarios)){
+        if (isset($aCalendarios))
+        {
 
-            
+                
             return $this->render( 'sgr_calendarios/viewDay.html.twig',[ 
                 'aCalendarios' => $aCalendarios,
                 'numDaysView' => (int) $begin->diff($end)->format('%d'),
