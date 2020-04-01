@@ -56,7 +56,7 @@
                 
                     {% for hour in range(start_h, end_h, step) %}
                         <td style="padding: 0px;">
-                        <div class="e" style="position: relative;min-height: 60px;height: 100%;">
+                        <div class="e" style="position: relative;height: 100px;">
 
                             
                             <div style="width:100%;position: absolute;min-height: 35px;height: 100%;">
@@ -85,16 +85,13 @@
                                 
                                 {% set offset = 100*diffInMinutes / 60 %}
 
-                                {# offset #}
-                                {# w #}
-                                <div class="evento" data-duration="{{duration}}" style="z-index: 2;
+                                <div class="evento bg-info" data-duration="{{duration}}" style="z-index: 2;
                                             
                                             left:{{ offset }}%;
                                             position:absolute;
                                             top:0px;
-                                            background-color: #bbb;
-                                            height: 58px !important;
-                                            border-left: 1px solid white">
+                                            height: 100%;
+                                            border: 1px solid white">
                                             
                                             <a  href="javascript:;" data-animation="true" tabindex="0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center'>
                                             <p><b>{{ period.evento.titulo }}</b></p>
@@ -104,14 +101,12 @@
                                             <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
                                             <p>{{period.evento.espacio}}</p></div>"
                                             >   
-                                                <div class="badge badge-info text-wrap p-2" style="width: 100%;height: 58px;">
-                                                    <div class="align-middle text-truncate">
-                                                    {{ period.evento.titulo }}
+                                                <div class="badge badge-info text-left" style="width: 100%;height: 100%;">
+                                                    <div class="align-middle text-wrap text-truncate">
+                                                    {{ period.evento.titulo }} (
+                                                    <span class="text-sm-left">{{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.hFin|date('H:i') }}</span>)
                                                     </div>
-                                                    <div class="align-bottom">
-                                                            <span class="text-sm-left">{{ period.evento.hInicio|date('H:i') }}</span>
-                                                            <span class="text-sm-right">{{ period.evento.hFin|date('H:i') }}</span>
-                                                    </div>  
+                                                        
                                                 </div>
                                             </a>
                                 </div>
@@ -170,6 +165,8 @@
                     duration => x 
                 */
                 $(this).width( ($wtd * $duration) / 60 );
+                $htd = $(this).closest("td").height();
+                //$(this).height($htd - 20);
                 //console.log($wtd);
                 //console.log($duration);
                 //console.log($wtd * $duration);
@@ -211,24 +208,20 @@
                 e.preventDefault();//     toggle: false
             });
 
+            //id modal 
             $('#newSgrEventoModal').on('show.bs.modal', function (e){
-                //e.preventDefault();
-                //alert('asdad');
+                
                 var button = $(e.relatedTarget);
                 var modal = $(this);
-                //console.log(e.relatedTarget);
-
-                // load content from HTML string
-                //modal.find('.modal-body').html("Nice modal body baby...");
                 var data = {};
-                // or, load content from value of data-remote url
+                // load content from value of data-remote url
                 modal.find('.modal-body').load(button.data("remote"),button,function(){
                     
-                    $('#sgr_filters_sgr_eventos_f_inicio') ? $f_inicio = $('#sgr_filters_sgr_eventos_f_inicio').val() : null;
-                    $f_inicio ? $('#sgr_evento_f_inicio').val($f_inicio) : null;
-
-                    $('#sgr_filters_sgr_eventos_f_fin') ? $('#sgr_evento_f_fin').val($('#sgr_filters_sgr_eventos_f_fin').val()) : null;
-
+                    if ($('#sgr_filters_sgr_eventos_f_inicio')){
+                        $('#sgr_evento_f_inicio').val($('#sgr_filters_sgr_eventos_f_inicio').val());
+                        $('#sgr_evento_f_fin').val($('#sgr_filters_sgr_eventos_f_inicio').val());
+                    } 
+                    
                     button.data('espacio') ? $('#sgr_evento_espacio').val(button.data('espacio')) : null; 
 
                     $('.sgr_evento_dias').each(function(){ button.prop('checked', false); });
@@ -242,49 +235,36 @@
                 
                         e.preventDefault();
                         
-                        //Add input hide
-                        //input = jQuery('<input name="filters[termino]" type="hidden" value="'+$('#sgr_filters_sgr_eventos_termino').val()+'">');
-                        /*input = jQuery('<input name="filters" type="hidden" value="'+
-                            JSON.stringify($('form[name="sgr_filters_sgr_eventos"]'))
-                            +'">');
-                        */
-                        //console.log(input);
-                        //console.log($('form[name="sgr_filters_sgr_eventos"]'));
-                        //jQuery('form[name="sgr_evento"]').append(input);
-                        //console.log($('form[name="sgr_evento"]'));
-                        //console.log($('form[name="sgr_evento"]').attr('action'));
                         $('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
-                        //$('form[name="sgr_evento"]').submit();
-                          
-                        //$('form[name="sgr_filters_sgr_eventos"]').submit();
-                        //alert('asdadasd');
-                var data = $('form[name="sgr_evento"]').serialize();
-                $.ajax({
-                    url : '/admin/sgr/calendario/ajax/new/evento',
-                    type: 'POST',//$form.attr('method'),
-                    data : data,
-                    success: function(respuesta) {
-                        //console.log(respuesta);
-                        if (respuesta == true){
-                            modal.hide();
-                            $('form[name="sgr_filters_sgr_eventos"]').submit();
-
-                        }
-                        else{
-                            $('#errors').hide().html(respuesta.content).fadeIn('slow','linear');
-                            
-                            console.log(respuesta);
-                        }
-
-                    },
-                    error: function(xhr, ajaxOptions, thrownError){
-                        alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
-                    }
-                });
                         
-                    });
-                });
-            });
+                        var data = $('form[name="sgr_evento"]').serialize();
+                        $.ajax({
+                            url : '/admin/sgr/calendario/ajax/new/evento',
+                            type: 'POST',//$form.attr('method'),
+                            data : data,
+                            success: function(respuesta) {
+                                //console.log(respuesta);
+                                if (respuesta == true)
+                                {
+                                    modal.hide();
+                                    $('form[name="sgr_filters_sgr_eventos"]').submit();
+                                }
+                                else
+                                {
+                                    $('#errors').hide().html(respuesta.content).fadeIn('slow','linear');
+                                    
+                                    console.log(respuesta);
+                                }
+
+                            },
+                            error: function(xhr, ajaxOptions, thrownError){
+                                alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
+                            }
+                        });//fin Ajax
+                                
+                    });//fin Submit
+                });//show.bs.modal
+            });//fin id modal
 
         });
     </script>
