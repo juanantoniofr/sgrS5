@@ -4,7 +4,7 @@
         <h3>Evento con solapamientos</h3>
         <ul>
         {% for solape in solapes %}
-            <li>El día <b>{{ solape.fecha|date('d-m-Y') }}</b> solapa con el evento: <b>{{ solape.evento.titulo }}</b></li>    
+            <li>El día <b>{{ solape.fecha|date('d-m-Y') }}, {{ solape.evento.hinicio|date('H:i') }} - {{ solape.evento.hfin|date('H:i') }}, </b> solapa con el evento: <b>{{ solape.evento.titulo }}</b></li>    
         {% endfor %}
         </ul>
     </div>

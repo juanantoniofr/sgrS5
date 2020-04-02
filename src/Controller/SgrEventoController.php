@@ -126,24 +126,11 @@ class SgrEventoController extends AbstractController
             //setUpdatedAt
             $sgrEvento->setUpdatedAt();
 
-            //Si dias[] es vacio
-            if( !$sgrEvento->getDias() ){
-                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[]['message'] = 'Selección de días no válida';
-                if (empty($errors)){
-                    $evento->setEvento($sgrEvento);
-                    $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-                    $dias = $evento->calculateDias($fechasEvento);
-                }
-            }
-            else 
-            {
-                $evento->setEvento($sgrEvento);
-                $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-                $dias = $evento->calculateDias($fechasEvento);
-                empty($dias) ? $errors[]['message'] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
-            }
+            $evento->setEvento($sgrEvento);
+            
+            //check valid selected dias
+            if ( !$evento->isValidDias() )
+                $errors[]['message'] = 'Selección de días no válida';
             
             if ( !empty($errors) )
                     return $this->render('sgr_evento/new.html.twig', [
@@ -152,9 +139,7 @@ class SgrEventoController extends AbstractController
                         'form' => $form->createView(),
                     ]);
             
-            //No errors
-            $evento->setEvento($sgrEvento);
-            //Si solapamiento
+            //Check solapamiento
             if ( !$evento->hasSolape()->isEmpty()  )
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
@@ -163,7 +148,7 @@ class SgrEventoController extends AbstractController
                 ]);
             
             //no errors, no salapamientos
-            foreach ($fechasEvento as $dt) {
+            foreach ($evento->getAllFechas() as $dt) {
                 $sgrFechasEvento = new sgrFechasEvento();
                 $sgrFechasEvento->setFecha($dt);
                 $entityManager->persist($sgrFechasEvento);
@@ -173,7 +158,10 @@ class SgrEventoController extends AbstractController
             $entityManager->persist($sgrEvento);
             $entityManager->flush();
 
-            
+            $this->addFlash(
+                          'success',
+                            'Evento salvado con éxito '
+                        );
             return $this->redirectToRoute('sgr_evento_index');
         }
 
@@ -211,35 +199,16 @@ class SgrEventoController extends AbstractController
                 $sgrEvento->removeFecha($fecha);
             }
             
-            //Si dias[] es vacio
-            //dump(!$sgrEvento->getDias());
-            if( !$sgrEvento->getDias() )
-            {
-                
-                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[]['message'] = 'Selección de días no válida';
-                if (empty($errors)){
-                    $evento->setEvento($sgrEvento);
-                    $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-                    $dias = $evento->calculateDias($fechasEvento);
-                }
-            }
-            else
-            {
-                $evento->setEvento($sgrEvento);
-                $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-                $dias = $evento->calculateDias($fechasEvento);
-                empty($dias) ? $errors[]['message'] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
-            }    
+            //check valid selected dias
+            if ( !$evento->isValidDias() )
+                $errors[]['message'] = 'Selección de días no válida';
             
             if ( !empty($errors) )
-                
                     return $this->render('sgr_evento/edit.html.twig', [
                         'sgr_evento' => $sgrEvento,
                         'errors' => $errors,
                         'form' => $form->createView(),
-                    ]);
+                    ]);    
             
             //No errors
             $evento->setEvento($sgrEvento);
@@ -253,12 +222,13 @@ class SgrEventoController extends AbstractController
                 ]);
         
             //no errors, no salapamientos
-            foreach ($fechasEvento as $dt) {
+            foreach ($evento->getAllFechas() as $dt) {
                 $sgrFechasEvento = new sgrFechasEvento();
                 $sgrFechasEvento->setFecha($dt);
                 $entityManager->persist($sgrFechasEvento);
                 $sgrEvento->addFecha($sgrFechasEvento);
-            }            
+            }
+
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash(

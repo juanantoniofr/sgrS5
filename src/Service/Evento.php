@@ -226,7 +226,7 @@ class Evento extends AbstractController
 
         return $fechas;
     }
-
+                    //getAllDaysforDates
     public function calculateDias($fechasEvento)
     {
         //concordar dias[] con fechasEventos
@@ -250,6 +250,68 @@ class Evento extends AbstractController
         }
 
         return $result;
-    }   
+    }
+
+    public function getAllDaysWeekForDates($fechasEvento)
+    {
+        $dias = array();
+        $fechasEvento->forAll(function($index, $fechaEvento) use (&$dias){
+            
+            if ( !in_array($fechaEvento->format('w'), $dias) )
+                    $dias[] = $fechaEvento->format('w');
+                    return true;
+            });
+
+        return $dias;
+    }
+
+    public function getAllFechas()
+    {
+
+        $fechas = [];
+
+        $start = $this->sgrEvento->getFInicio();
+        $end = clone $this->sgrEvento->getFFin();
+        $end->add(new \DateInterval('PT24H'));
+        $interval = new \DateInterval('P1D');
+        $period = new \DatePeriod($start, $interval, $end);
+        //dump($period);
+        //dump($this->sgrEvento->getDias());
+        if ( empty($this->sgrEvento->getDias()) ){
+            $this->sgrEvento->setDias([ $start->format('w') ]);
+        }
+        //dump($this->sgrEvento->getDias());
+        foreach ($period as $day) {
+
+            if ( in_array($day->format('w'), $this->sgrEvento->getDias()) ) 
+                $fechas[] = $day;
+
+        }
+
+        return new ArrayCollection($fechas);
+    }
+    /**
+     * Comprueba $dias es valido en relación con f_inicio y f_fin
+     * Devuelve booleano
+    */
+    public function isValidDias(){
+        //dump($this->getAllFechas());
+        $daysWeek = $this->getAllDaysWeekForDates($this->getAllFechas());
+        //dump($daysWeek);
+        if( empty($daysWeek) )
+            return false;
+        
+        $daysSelected = $this->sgrEvento->getDias();
+        $result = (new ArrayCollection($daysWeek))->filter(function($dw) use ($daysSelected){
+
+            return in_array($dw, $daysSelected);
+        });
+
+        if(!empty($result))
+            return true;
+
+        return false;
+    }
+  
 
 }
