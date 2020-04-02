@@ -166,12 +166,6 @@
                 */
                 $(this).width( ($wtd * $duration) / 60 );
                 $htd = $(this).closest("td").height();
-                //$(this).height($htd - 20);
-                //console.log($wtd);
-                //console.log($duration);
-                //console.log($wtd * $duration);
-                //console.log( ($wtd * $duration) / 60);
-                //alert($(this).data('duration'));
             });
         });
     </script>
@@ -243,8 +237,11 @@
                             type: 'POST',//$form.attr('method'),
                             data : data,
                             success: function(respuesta) {
-                                //console.log(respuesta);
-                                if (respuesta == true)
+                                console.log(respuesta);
+                                console.log($('#errors'));
+
+                                $('#errors').html(respuesta.content).fadeIn('slow','linear');
+                                /*if (respuesta == true)
                                 {
                                     modal.hide();
                                     $('form[name="sgr_filters_sgr_eventos"]').submit();
@@ -253,8 +250,8 @@
                                 {
                                     $('#errors').hide().html(respuesta.content).fadeIn('slow','linear');
                                     
-                                    console.log(respuesta);
-                                }
+                                   
+                                }*/
 
                             },
                             error: function(xhr, ajaxOptions, thrownError){

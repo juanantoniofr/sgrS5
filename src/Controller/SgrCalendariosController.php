@@ -177,13 +177,7 @@ class SgrCalendariosController extends AbstractController
 
             //All espacios.
             $sgrEspacios = $sgrEspacioRepository->findAll();
-
-            //dump($sgrFechasEvento);
-
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-
-            //dump($aCalendarios);
-            //exit;
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -271,22 +265,6 @@ class SgrCalendariosController extends AbstractController
             }
 
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-
-            /*foreach ($sgrEspacios as $sgrEspacio){ 
-                
-                $calendario = new Calendario;
-                $calendario->setSgrEspacio($sgrEspacio);
-                
-                $eventos = new ArrayCollection();
-                
-                foreach ($sgrFechasEvento as $sgrFechaEvento)
-                {
-                    if ($sgrFechaEvento->getEvento()->getEspacio() == $sgrEspacio)
-                        $calendario->setPeriodsByDay( $sgrFechaEvento->getEvento(), $sgrFechaEvento);
-                }
-                
-                $aCalendarios[] = $calendario;
-            }*/
         }
 
         if (isset($aCalendarios))
@@ -320,86 +298,101 @@ class SgrCalendariosController extends AbstractController
         $form->handleRequest($request);
         
         
-        //return $this->json(dump( $form->isSubmitted() && $form->isValid() ));
-        //exit;
-        if ( $form->isSubmitted() && !$form->isValid()) {
-
-            $html = $this->render('sgr_calendarios/_errors.html.twig', [
-                    'errors' => $form->getErrors(true),
-                ]);
-            return $this->json($html);
-        }
-        if ( $form->isSubmitted() && $form->isValid()) {
-            $errors = array();
-            $entityManager = $this->getDoctrine()->getManager();
-            
-            //setUser 
-            $sgrEvento->setUser($this->getUser());
-            
-            //setEstado
-            $sgrEvento->setEstado('aprobado');
-            
-            //setUpdatedAt
-            $sgrEvento->setUpdatedAt();
-
-            if(!$sgrEvento->getDias() )
-                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[] = 'Selección de días no válida';
-
-            if (empty($errors)){
-                $evento->setEvento($sgrEvento);
-                $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-                $dias = $evento->calculateDias($fechasEvento);
-                empty($dias) ? $errors[] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
-            }
-
-            $evento->setEvento($sgrEvento);
-            $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-            $dias = $evento->calculateDias($fechasEvento);
-            $sgrEvento->setDias($dias);
-           
-            $evento->setEvento($sgrEvento);
-            //Si hay solapamiento, volvemos al formulario (con true flashea el error, si lo hay)
-            if ( !$evento->hasSolape()->isEmpty() || !empty($errors) )
+        if ( $form->isSubmitted() )
+        {
+            if( !$form->isValid() )
             {
+                //return $this->json( dump($form->getErrors(true)) );
             
-                $html =  $this->render('sgr_calendarios/_errors.html.twig', [
-                        'sgr_evento' => $sgrEvento,
-                        'solapes' => $evento->hasSolape(),
-                        'errors' => $errors,
-                        'form' => $form->createView(),
-                ]);
+                $html = $this->render('sgr_calendarios/_errors.html.twig', [
+                            'errors' => $form->getErrors(true),
+                        ]);
                 return $this->json($html);
+            }
+            else
+            {
+                $errors = array();
+                $entityManager = $this->getDoctrine()->getManager();
+            
+                //setUser 
+                $sgrEvento->setUser($this->getUser());
+                
+                //setEstado
+                $sgrEvento->setEstado('aprobado');
+            
+                //setUpdatedAt
+                $sgrEvento->setUpdatedAt();
 
+
+                if( !$sgrEvento->getDias() )
+                {
+                    
+                    $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[]['message'] = 'Selección de días no válida.';
+                    if (empty($errors)){
+                        $evento->setEvento($sgrEvento);
+                        $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+           
+                        $dias = $evento->calculateDias($fechasEvento);
+                    }
+                }
+                else
+                {
+                    
+                    $evento->setEvento($sgrEvento);
+                    $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+               
+                    $dias = $evento->calculateDias($fechasEvento);
+                    empty($dias) ? $errors[]['message'] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
+                }
+                
+                //si errors return
+                if( !empty($errors) )
+                {
+                    
+                        $html = $this->render('sgr_calendarios/_errors.html.twig', [
+                            'errors' => $errors,
+                        ]);
+                    
+                        return $this->json($html);
+                }
+                
+                //No errors
+                $evento->setEvento($sgrEvento);
+                //Si solapamiento
+                if ( !$evento->hasSolape()->isEmpty() )
+                {
+                    //return $this->json('solape');
+                    //return $this->json( 'hola' );
+                    $html =  $this->render('sgr_calendarios/_errors.html.twig', [
+                                    'solapes' => $evento->hasSolape(),
+                    ]);
+                    return $this->json($html);
+                }
+                
+                //NO errors, no solapamientos
+                foreach ($fechasEvento as $dt) {
+                    //return $this->json('no solape');
+                    $sgrFechasEvento = new sgrFechasEvento();
+                    $sgrFechasEvento->setFecha($dt);
+                    $entityManager->persist($sgrFechasEvento);
+                    $sgrEvento->addFecha($sgrFechasEvento);
+                }
+
+                $entityManager->persist($sgrEvento);
+                $entityManager->flush();
+                //return new Response('éxito'); //$this->redirectToRoute('sgr_calendarios_index');
+                return $this->json(true);
                 //Flash resultado 
                 //exit;
-                }
-                /*return $this->render('sgr_evento/new.html.twig', [
-                        'sgr_evento' => $sgrEvento,
-                        'form' => $form->createView(),
-                ]);*/
-            
-            foreach ($fechasEvento as $dt) {
-                $sgrFechasEvento = new sgrFechasEvento();
-                $sgrFechasEvento->setFecha($dt);
-                $entityManager->persist($sgrFechasEvento);
-                $sgrEvento->addFecha($sgrFechasEvento);
             }
-
-            $entityManager->persist($sgrEvento);
-            $entityManager->flush();
-            //return new Response('éxito'); //$this->redirectToRoute('sgr_calendarios_index');
-            return $this->json(true);
-            //Flash resultado 
-            //exit;
         }
-    
+        
+        
         return $this->render('sgr_calendarios/new.html.twig', [
                 'sgr_evento' => $sgrEvento,
                 'form' => $form->createView(),
                 ]);
-        return new Response('');
+        //return new Response('');
     }
 
 

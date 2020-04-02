@@ -127,36 +127,42 @@ class SgrEventoController extends AbstractController
             $sgrEvento->setUpdatedAt();
 
             //Si dias[] es vacio
-            //dump(!$sgrEvento->getDias());
-
-            if(!$sgrEvento->getDias() )
-                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[] = 'Selección de días no válida';
-
-            if (empty($errors)){
+            if( !$sgrEvento->getDias() ){
+                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[]['message'] = 'Selección de días no válida';
+                if (empty($errors)){
+                    $evento->setEvento($sgrEvento);
+                    $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+           
+                    $dias = $evento->calculateDias($fechasEvento);
+                }
+            }
+            else 
+            {
                 $evento->setEvento($sgrEvento);
                 $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
            
                 $dias = $evento->calculateDias($fechasEvento);
-                empty($dias) ? $errors[] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
+                empty($dias) ? $errors[]['message'] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
             }
-            //dump($dias);
-            //dump($sgrEvento);
-            //exit;
             
-
+            if ( !empty($errors) )
+                    return $this->render('sgr_evento/new.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'errors' => $errors,
+                        'form' => $form->createView(),
+                    ]);
+            
+            //No errors
             $evento->setEvento($sgrEvento);
-            //hasSolape devuelve un arrayCollection vacio si no hay solapamiento
-            //dump($evento->hasSolape());
-            //exit;
-            if ( !$evento->hasSolape()->isEmpty() || !empty($errors) )
-            
+            //Si solapamiento
+            if ( !$evento->hasSolape()->isEmpty()  )
                 return $this->render('sgr_evento/new.html.twig', [
                         'sgr_evento' => $sgrEvento,
                         'solapes' => $evento->hasSolape(),
-                        'errors' => $errors,
                         'form' => $form->createView(),
                 ]);
-        
+            
+            //no errors, no salapamientos
             foreach ($fechasEvento as $dt) {
                 $sgrFechasEvento = new sgrFechasEvento();
                 $sgrFechasEvento->setFecha($dt);
@@ -207,32 +213,46 @@ class SgrEventoController extends AbstractController
             
             //Si dias[] es vacio
             //dump(!$sgrEvento->getDias());
-            if(!$sgrEvento->getDias() )
-                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[] = 'Selección de días no válida';
-
-            if (empty($errors)){
+            if( !$sgrEvento->getDias() )
+            {
+                
+                $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[]['message'] = 'Selección de días no válida';
+                if (empty($errors)){
+                    $evento->setEvento($sgrEvento);
+                    $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
+           
+                    $dias = $evento->calculateDias($fechasEvento);
+                }
+            }
+            else
+            {
                 $evento->setEvento($sgrEvento);
                 $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
            
                 $dias = $evento->calculateDias($fechasEvento);
-                empty($dias) ? $errors[] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
-            }
-
-            //dump($sgrEvento);
-            //exit;
+                empty($dias) ? $errors[]['message'] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
+            }    
+            
+            if ( !empty($errors) )
+                
+                    return $this->render('sgr_evento/edit.html.twig', [
+                        'sgr_evento' => $sgrEvento,
+                        'errors' => $errors,
+                        'form' => $form->createView(),
+                    ]);
+            
+            //No errors
             $evento->setEvento($sgrEvento);
-            //hasSolape devuelve arrayCollection vacio si no hay solapamiento
-            //dump($evento->hasSolape());
-            //exit;
-            if ( !$evento->hasSolape()->isEmpty() || !empty($errors) )
+            //Si solapamientos
+            if ( !$evento->hasSolape()->isEmpty()  )
             
                 return $this->render('sgr_evento/edit.html.twig', [
                         'sgr_evento' => $sgrEvento,
                         'solapes' => $evento->hasSolape(),
-                        'errors' => $errors,
                         'form' => $form->createView(),
                 ]);
         
+            //no errors, no salapamientos
             foreach ($fechasEvento as $dt) {
                 $sgrFechasEvento = new sgrFechasEvento();
                 $sgrFechasEvento->setFecha($dt);
