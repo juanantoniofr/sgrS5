@@ -201,6 +201,7 @@ class Evento extends AbstractController
      *
      * @return Array Object DateTime 
     */
+    /* se llamaba desde SgrUploadCSVController.php line 175 
     public function calculateFechasEvento()
     {
 
@@ -225,22 +226,8 @@ class Evento extends AbstractController
         }
 
         return $fechas;
-    }
-                    //getAllDaysforDates
-    public function calculateDias($fechasEvento)
-    {
-        //concordar dias[] con fechasEventos
-        $dias = array();
-        $fechasEvento->forAll(function($index, $fechaEvento) use (&$dias){
-            
-            if ( !in_array($fechaEvento->format('w'), $dias) )
-                    $dias[] = $fechaEvento->format('w');
-                    return true;
-            });
-
-        return $dias;
-    }
-
+    }*/
+    
     public function ToArray(Array $fechas)
     {
         

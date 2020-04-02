@@ -240,8 +240,8 @@
                                 console.log(respuesta);
                                 console.log($('#errors'));
 
-                                $('#errors').html(respuesta.content).fadeIn('slow','linear');
-                                /*if (respuesta == true)
+                                //$('#errors').html(respuesta.content).fadeIn('slow','linear');
+                                if (respuesta)
                                 {
                                     modal.hide();
                                     $('form[name="sgr_filters_sgr_eventos"]').submit();
@@ -251,7 +251,7 @@
                                     $('#errors').hide().html(respuesta.content).fadeIn('slow','linear');
                                     
                                    
-                                }*/
+                                }
 
                             },
                             error: function(xhr, ajaxOptions, thrownError){

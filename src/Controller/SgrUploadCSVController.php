@@ -172,8 +172,8 @@ class SgrUploadCSVController extends AbstractController
                 
                 foreach ($rowsSgrEventos as $sgrEvento) {
                     $evento->setEvento($sgrEvento);
-                    $fechasEvento = $evento->calculateFechasEvento();
-                           
+                    //$fechasEvento = $evento->calculateFechasEvento();
+                    $fechasEvento = $evento->getAllFechas();                           
                     foreach ($fechasEvento as $dt) {
                         $sgrFechasEvento = new sgrFechasEvento();
                         $sgrFechasEvento->setFecha($dt);

@@ -304,7 +304,7 @@ class SgrCalendariosController extends AbstractController
             {
                 //return $this->json( dump($form->getErrors(true)) );
             
-                $html = $this->render('sgr_calendarios/_errors.html.twig', [
+                $html = $this->render('sgr_form/_errors.html.twig', [
                             'errors' => $form->getErrors(true),
                         ]);
                 return $this->json($html);
@@ -322,38 +322,21 @@ class SgrCalendariosController extends AbstractController
             
                 //setUpdatedAt
                 $sgrEvento->setUpdatedAt();
-
-
-                if( !$sgrEvento->getDias() )
-                {
-                    
-                    $sgrEvento->getFInicio() == $sgrEvento->getFFin() ? $sgrEvento->setDias([ $sgrEvento->getFInicio()->format('w') ]) : $errors[]['message'] = 'Selección de días no válida.';
-                    if (empty($errors)){
-                        $evento->setEvento($sgrEvento);
-                        $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-           
-                        $dias = $evento->calculateDias($fechasEvento);
-                    }
-                }
-                else
-                {
-                    
-                    $evento->setEvento($sgrEvento);
-                    $fechasEvento = new ArrayCollection($evento->calculateFechasEvento());
-               
-                    $dias = $evento->calculateDias($fechasEvento);
-                    empty($dias) ? $errors[]['message'] = 'Selección de días no válida' : $sgrEvento->setDias($dias);
-                }
                 
+                $evento->setEvento($sgrEvento);
+
+                //check valid selected dias
+                if ( !$evento->isValidDias() )
+                    $errors[]['message'] = 'Selección de días no válida';
+            
                 //si errors return
                 if( !empty($errors) )
                 {
                     
-                        $html = $this->render('sgr_calendarios/_errors.html.twig', [
+                    $html = $this->render('sgr_form/_errors.html.twig', [
                             'errors' => $errors,
-                        ]);
-                    
-                        return $this->json($html);
+                    ]);
+                    return $this->json($html);
                 }
                 
                 //No errors
@@ -363,14 +346,14 @@ class SgrCalendariosController extends AbstractController
                 {
                     //return $this->json('solape');
                     //return $this->json( 'hola' );
-                    $html =  $this->render('sgr_calendarios/_errors.html.twig', [
+                    $html =  $this->render('sgr_form/_errors.html.twig', [
                                     'solapes' => $evento->hasSolape(),
                     ]);
                     return $this->json($html);
                 }
                 
                 //NO errors, no solapamientos
-                foreach ($fechasEvento as $dt) {
+                foreach ($evento->getAllFechas() as $dt) {
                     //return $this->json('no solape');
                     $sgrFechasEvento = new sgrFechasEvento();
                     $sgrFechasEvento->setFecha($dt);
