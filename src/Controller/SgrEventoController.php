@@ -111,8 +111,7 @@ class SgrEventoController extends AbstractController
         $sgrEvento = new SgrEvento();
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
-        
-        //exit;    
+            
         if ($form->isSubmitted() && $form->isValid()) {
             $errors = array();
             $entityManager = $this->getDoctrine()->getManager();

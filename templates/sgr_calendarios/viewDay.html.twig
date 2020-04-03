@@ -21,7 +21,7 @@
     {% if aCalendarios is defined %}
     {# dump(aCalendarios) #}
     
-
+    <p>Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b></p>
     <table class="table table-striped table-bordered">  
         
         <caption class="text-center">

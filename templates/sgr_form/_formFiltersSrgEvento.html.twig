@@ -45,20 +45,39 @@
 
 	<div class="form-row mb-1">
 		
-        <div class="col-md-2 p-2">
+        <div class="col-md-4 p-2">
             
+
             <div class="form-group col-md-8">
-                {% if view is defined and view == 'day' %}
-                    <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha' }) }}</label>
-                {% elseif view is not defined %}
-                    <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
-                {% endif %}
+            {% if view is defined and view == 'day' %}
+                <div style="overflow:hidden;">
+                    
+                            <div class="col-md-12">
+                                <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
+                                <div id="datetimepicker-fi-day" data-target="#datetimepicker-fi-day"></div>
+                                <div class="row">
+                                <div class="" id="datetimepicker-fi-day" data-target-input="nearest">
+                                    {{ form_widget(form.f_inicio, {'attr': {'class': '', 'data-target' : '#datetimepicker-fi-day'}}) }}
+                                </div>
+                                </div>
+                                
+
+                            </div>
+                     
+                </div>
+            {% elseif view is not defined %}    
+
+
+    
+                <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
                 <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
                     {{ form_widget(form.f_inicio, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-fi'}}) }}
                     <div class="input-group-append" data-target="#datetimepicker-fi" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
+            </div>
+            {% endif %}
             </div>
             
             {% if view is not defined or view != 'day' %}
@@ -74,7 +93,7 @@
             {% endif %}
         </div>
 
-        <div class="col-md-10 d-flex flex-column justify-content-end">
+        <div class="col-md-8 d-flex flex-column justify-content-end">
             	<div class="d-flex justify-content-end p-2">
                     <div class="form-group col-md-4">
         			<label for="inputTermino">{{ form_label(form.termino) }}</label>

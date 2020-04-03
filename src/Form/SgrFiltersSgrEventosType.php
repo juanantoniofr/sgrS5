@@ -142,8 +142,15 @@ class SgrFiltersSgrEventosType extends AbstractType
                 
                 $data = $event->getData();
                 $form = $event->getForm();
-                //dump($data['titulacion']);
-                //exit;
+                
+                //No se añade al formulario de filtros cuando solo necesito f_inicio
+                if (!isset($data['f_fin']))
+                {
+                    //dump($data);
+                    //dump($form);
+                    // en controller $data['f_fin'] == null
+                    $form->add('f_fin', TextType::class, [ 'data' => $data['f_inicio'] ]);
+                }
                 if ($data['termino'])
                 {
                     
@@ -206,6 +213,8 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'choice_label' => 'nombre',
                                 ]);
                 }
+
+                //dump($form);
             }
         );
     }

@@ -168,35 +168,27 @@ class SgrCalendariosController extends AbstractController
         //for filters calendario de eventos        
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
-
-        if (!$form->isSubmitted()){
+        
+        //All espacios.
+        $sgrEspacios = $sgrEspacioRepository->findAll();
+        if (!$form->isSubmitted())
+        {
+            //Default Value
             $begin = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));//hoy
             $end = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));
-
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-
-            //All espacios.
-            $sgrEspacios = $sgrEspacioRepository->findAll();
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
         }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            //dump($form->getData());
-
+        
+        if ($form->isSubmitted() && $form->isValid())
+        {
             $data = $form->getData();
-            //dump($data);
-            //exit;
-            //filter by fechas
-            if ($data['f_inicio'])
-                $begin = $data['f_inicio'];
-            if($data['f_fin'])
-                $end = $data['f_fin'];
-
+        
+            $data['f_inicio'] ? $begin = $data['f_inicio'] : $begin = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));
+            $end = $begin;
             
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-            //dump($sgrFechasEvento);
-            
+            $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
             //filter by actividad
             if( $data['actividad'])
             {
