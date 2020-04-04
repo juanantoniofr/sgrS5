@@ -152,9 +152,15 @@ class Evento extends AbstractController
 
         $solapes = new ArrayCollection();
         //Array de objetos DateTime entre from f_inicio to f_fin 
-        $dateTimeFechasEvento = $this->ToArray($this->calculateFechasEvento());
+        //dump($this->getAllFechas());
+        
+        $fechas = $this->getAllFechas()->toArray();
+        $dateTimeFechasEvento = array();
+        foreach ($fechas as $fecha) {
+            $dateTimeFechasEvento[] = $fecha->format('Y-m-d');
+        }       
         //Initialize
-
+            
         //Array de object SgrFechaEventos
         $result = $this->getDoctrine()->getRepository(SgrFechasEvento::class)->findFechasWithOutEventoId($dateTimeFechasEvento,$this->sgrEvento->getId());
         //dump($result);

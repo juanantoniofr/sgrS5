@@ -103,8 +103,8 @@
                                             >   
                                                 <div class="badge badge-info text-left" style="width: 100%;height: 100%;">
                                                     <div class="align-middle text-wrap text-truncate">
-                                                    {{ period.evento.titulo }} (
-                                                    <span class="text-sm-left">{{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.hFin|date('H:i') }}</span>)
+                                                    {{ period.evento.titulo }}
+                                                    <span class="text-sm-left text-danger">({{ period.evento.fInicio|date('d-m-Y') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('d-m-Y') }})</span>
                                                     </div>
                                                         
                                                 </div>
@@ -240,7 +240,7 @@
                                 console.log(respuesta);
                                 console.log($('#errors'));
 
-                                //$('#errors').html(respuesta.content).fadeIn('slow','linear');
+                                $('#errors').html(respuesta.content).fadeIn('slow','linear');
                                 if (respuesta)
                                 {
                                     modal.hide();
