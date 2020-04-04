@@ -48,48 +48,43 @@
         <div class="col-md-4 p-2">
             
 
-            {% if view is defined and view == 'day' %}
-            <div class="form-group col-md-8" >
-                <div style="overflow:hidden;">
-                    
-                    <div class="col-md-12" >
-                        <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
-                        <div style="height: 250px" >
-                            <div id="datetimepicker-fi-day" data-target="#datetimepicker-fi-day"></div>
+            {% if view == 'diaria' or  view == 'semanal'%}
+                <div class="form-group col-md-8" >
+                    <div style="overflow:hidden;">
+                        
+                        <div class="col-md-12" >
+                            <label>{{ form_label(form.f_inicio,null, {'label' : 'Seleccione fecha' }) }}</label>
+                            <div style="height: 250px" >
+                                <div id="datetimepicker-fi-day" data-target="#datetimepicker-fi-day"></div>
+                            </div>
+                            <div class="row">
+                                    {{ form_widget(form.f_inicio, {'attr': {'class': '', 'data-target' : '#datetimepicker-fi-day'}}) }}
+                            </div>
+
+
                         </div>
-                        <div class="row">
-                                {{ form_widget(form.f_inicio, {'attr': {'class': '', 'data-target' : '#datetimepicker-fi-day'}}) }}
+                    </div>
+                </div>
+            {% else  %}    
+                <div class="form-group col-md-8" >
+                    <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
+                    <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
+                        {{ form_widget(form.f_inicio, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-fi'}}) }}
+                        <div class="input-group-append" data-target="#datetimepicker-fi" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
-
-
                     </div>
                 </div>
-            </div>
-            {% elseif view is not defined %}    
-
-
-            <div class="form-group col-md-8" >
-                <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
-                <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
-                    {{ form_widget(form.f_inicio, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-fi'}}) }}
-                    <div class="input-group-append" data-target="#datetimepicker-fi" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
             
-            
-            {% if view is not defined or view != 'day' %}
-            <div class="form-group col-md-8">
-                <label>{{ form_label(form.f_fin) }}</label>
-                <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
-                    {{ form_widget(form.f_fin, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-ff'}}) }}
-                    <div class="input-group-append" data-target="#datetimepicker-ff" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                <div class="form-group col-md-8">
+                    <label>{{ form_label(form.f_fin) }}</label>
+                    <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
+                        {{ form_widget(form.f_fin, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-ff'}}) }}
+                        <div class="input-group-append" data-target="#datetimepicker-ff" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
         </div>
 

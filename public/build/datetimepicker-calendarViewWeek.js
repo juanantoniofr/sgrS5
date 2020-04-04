@@ -1,4 +1,14 @@
 $(function () {
+    
+	$('#datetimepicker-fi-day').datetimepicker({
+		inline: true,
+		sideBySide: true,
+		format: 'L',
+		locale: 'es',
+		//autoclose: false,
+		keepOpen: true,
+	
+	});
     //********************************
     //******* view Calendarios *******
 
@@ -19,23 +29,14 @@ $(function () {
                 if( $f_inicio.isAfter(e.date) )
             	   $('#datetimepicker-fi').datetimepicker('date', e.date);
     });
-
-    //Default Value for filters sgrEventos in view Calendarios
-	$current_month = moment().get('month');
-	$current_year = moment().get('year');
-
-	if ($current_month >= 8 ){
-		//current_month >= 8 (September)
-        //alert($current_month);
-		$('#datetimepicker-fi').datetimepicker( 'date', moment().set('year',$current_year).set('month',8).set('date',1).format('D/M/YYYY') );
-		$('#datetimepicker-ff').datetimepicker( 'date', moment().set('year',$current_year + 1).set('month',7).set('date',31) );
-	}
-	else{
-        //alert($current_month);
-        //alert($current_year);
-        //alert(moment().set('year',$current_year).set('month',7).set('date',31));
-		$('#datetimepicker-fi').datetimepicker( 'date', moment().set('year',$current_year-1).set('month',8).set('date',1) );
-		$('#datetimepicker-ff').datetimepicker( 'date', moment().set('year',$current_year).set('month',7).set('date',31) );
+    
+    //console.log( $('#sgr_filters_sgr_eventos_f_inicio').val() );
+    console.log('view week');
+        if ( !$('#sgr_filters_sgr_eventos_f_inicio').val() )
+    {
+        $('#datetimepicker-fi-day').datetimepicker( 'date', moment().locale('es').startOf('week').format('D/M/YYYY') );
+        $('#sgr_filters_sgr_eventos_f_inicio').val( moment().locale('es').startOf('week').format('D/M/YYYY') );
+    	//$('#datetimepicker-ff').datetimepicker( 'date', moment().locale('es').endOf('week').format('D/M/YYYY') );
     }
 
     //$('#datetimepicker-hi').datetimepicker( 'date', moment().set('hour',8).set('minutes',30) );

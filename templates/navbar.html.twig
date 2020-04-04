@@ -34,8 +34,9 @@
                             <i class="far fa-calendar mr-1"></i>Calendarios
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{{path('sgr_calendarios_view_day')}}">Vista Diaria</a>
-                            <a class="dropdown-item" href="{{path('sgr_calendarios_index')}}">Personalizada</a>
+                            <a class="dropdown-item" href="{{ path('sgr_calendarios_vista', {view: 'diaria'} ) }}">Vista Diaria</a>
+                            <a class="dropdown-item" href="{{path('sgr_calendarios_vista', {view: 'semanal'} ) }}">Vista Semanal</a>
+                            <a class="dropdown-item" href="{{path('sgr_calendarios_vista', {view: 'anual'} ) }}">Vista Anual</a>
                         </div>
                     </div>
                     

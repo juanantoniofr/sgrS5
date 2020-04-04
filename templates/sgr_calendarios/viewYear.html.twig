@@ -21,15 +21,21 @@
 	
 	{% set diasSemana = {1: 'Lunes', 2:'Martes', 3: 'Miércoles',4: 'Jueves',5: 'Viernes',6: 'Sábado' } %}
 	{% if aCalendarios is defined %}
-	<p>
-		Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
-	</p>
-	<table class="table table-striped table-bordered">	
-	{# for cod, dia in diasSemana #}
+	
 	{% for calendario in aCalendarios %}
-	<tr>
-		<th>{# dia #}{{ calendario.sgrEspacio.nombre }}</th>
-		<td>
+	
+	<h2>{{ calendario.sgrEspacio.nombre }}</h2>
+	<div class="row">
+		<div class="col-6 justify-content-start" >
+			<p>
+
+				Ocupación desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+			</p>
+		</div>
+		<div class=col-6>
+			{{ include('sgr_calendarios/nav.html.twig') }}
+		</div>
+	</div>
 	<table class="table table-striped table-bordered tespacio">
 		<caption class="text-center">Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b> ({{ calendario.sgrEspacio.nombre }}) </caption>
 		<thead class="thead-dark">
@@ -135,9 +141,8 @@
 			{% endfor %}
 		</tbody>
 	</table>
-		</td>
 	{%endfor%}
-	</table>
+	
 	{%else%}
 		<div class="alert alert-primary p-4" role="alert">
             Seleccione criterios de busqueda... 
@@ -171,48 +176,17 @@
 	
 	<script type="text/javascript">        
         $(function () {
-            /*$('.evento').each(function(){
-                var $wtd = $(this).closest("td").width() + 2; //2 pixels del border del td
-                var $htd = $(this).closest("td").height();
-                var $duration = $(this).data('duration');
-                
-                
-                $(this).width( ($wtd * $duration) / 60 );
-                if ( $(this).data('id') > 1 ){
-                	//console.log($(this).data('id'));
-                	
-                	//console.log($(this).css( 'top'));
-                	//console.log($(this).css( 'z-index'));
-                	//console.log($(this).height());
-
-                	$(this).css( 'z-index', 100 + $(this).data('id'));
-                	$(this).css( 'top' , $(this).height() / 4 );
-                	$(this).height($(this).height() / 2 );
-
-                	$prev = $(this).prev();//("div.evento");
-
-                	$prev.css( 'border', '1px solid red');
-                	
-                	
-                	//console.log($(this).css( 'top'));
-                	//console.log($(this).css( 'z-index'));
-                	
-                	//console.log($(this).height());
-                }
-                
-            });*/
-
             $('.tespacio').each(function(){
 
             	$(this).find('td').each(function(){
             	
             		$td = $(this);
             		if ($td.find('.evento').length > 0)
-            			console.log($(this));
+            			//console.log($(this));
 
             		$td.find('.evento').each(function(index){
             			
-            			console.log($(this));
+            			//console.log($(this));
 
             			//set duration == width
             			var $wtd = $(this).closest("td").width() + 2; //2 pixels del border del td
@@ -220,7 +194,7 @@
                 		var $duration = $(this).data('duration');
                 		$(this).width( ($wtd * $duration) / 60 );
 
-                		console.log($(this).closest("td").find('.evento').length);
+                		//console.log($(this).closest("td").find('.evento').length);
                 		$numerodeeventos = $(this).closest("td").find('.evento').length;
                 		$h = ($htd - 20) / $numerodeeventos;
                 		$(this).height($h);
@@ -249,8 +223,12 @@
 	
 	<script type="text/javascript" src="/build/formFiltersInput.js"></script>
 	<script type="text/javascript" src="/build/datetimepickerInit.js"></script>
-	<script type="text/javascript" src="/build/datetimepicker-calendarViewCustom.js"></script>
-
+	{% if view == 'anual' %}
+		<script type="text/javascript" src="/build/datetimepicker-calendarViewYear.js"></script>
+	{% endif %}
+	{% if view == 'semanal' %}
+		<script type="text/javascript" src="/build/datetimepicker-calendarViewWeek.js"></script>
+	{% endif %}
     <!-- 
         <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
         <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
@@ -309,7 +287,7 @@
 			                    else{
 			                    	$('#errors').hide().html(respuesta.content).fadeIn('slow','linear');
 			                    	
-			                    	console.log(respuesta);
+			                    	//console.log(respuesta);
 			                    }
 
 			                },

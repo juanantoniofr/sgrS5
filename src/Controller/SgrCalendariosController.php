@@ -27,41 +27,70 @@ class SgrCalendariosController extends AbstractController
     
 
     /**
-       * @Route("/index.html", name="sgr_calendarios_index", methods={"GET","POST"})
+       * @Route("/vista/{view}", name="sgr_calendarios_vista", methods={"GET","POST"}), defaults={"view": "anual"}
     */
-    public function index(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
+    public function index(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, String $view)
     {
         
-        //for filters calendario de eventos        
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
-        //$formViewDay
         $form->handleRequest($request);
-
-        //All espacios.
         $sgrEspacios = $sgrEspacioRepository->findAll();
+        $aCalendarios = array();
+        
         if (!$form->isSubmitted())
         {
-            //Default Value
             $current_month = (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('m');
             $current_year =  (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('Y');
-            $current_month > 8 ?  $begin = new \DateTime('1-9-'.$current_year, new \DateTimeZone('Europe/Madrid')) : $begin = new \DateTime('1-9-'.($current_year-1), new \DateTimeZone('Europe/Madrid')); 
-            $current_month > 8 ?  $end = new \DateTime('31-8-'.($current_year+1), new \DateTimeZone('Europe/Madrid')) : $end = new \DateTime('31-8-'.$current_year, new \DateTimeZone('Europe/Madrid'));
-
+            
+            switch ($view) {
+                case 'diaria':
+                    $begin = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));//hoy
+                    $end = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));
+                    $template = 'sgr_calendarios/viewDay.html.twig';
+                    break;
+                case 'semanal':
+                    $begin = new \DateTime('Monday this week', new \DateTimeZone('Europe/Madrid')); 
+                    $end = new \DateTime('Sunday this week', new \DateTimeZone('Europe/Madrid'));
+                    $template = 'sgr_calendarios/viewYear.html.twig';
+                    break;
+                default: //case 'anual':
+                    $current_month > 8 ?  $begin = new \DateTime('1-9-'.$current_year, new \DateTimeZone('Europe/Madrid')) : $begin = new \DateTime('1-9-'.($current_year-1), new \DateTimeZone('Europe/Madrid')); 
+                    $current_month > 8 ?  $end = new \DateTime('31-8-'.($current_year+1), new \DateTimeZone('Europe/Madrid')) : $end = new \DateTime('31-8-'.$current_year, new \DateTimeZone('Europe/Madrid'));
+                    $template = 'sgr_calendarios/viewYear.html.twig';
+                    break;
+            }
+            //dump($begin);
+            //dump($end);
+            //exit;
+            
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            
+            //dump($form->getData());
             $data = $form->getData();
-            //filter by fechas
+            
             if ($data['f_inicio'])
                 $begin = $data['f_inicio'];
-            if($data['f_fin'])
-                $end = $data['f_fin'];
-
+            switch ($view) {
+                case 'diaria':
+                    $template = 'sgr_calendarios/viewDay.html.twig';
+                    $data['f_fin'] ? $end = $data['f_fin'] :  $end = $data['f_inicio']; 
+                    break;
+                case 'semanal':
+                    $template = 'sgr_calendarios/viewYear.html.twig';
+                    $data['f_fin'] ? $end = $data['f_fin'] :  $end = $begin->modify('Sunday this week');
+                    break;
+                default: //case 'anual':
+                    $template = 'sgr_calendarios/viewYear.html.twig';
+                    break;
+            }
+            //dump($end);
+            //  exit;
+            //filter by fechas
             
+                
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
             
             //filter by actividad
@@ -130,26 +159,25 @@ class SgrCalendariosController extends AbstractController
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
         }
 
-        if (isset($aCalendarios)){
             
-            return $this->render( 'sgr_calendarios/index.html.twig',[ 
-          		'aCalendarios' => $aCalendarios,
-          		'numDaysView' => (int) $begin->diff($end)->format('%d'),
-          		'form'  => $form->createView(),
-                'data'  => [ 'begin' => $begin , 'end' => $end ],
-          	]
-          );
-        }
+        return $this->render( $template,[ 
+            'form'  => $form->createView(),
+            'aCalendarios' => $aCalendarios,
+            'data'  => [ 'begin' => $begin , 'end' => $end ],
+            'view' => $view,
+            //'numDaysView' => (int) $begin->diff($end)->format('%d'),
+        ]);
+    
         
-        return $this->render( 'sgr_calendarios/index.html.twig',[ 
+        /*return $this->render( 'sgr_calendarios/index.html.twig',[ 
                 'form'  => $form->createView(),
-                ]);
+                ]);*/
     }
 
     /**
        * @Route("/view/day", name="sgr_calendarios_view_day", methods={"GET","POST"})
     */
-    public function day(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
+    /*public function day(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
     {
         
         //for filters calendario de eventos        
@@ -264,7 +292,7 @@ class SgrCalendariosController extends AbstractController
                 'form'  => $form->createView(),
                 'view' => 'day',
                 ]);
-    }
+    }*/
 
     /**
         * @Route("/ajax/new/evento", name="sgr_calendarios_new", methods={"GET","POST"})

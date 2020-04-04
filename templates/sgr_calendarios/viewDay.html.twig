@@ -21,8 +21,17 @@
     {% if aCalendarios is defined %}
     {# dump(aCalendarios) #}
     
-    <p>Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b></p>
-    <table class="table table-striped table-bordered">  
+    <div class="row">
+        <div class="col-6 justify-content-start" >
+            <p>
+
+                Ocupación desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+            </p>
+        </div>
+        <div class=col-6>
+            {{ include('sgr_calendarios/nav.html.twig') }}
+    </div>
+    </div><table class="table table-striped table-bordered">  
         
         <caption class="text-center">
 

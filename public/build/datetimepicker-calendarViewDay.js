@@ -14,6 +14,7 @@ $(function () {
 
     
 	if (!$('#sgr_filters_sgr_eventos_f_inicio').val()){
+		
 		$('#datetimepicker-fi-day').datetimepicker( 'date', moment(new Date()).format('DD/MM/Y') );
 		$('#sgr_filters_sgr_eventos_f_inicio').val( $('#datetimepicker-fi-day').datetimepicker('date').format('DD/MM/Y') );
 		
