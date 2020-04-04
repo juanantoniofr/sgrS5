@@ -1,4 +1,4 @@
-{{ form_start(form) }}
+{{ form_start(form, {'action': app.request.pathinfo }) }}
 <fieldset>
 
     <div id="accordion">
@@ -47,7 +47,6 @@
 		
         <div class="col-md-4 p-2">
             
-
             {% if view == 'diaria' or  view == 'semanal'%}
                 <div class="form-group col-md-8" >
                     <div style="overflow:hidden;">

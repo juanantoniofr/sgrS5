@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -20,7 +21,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 use App\Form\DataTransformer\DateTimeTransformer;
 use App\Form\DataTransformer\TimeTransformer;
@@ -99,15 +100,17 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'class' => SgrProfesor::class,
                                     'choice_label' => 'nombre',
                                 ])
-            ->add('f_inicio', TextType::class, array(
+            ->add('f_inicio', DateTimeType::class, array(
                                     'required' => true,
                                     'label' => 'Fecha inicio',
-                                    'constraints' => [ new NotBlank(), ],
+                                    'constraints' => [  new NotBlank(),
+                                                        new DateTime(['message' => 'Formato de fecha no válido..']), ],
             ))
             ->add('f_fin', TextType::class, array(
                                     'required' => true,
                                     'label' => 'Fecha fin',
                                     'constraints' => [  new NotBlank(),
+                                                        new DateTime(),
                                                         new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o menor que fecha desde"] ), 
                                                         ],
             ))

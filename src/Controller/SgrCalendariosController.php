@@ -36,9 +36,9 @@ class SgrCalendariosController extends AbstractController
         $form->handleRequest($request);
         $sgrEspacios = $sgrEspacioRepository->findAll();
         $aCalendarios = array();
-        
-        if (!$form->isSubmitted())
-        {
+
+        //if (!$form->isSubmitted())
+        //{
             $current_month = (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('m');
             $current_year =  (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('Y');
             
@@ -59,107 +59,122 @@ class SgrCalendariosController extends AbstractController
                     $template = 'sgr_calendarios/viewYear.html.twig';
                     break;
             }
-            //dump($begin);
-            //dump($end);
-            //exit;
             
             $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
             $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-        }
+        //}
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            //dump($form->getData());
-            $data = $form->getData();
-            
-            if ($data['f_inicio'])
-                $begin = $data['f_inicio'];
-            switch ($view) {
-                case 'diaria':
-                    $template = 'sgr_calendarios/viewDay.html.twig';
-                    $data['f_fin'] ? $end = $data['f_fin'] :  $end = $data['f_inicio']; 
-                    break;
-                case 'semanal':
-                    $template = 'sgr_calendarios/viewYear.html.twig';
-                    $data['f_fin'] ? $end = $data['f_fin'] :  $end = $begin->modify('Sunday this week');
-                    break;
-                default: //case 'anual':
-                    $template = 'sgr_calendarios/viewYear.html.twig';
-                    break;
-            }
-            //dump($end);
-            //  exit;
-            //filter by fechas
-            
+        if ($form->isSubmitted())
+        {
+
+            if ($form->isValid()) 
+            {
                 
-            $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-            
-            //filter by actividad
-            if( $data['actividad'])
-            {
-                $actividad = $data['actividad'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use ($actividad) {
-                    return $item->getEvento()->getActividad() == $actividad;
-                });    
-                $sgrFechasEvento = $aux->toArray();
+                $data = $form->getData();
                 
-            }
-            
-            //filter by titulación
-            if ($data['titulacion'] && $sgrFechasEvento)
-            {
-                $titulacion = $data['titulacion'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use($titulacion){
-                    return $item->getEvento()->getTitulacion() == $titulacion; 
-                });
-                $sgrFechasEvento = $aux->toArray();
-            }
-
-            //filter by asignatura
-            if ($data['asignatura'] && $sgrFechasEvento)
-            {
-                $asignatura = $data['asignatura'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use($asignatura){
-                    return $item->getEvento()->getAsignatura() == $asignatura; 
-                });
-                $sgrFechasEvento = $aux->toArray();
-            }
-
-            //filter by profesor
-            if ($data['profesor'] && $sgrFechasEvento)
-            {
-                $profesor = $data['profesor'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use($profesor){
-                    return $item->getEvento()->getProfesor() == $profesor; 
-                });
-                $sgrFechasEvento = $aux->toArray();
-            }
-          
-            //All espacios.
-            $sgrEspacios = $sgrEspacioRepository->findAll();
-
-            //filter by termino
-            if($data['termino'])
-                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $data['termino'] ]);
-            
-            //filter by espacio
-            if( !$data['espacio']->isEmpty())
-            {
-                $espacios = $data['espacio'];
-                $sgrEspacios = ( new ArrayCollection
-                  ($sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) {
-                    return $espacios->contains($sgrEspacio);
+                if ($data['f_inicio'])
+                    $begin = $data['f_inicio'];
+                switch ($view) {
+                    case 'diaria':
+                        $template = 'sgr_calendarios/viewDay.html.twig';
+                        $data['f_fin'] ? $end = $data['f_fin'] :  $end = $data['f_inicio']; 
+                        break;
+                    case 'semanal':
+                        $template = 'sgr_calendarios/viewYear.html.twig';
+                        $data['f_fin'] ? $end = $data['f_fin'] :  $end = $begin->modify('Sunday this week');
+                        break;
+                    default: //case 'anual':
+                        $template = 'sgr_calendarios/viewYear.html.twig';
+                        break;
                 }
-              );//(['nombre' => $data['espacio'] ]);
+                
+                //filter by fechas
+                $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
+                
+                //filter by actividad
+                if( $data['actividad'])
+                {
+                    $actividad = $data['actividad'];
+                    $aux = new ArrayCollection($sgrFechasEvento);
+                    $aux = $aux->filter(function($item) use ($actividad) {
+                        return $item->getEvento()->getActividad() == $actividad;
+                    });    
+                    $sgrFechasEvento = $aux->toArray();
+                }
+                
+                //filter by titulación
+                if ($data['titulacion'] && $sgrFechasEvento)
+                {
+                    $titulacion = $data['titulacion'];
+                    $aux = new ArrayCollection($sgrFechasEvento);
+                    $aux = $aux->filter(function($item) use($titulacion){
+                        return $item->getEvento()->getTitulacion() == $titulacion; 
+                    });
+                    $sgrFechasEvento = $aux->toArray();
+                }
+
+                //filter by asignatura
+                if ($data['asignatura'] && $sgrFechasEvento)
+                {
+                    $asignatura = $data['asignatura'];
+                    $aux = new ArrayCollection($sgrFechasEvento);
+                    $aux = $aux->filter(function($item) use($asignatura){
+                        return $item->getEvento()->getAsignatura() == $asignatura; 
+                    });
+                    $sgrFechasEvento = $aux->toArray();
+                }
+
+                //filter by profesor
+                if ($data['profesor'] && $sgrFechasEvento)
+                {
+                    $profesor = $data['profesor'];
+                    $aux = new ArrayCollection($sgrFechasEvento);
+                    $aux = $aux->filter(function($item) use($profesor){
+                        return $item->getEvento()->getProfesor() == $profesor; 
+                    });
+                    $sgrFechasEvento = $aux->toArray();
+                }
+              
+                //All espacios.
+                $sgrEspacios = $sgrEspacioRepository->findAll();
+
+                //filter by termino
+                if($data['termino'])
+                    $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $data['termino'] ]);
+                
+                //filter by espacio
+                if( !$data['espacio']->isEmpty())
+                {
+                    $espacios = $data['espacio'];
+                    $sgrEspacios = ( new ArrayCollection
+                      ($sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) {
+                        return $espacios->contains($sgrEspacio);});//(['nombre' => $data['espacio'] ]);
+                }
             }
+            /*else
+            {
+                switch ($view) {
+                    case 'diaria':
+                        $template = 'sgr_calendarios/viewDay.html.twig';
+                        break;
+                    case 'semanal':
+                        $template = 'sgr_calendarios/viewYear.html.twig';
+                        break;
+                    default: //case 'anual':
+                        $template = 'sgr_calendarios/viewYear.html.twig';
+                        break;
+                }
+                //dump($view);
+                //dump($form->isSubmitted());
+                //dump($form->isValid());
+                //dump($template);
+                //exit;
+            }*/
 
-            $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
+            //$aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
         }
-
-            
+        
+        $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'aCalendarios' => $aCalendarios,
