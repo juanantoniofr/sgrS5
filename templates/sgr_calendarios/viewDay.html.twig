@@ -24,6 +24,15 @@
     <div class="row">
         <div class="col-6 justify-content-start" >
             <p>
+                {% if data.filtros %}
+                    {% for key, filtro in data.filtros %}
+                        {% if filtro%}
+                        <span><b>{{ key|capitalize }}:</b> {{filtro|capitalize}} </span>
+                        {% endif %}     
+                    {% endfor %}
+                {% endif %}
+            </p>
+            <p>
 
                 Ocupación desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
             </p>

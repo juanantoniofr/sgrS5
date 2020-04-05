@@ -110,6 +110,8 @@ class SgrEventoController extends AbstractController
     public function new(Request $request, Evento $evento): Response
     {
         $sgrEvento = new SgrEvento();
+        //dump($sgrEvento);
+        //exit;
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
             

@@ -2,16 +2,24 @@ $(function () {
 	
 	//************************************************************
     //******* Init view Calendarios and new/edit sgrEvento *******
-	$('#datetimepicker-fi, #datetimepicker-fi-newSgrEvento').datetimepicker({
-		format: 'L',
-		locale: 'es',
-		autoclose: true,
-	});
 
-	$('#datetimepicker-ff, #datetimepicker-ff-newSgrEvento').datetimepicker({
-		format: 'L',
+	$('#datetimepicker-fi, #datetimepicker-fi-newSgrEvento').datetimepicker({
+		//format: 'L',
 		locale: 'es',
 		autoclose: true,
+		format: 'DD/MM/Y',
+		//format: 'DD/MM/Y',
+		//format: 'dd/MM/yyyy'
+		//date: moment(),
+		//useCurrent:false,
+	});
+	//alert($('#datetimepicker-fi').datetimepicker( 'date'));
+	$('#datetimepicker-ff, #datetimepicker-ff-newSgrEvento').datetimepicker({
+		//format: 'L',
+		locale: 'es',
+		autoclose: true,
+		format: 'DD/MM/Y',
+		//useCurrent:false,
 	});
 
 	$('#datetimepicker-hi, #datetimepicker-hf').datetimepicker({

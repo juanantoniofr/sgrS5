@@ -44,13 +44,13 @@ class SgrEvento
     private $estado;
 
     /**
-     * @ORM\Column(type="date")
-     * @Assert\LessThanOrEqual(propertyPath="f_fin",message="Debe ser menor que fecha hasta")
+     * @ORM\Column(type="datetime")
+     * 
     */
     private $f_inicio;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      * @Assert\GreaterThanOrEqual(propertyPath="f_inicio",
             message="Debe ser igual o mayor que fecha hasta"
             )

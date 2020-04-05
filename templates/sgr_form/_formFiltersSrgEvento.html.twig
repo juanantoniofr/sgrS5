@@ -68,17 +68,18 @@
                 <div class="form-group col-md-8" >
                     <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
                     <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
-                        {{ form_widget(form.f_inicio, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-fi'}}) }}
+                        {{ form_widget(form.f_inicio) }} 
                         <div class="input-group-append" data-target="#datetimepicker-fi" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
                 </div>
-            
+                
+                {# form_widget(form.f_inicio) #}
                 <div class="form-group col-md-8">
                     <label>{{ form_label(form.f_fin) }}</label>
                     <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
-                        {{ form_widget(form.f_fin, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-ff'}}) }}
+                        {{ form_widget(form.f_fin) }}
                         <div class="input-group-append" data-target="#datetimepicker-ff" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>

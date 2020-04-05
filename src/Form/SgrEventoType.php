@@ -16,6 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SgrEventoType extends AbstractType
 {
@@ -50,6 +52,8 @@ class SgrEventoType extends AbstractType
                     'data-provide' => 'datepicker',
                     'data-format' => 'dd/mm/yyyy',
                 ),
+                'constraints' => [  new NotBlank(),
+                                    new DateTime(['format' => 'd/m/Y']) ],
             ))
             ->add('f_fin', TextType::class, array(
                 'required' => false,
@@ -61,6 +65,8 @@ class SgrEventoType extends AbstractType
                     'data-provide' => 'datepicker',
                     'data-format' => 'dd/mm/yyyy',
                 ),
+                'constraints' => [  new NotBlank(),
+                                    new DateTime(['format' => 'd/m/Y']) ],
             ))
 
             ->add('h_inicio', TextType::class, array(

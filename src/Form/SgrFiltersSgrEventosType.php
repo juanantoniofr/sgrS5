@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -19,13 +20,14 @@ use Doctrine\Common\Collections\Collection;
 
 
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\LessThanOrEqual;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+//use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+//use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 use App\Form\DataTransformer\DateTimeTransformer;
 use App\Form\DataTransformer\TimeTransformer;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+
 
 use App\Entity\SgrTaxonomia;
 use App\Entity\SgrTermino;
@@ -101,17 +103,38 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'choice_label' => 'nombre',
                                 ])
             ->add('f_inicio', DateTimeType::class, array(
-                                    'required' => true,
-                                    'label' => 'Fecha inicio',
+                                    'date_label' => 'Fecha inicio',
+                                    'widget' => 'single_text',
+                                    'format' => 'dd/MM/yyyy',
+                                    'html5' => false,
+                                    'input' => 'string',
+                                    'input_format' => 'd/m/Y',
+                                    'view_timezone' => 'Europe/Madrid',
+                                    'model_timezone' => 'Europe/Madrid',
+                                    'attr' => ['class' => 'datetimepicker-input', 'data-target' => '#datetimepicker-fi'],
+                                    'required' => true,                                  
                                     'constraints' => [  new NotBlank(),
-                                                        new DateTime(['message' => 'Formato de fecha no válido..']), ],
+                                                        new DateTime([ 'format' => 'd/m/Y']),
+                                                         ],
             ))
-            ->add('f_fin', TextType::class, array(
-                                    'required' => true,
-                                    'label' => 'Fecha fin',
+            ->add('f_fin', DateTimeType::class, array(
+                                    //'date_label' => 'Fecha Fin',
+                                    'label' => 'Fecha Fin',
+                                    'widget' => 'single_text',
+                                    'format' => 'dd/MM/yyyy',
+                                    'html5' => false,
+                                    'input' => 'string',
+                                    'input_format' => 'd/m/Y',
+                                    'view_timezone' => 'Europe/Madrid',
+                                    'model_timezone' => 'Europe/Madrid',
+                                    'attr' => ['class' => 'datetimepicker-input', 'data-target' => '#datetimepicker-ff'],
+                                    'required' => true,                                  
                                     'constraints' => [  new NotBlank(),
-                                                        new DateTime(),
-                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o menor que fecha desde"] ), 
+                                                        new DateTime(['format' => 'd/m/Y']),
+                                                        /*new GreaterThanOrEqual( [
+                                                            'propertyPath' => 'parent.all[f_inicio]',
+                                                            //'value' => 'parent.all[f_inicio].normData',
+                                                            'message' => "Debe ser igual o mayor que fecha inicio {{ value }} -- {{ compared_value }} -- {{ compared_value_type }}"] ),*/ 
                                                         ],
             ))
             ->add('espacio', EntityType::class,[
@@ -133,26 +156,37 @@ class SgrFiltersSgrEventosType extends AbstractType
                                 ])
         ;
 
-        $builder->get('f_inicio')
-            ->addModelTransformer($this->transformerDateTime);
-        $builder->get('f_fin')
-            ->addModelTransformer($this->transformerDateTime);
+        //$builder->get('f_inicio')
+        //    ->addModelTransformer($this->transformerDateTime);
+        //$builder->get('f_fin')
+        //    ->addModelTransformer($this->transformerDateTime);
+        
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event)
             {
+                //dump('asdads');
+                //exit;
                 
                 $data = $event->getData();
                 $form = $event->getForm();
                 
                 //No se añade al formulario de filtros cuando solo necesito f_inicio
+                //dump('PRE_SUBMIT');
+                //dump($data);
+                //dump($form);
+                //dump($form);
+                //$data['f_inicio'] ? $f_inicio = $data['f_inicio']->format('d/m/Y'): $_f_inicio = false; 
+                //$form->add('f_inicio',$f_inicio);
+                
                 if (!isset($data['f_fin']))
                 {
                     //dump($data);
+                    //exit;
                     //dump($form);
                     // en controller $data['f_fin'] == null
-                    $form->add('f_fin', TextType::class, [ 'data' => $data['f_inicio'] ]);
+                    $form->add('f_fin', DateType::class, [ 'data' => date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'))/*$data['f_inicio']*/ ]);
                 }
                 if ($data['termino'])
                 {
@@ -216,8 +250,9 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'choice_label' => 'nombre',
                                 ]);
                 }
-
+                //dump($data);
                 //dump($form);
+                //exit;
             }
         );
     }

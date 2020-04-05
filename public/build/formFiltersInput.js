@@ -1,25 +1,6 @@
 $(function () {
         
-        /*if ( $('form[name="sgr_evento"]').length) //form new//edit sgr_evento
-        {
-            $form = 'sgr_evento';
-        }
-        else if ( $('form[name="sgr_filters_sgr_eventos"]').length ) //form filters)
-        {
-            $form = 'sgr_filters_sgr_eventos';
-        } 
-        
-        //console.log($form);
-        $('#'+$form+'_titulacion').length ? $titulacion = $('#'+$form+'_titulacion') : $titulacion = null;
-        $('#'+$form+'_curso').length ? $curso = $('#'+$form+'_curso') : $curso = null;
-        $('#'+$form+'_asignatura').length ? $asignatura = $('#'+$form+'_asignatura') : $asignatura = null;
-        $('#'+$form+'_profesor').length ? $profesor = $('#'+$form+'_profesor') : $profesor = null;
-        $('#'+$form+'_grupoAsignatura').length ? $grupoAsignatura = $('#'+$form+'_grupoAsignatura') : $grupoAsignatura = null;
-        $('#'+$form+'_termino').length ? $termino = $('#'+$form+'_termino') : $termino = null;
-        $('#'+$form+'_espacio').length ? $espacio = $('#'+$form+'_espacio') : $espacio = null;
-            var $espacio = $('#'+$form+'_espacio');
-        */
-        //console.log($titulacion.val());
+
         
         $( '#sgr_evento_titulacion, #sgr_filters_sgr_eventos_curso, #sgr_filters_sgr_eventos_titulacion').change(function(e) {
             

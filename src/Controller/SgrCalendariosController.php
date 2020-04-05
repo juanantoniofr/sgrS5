@@ -36,7 +36,7 @@ class SgrCalendariosController extends AbstractController
         $form->handleRequest($request);
         $sgrEspacios = $sgrEspacioRepository->findAll();
         $aCalendarios = array();
-
+        $filtros = array();
         //if (!$form->isSubmitted())
         //{
             $current_month = (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('m');
@@ -71,17 +71,16 @@ class SgrCalendariosController extends AbstractController
             {
                 
                 $data = $form->getData();
-                
                 if ($data['f_inicio'])
-                    $begin = $data['f_inicio'];
+                    $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . "00:00", new \DateTimeZone('Europe/Madrid'));
                 switch ($view) {
                     case 'diaria':
                         $template = 'sgr_calendarios/viewDay.html.twig';
-                        $data['f_fin'] ? $end = $data['f_fin'] :  $end = $data['f_inicio']; 
+                        $data['f_fin'] ? $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . "00:00", new \DateTimeZone('Europe/Madrid')) :  $end = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . "00:00", new \DateTimeZone('Europe/Madrid')); 
                         break;
                     case 'semanal':
                         $template = 'sgr_calendarios/viewYear.html.twig';
-                        $data['f_fin'] ? $end = $data['f_fin'] :  $end = $begin->modify('Sunday this week');
+                        $data['f_fin'] ? $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . "00:00", new \DateTimeZone('Europe/Madrid')) :  $end = clone $begin->modify('Sunday this week');
                         break;
                     default: //case 'anual':
                         $template = 'sgr_calendarios/viewYear.html.twig';
@@ -94,6 +93,7 @@ class SgrCalendariosController extends AbstractController
                 //filter by actividad
                 if( $data['actividad'])
                 {
+                    $filtros['Actividad'] = $data['actividad']->getActividad();
                     $actividad = $data['actividad'];
                     $aux = new ArrayCollection($sgrFechasEvento);
                     $aux = $aux->filter(function($item) use ($actividad) {
@@ -105,6 +105,7 @@ class SgrCalendariosController extends AbstractController
                 //filter by titulación
                 if ($data['titulacion'] && $sgrFechasEvento)
                 {
+                    $filtros['Titulacion'] = $data['titulacion']->getNombre();
                     $titulacion = $data['titulacion'];
                     $aux = new ArrayCollection($sgrFechasEvento);
                     $aux = $aux->filter(function($item) use($titulacion){
@@ -116,6 +117,7 @@ class SgrCalendariosController extends AbstractController
                 //filter by asignatura
                 if ($data['asignatura'] && $sgrFechasEvento)
                 {
+                    $filtros['Asignatura'] = $data['asignatura']->getNombre();
                     $asignatura = $data['asignatura'];
                     $aux = new ArrayCollection($sgrFechasEvento);
                     $aux = $aux->filter(function($item) use($asignatura){
@@ -127,6 +129,7 @@ class SgrCalendariosController extends AbstractController
                 //filter by profesor
                 if ($data['profesor'] && $sgrFechasEvento)
                 {
+                    $filtros['Profesor'] = $data['profesor']->getNombre();
                     $profesor = $data['profesor'];
                     $aux = new ArrayCollection($sgrFechasEvento);
                     $aux = $aux->filter(function($item) use($profesor){
@@ -151,164 +154,34 @@ class SgrCalendariosController extends AbstractController
                         return $espacios->contains($sgrEspacio);});//(['nombre' => $data['espacio'] ]);
                 }
             }
-            /*else
+            else
             {
-                switch ($view) {
-                    case 'diaria':
-                        $template = 'sgr_calendarios/viewDay.html.twig';
-                        break;
-                    case 'semanal':
-                        $template = 'sgr_calendarios/viewYear.html.twig';
-                        break;
-                    default: //case 'anual':
-                        $template = 'sgr_calendarios/viewYear.html.twig';
-                        break;
-                }
+                //******
+                // No valid form
+                //********
                 //dump($view);
-                //dump($form->isSubmitted());
-                //dump($form->isValid());
-                //dump($template);
-                //exit;
-            }*/
-
-            //$aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
+                //dump($form);//->isSubmitted());
+                dump($form->getData());//['f_inicio']);
+                dump($form->getErrors(true));
+                foreach ($form->getErrors(true) as $error) {
+                    dump($error->getMessage());
+                }
+                exit;
+            }
         }
+
         
         $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'aCalendarios' => $aCalendarios,
-            'data'  => [ 'begin' => $begin , 'end' => $end ],
+            'data'  => [ 'begin' => $begin , 'end' => $end , 'filtros' => $filtros],
             'view' => $view,
             //'numDaysView' => (int) $begin->diff($end)->format('%d'),
         ]);
-    
-        
-        /*return $this->render( 'sgr_calendarios/index.html.twig',[ 
-                'form'  => $form->createView(),
-                ]);*/
     }
 
-    /**
-       * @Route("/view/day", name="sgr_calendarios_view_day", methods={"GET","POST"})
-    */
-    /*public function day(Request $request,SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository)
-    {
-        
-        //for filters calendario de eventos        
-        $form = $this->createForm(SgrFiltersSgrEventosType::class);
-        $form->handleRequest($request);
-        
-        //All espacios.
-        $sgrEspacios = $sgrEspacioRepository->findAll();
-        if (!$form->isSubmitted())
-        {
-            //Default Value
-            $begin = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));//hoy
-            $end = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));
-            $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-            $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-        }
-        
-        if ($form->isSubmitted() && $form->isValid())
-        {
-            $data = $form->getData();
-        
-            $data['f_inicio'] ? $begin = $data['f_inicio'] : $begin = new \DateTime('now',new \DateTimeZone('Europe/Madrid'));
-            $end =  clone $begin;
-            
-            $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-            $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-            //filter by actividad
-            if( $data['actividad'])
-            {
-                $actividad = $data['actividad'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use ($actividad) {
-                    return $item->getEvento()->getActividad() == $actividad;
-                });    
-                $sgrFechasEvento = $aux->toArray();
-                
-            }
-            
-            //filter by titulación
-            if ($data['titulacion'] && $sgrFechasEvento)
-            {
-                $titulacion = $data['titulacion'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use($titulacion){
-                    return $item->getEvento()->getTitulacion() == $titulacion; 
-                });
-                $sgrFechasEvento = $aux->toArray();
-            }
-
-            //filter by asignatura
-            if ($data['asignatura'] && $sgrFechasEvento)
-            {
-                $asignatura = $data['asignatura'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use($asignatura){
-                    return $item->getEvento()->getAsignatura() == $asignatura; 
-                });
-                $sgrFechasEvento = $aux->toArray();
-            }
-
-            //filter by profesor
-            if ($data['profesor'] && $sgrFechasEvento)
-            {
-                $profesor = $data['profesor'];
-                $aux = new ArrayCollection($sgrFechasEvento);
-                $aux = $aux->filter(function($item) use($profesor){
-                    return $item->getEvento()->getProfesor() == $profesor; 
-                });
-                $sgrFechasEvento = $aux->toArray();
-            }
-          
-            //All espacios.
-            $sgrEspacios = $sgrEspacioRepository->findAll();
-
-            //filter by termino
-            //dump($data);
-            //exit;
-            if($data['termino'])
-                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $data['termino'] ]);
-            
-            //filter by espacio
-            //dump($data['espacio']->isEmpty());
-            //exit; 
-            if( !$data['espacio']->isEmpty())
-            {
-                $espacios = $data['espacio'];
-                $sgrEspacios = ( new ArrayCollection
-                  ($sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) {
-                    return $espacios->contains($sgrEspacio);
-                }
-              );//(['nombre' => $data['espacio'] ]);
-            }
-
-            $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-        }
-
-        if (isset($aCalendarios))
-        {
-
-                
-            return $this->render( 'sgr_calendarios/viewDay.html.twig',[ 
-                'aCalendarios' => $aCalendarios,
-                'numDaysView' => (int) $begin->diff($end)->format('%d'),
-                'form'  => $form->createView(),
-                'data'  => [ 'begin' => $begin , 'end' => $end ],
-                'view' => 'day',
-            ]
-          );
-        }
-        
-        return $this->render( 'sgr_calendarios/viewDay.html.twig',[ 
-                'form'  => $form->createView(),
-                'view' => 'day',
-                ]);
-    }*/
-
+    
     /**
         * @Route("/ajax/new/evento", name="sgr_calendarios_new", methods={"GET","POST"})
     */

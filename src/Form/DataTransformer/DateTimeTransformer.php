@@ -16,10 +16,15 @@ class DateTimeTransformer implements DataTransformerInterface
      */
     public function transform($datetime)
     {
+        dump($datetime);
+        dump((new \DateTime())->format('d/m/Y'));
+        //exit;
+        
         if (null === $datetime) {
-            return '';
+            return (new \DateTime())->format('d/m/Y');
         }
-
+        //dump(date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid')));
+        //return date_create_from_format('d/m/Y', $datetime, new \DateTimeZone('Europe/Madrid'));
         return $datetime->format('d/m/Y');
     }
 
@@ -31,13 +36,13 @@ class DateTimeTransformer implements DataTransformerInterface
      */
     public function reverseTransform($datetime)
     {
-        
-        //if (!$datetime) {
-        if (!date_create_from_format('d/m/Y', $datetime , new \DateTimeZone('Europe/Madrid'))){
-              throw new TransformationFailedException();
-            //return;
+        //dump(!$datetime);
+        //dump($datetime);
+        //dump(date_create_from_format('d/m/Y H:i', $datetime . '00:00', new \DateTimeZone('Europe/Madrid')));
+        //exit;
+        if (!$datetime || !date_create_from_format('d/m/Y H:i', $datetime . '00:00', new \DateTimeZone('Europe/Madrid'))) {
+              throw new TransformationFailedException('');
         }
-
         return date_create_from_format('d/m/Y H:i', $datetime . '00:00', new \DateTimeZone('Europe/Madrid'));
     }
 }

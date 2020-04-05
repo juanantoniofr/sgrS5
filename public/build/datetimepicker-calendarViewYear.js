@@ -22,7 +22,7 @@ $(function () {
     
     //console.log( $('#sgr_filters_sgr_eventos_f_inicio').val() );
     //console.log($('#sgr_filters_sgr_eventos_f_fin').val());
-        if (!$('#sgr_filters_sgr_eventos_f_inicio').val() && !$('#sgr_filters_sgr_eventos_f_fin').val())
+   if (!$('#sgr_filters_sgr_eventos_f_inicio').val() && !$('#sgr_filters_sgr_eventos_f_fin').val())
     {
         //Default Value for filters sgrEventos in view Calendarios
     	$current_month = moment().get('month');

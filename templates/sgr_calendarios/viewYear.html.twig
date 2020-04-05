@@ -22,6 +22,14 @@
 	{% set diasSemana = {1: 'Lunes', 2:'Martes', 3: 'Miércoles',4: 'Jueves',5: 'Viernes',6: 'Sábado' } %}
 	{% if aCalendarios is defined %}
 	
+	{% if data.filtros %}
+		{% for key, filtro in data.filtros %}
+			{% if filtro%}
+			<span><b>{{ key|capitalize }}:</b> {{filtro|capitalize}} </span>
+			{% endif %}		
+		{% endfor %}
+	{% endif %}
+	
 	{% for calendario in aCalendarios %}
 	
 	<h2>{{ calendario.sgrEspacio.nombre }}</h2>
