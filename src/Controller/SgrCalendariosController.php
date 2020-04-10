@@ -51,12 +51,17 @@ class SgrCalendariosController extends AbstractController
                 case 'semanal':
                     $begin = new \DateTime('Monday this week', new \DateTimeZone('Europe/Madrid')); 
                     $end = new \DateTime('Sunday this week', new \DateTimeZone('Europe/Madrid'));
-                    $template = 'sgr_calendarios/viewYear.html.twig';
+                    $template = 'sgr_calendarios/viewWeek.html.twig';
                     break;
+                case 'mensual':
+                    $begin = new \DateTime('Monday this week', new \DateTimeZone('Europe/Madrid')); 
+                    $end = new \DateTime('Sunday this week', new \DateTimeZone('Europe/Madrid'));
+                    $template = 'sgr_calendarios/viewMonth.html.twig';
+                    break;    
                 default: //case 'anual':
                     $current_month > 8 ?  $begin = new \DateTime('1-9-'.$current_year, new \DateTimeZone('Europe/Madrid')) : $begin = new \DateTime('1-9-'.($current_year-1), new \DateTimeZone('Europe/Madrid')); 
                     $current_month > 8 ?  $end = new \DateTime('31-8-'.($current_year+1), new \DateTimeZone('Europe/Madrid')) : $end = new \DateTime('31-8-'.$current_year, new \DateTimeZone('Europe/Madrid'));
-                    $template = 'sgr_calendarios/viewYear.html.twig';
+                    $template = 'sgr_calendarios/viewWeek.html.twig';
                     break;
             }
             
@@ -79,11 +84,15 @@ class SgrCalendariosController extends AbstractController
                         $data['f_fin'] ? $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . "00:00", new \DateTimeZone('Europe/Madrid')) :  $end = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . "00:00", new \DateTimeZone('Europe/Madrid')); 
                         break;
                     case 'semanal':
-                        $template = 'sgr_calendarios/viewYear.html.twig';
+                        $template = 'sgr_calendarios/viewWeek.html.twig';
+                        $data['f_fin'] ? $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . "00:00", new \DateTimeZone('Europe/Madrid')) :  $end = clone $begin->modify('Sunday this week');
+                        break;
+                    case 'mensual':
+                        $template = 'sgr_calendarios/viewMonth.html.twig';
                         $data['f_fin'] ? $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . "00:00", new \DateTimeZone('Europe/Madrid')) :  $end = clone $begin->modify('Sunday this week');
                         break;
                     default: //case 'anual':
-                        $template = 'sgr_calendarios/viewYear.html.twig';
+                        $template = 'sgr_calendarios/viewWeek.html.twig';
                         break;
                 }
                 
@@ -177,6 +186,8 @@ class SgrCalendariosController extends AbstractController
             'aCalendarios' => $aCalendarios,
             'data'  => [ 'begin' => $begin , 'end' => $end , 'filtros' => $filtros],
             'view' => $view,
+            'month' => $current_month, 
+            'year' => $current_year,    
             //'numDaysView' => (int) $begin->diff($end)->format('%d'),
         ]);
     }

@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SgrEvento index{% endblock %}
+
+{% block stylesheets %}
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+{% endblock %}
+
+{% block body %}
+
+    {# //CSS classes #} 
+    {% set css_cal = 'calendar' %}
+    {% set css_cal_row = 'calendar-row' %}
+    {% set css_cal_day_head = 'calendar-day-head' %}
+    {% set css_cal_day = 'calendar-day' %}
+    {% set css_cal_day_number = 'day-number' %}
+    {% set css_cal_day_blank = 'calendar-day-np' %}
+    {% set css_cal_day_event = 'calendar-day-event' %}
+    {% set css_cal_event = 'calendar-event' %}
+
+    {# //Table headings #}
+    {% set headings = ['L', 'M', 'X', 'J', 'V', 'S', 'D'] %}
+
+    {# // Start: draw table #} 
+
+    <table cellpadding='0' cellspacing='0' class='{{ css_cal }}'>
+        
+        <tr class='{{ css_cal_row }}'>
+            <td class='{{ css_cal_day_head }}'></td>
+                
+                {% for head  in headings %}
+                    <td class='{{ css_cal_day_head }}'>{{ head }}</td>
+                {% endfor %}
+        </tr>
+
+        {# // Days and weeks #}
+        {% set running_day = (year ~ '-' ~ month ~ '-1') | date('N') %}
+        {% set days_in_month = (year ~ '-' ~ month ~ '-1') | date('t') %}
+
+        {# // Row for week one #}
+        <tr class='{{ css_cal_row }}'>
+
+            {# // Print "blank" days until the first of the current week #}
+            {% for x  in 1..running_day %}
+                <td class='{{ css_cal_day_blank }}'> </td>
+            {% endfor %}
+
+            {# // Keep going with days...#}
+            {{ dump(days_in_month) }}
+            
+            {% for day in 1..days_in_month %}
+
+                {# // Check if there is an event today #}
+                {# set cur_date = year ~ '-' ~ month ~ '-' ~ day #}
+                {% set draw_event = false %}
+                {% if events is defined %} {# and events[cur_date] is defined  #}
+                    {% set draw_event = true %}
+                {% endif %}
+
+                {# // Day cell #}
+                    {% if draw_event %}
+                        <td class='{{ css_cal_day }} {{ css_cal_day_event }}'>
+                    {% else %}
+                        <td class='{{ css_cal_day }}'>
+                    {% endif %}
+        
+                            {# // Add the day number #}
+                            <div class='{{ css_cal_day_number }}'> {{ day }}</div>
+
+                                {# // Insert an event for this day #}
+                                {% if draw_event %}
+                                    <div class='{{ css_cal_event }}'>
+                                        <a href='{{ events.href }}'>
+                                            {{ events.text }}
+                                        </a>
+                                    </div>
+                                {% endif %}
+
+                                {# // Close day cell #}
+                        </td>
+                {# end draw cell #}    
+                
+                {#// New row #}
+                    {% if running_day == 7 %}
+                        </tr>
+                        {% if ( (day + 1) <= days_in_month ) %}
+                            <tr class='{{ css_cal_row}}'>
+                        {% endif %}
+                        {% set running_day = 1 %}
+                    {% else %}
+                    
+                        {# // Increment the running day #}
+                        {% set running_day = running_day + 1 %}
+                    {% endif %}
+                {# end new row#}
+            {% endfor %} {#// for day #}
+
+            {# // Finish the rest of the days in the week #}
+            {% if running_day != 1 %}
+                {% for x in [running_day..(running_day + 7)] %}
+                    <td class='{{ css_cal_day_blank }}'> </td>
+                {% endfor %}
+            {% endif %}
+            
+
+        </tr>
+        {# // Final row #}
+
+    {# // End the table #}
+    </table>
+{% endblock%}

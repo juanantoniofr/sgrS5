@@ -52,8 +52,9 @@ class SgrEventoType extends AbstractType
                     'data-provide' => 'datepicker',
                     'data-format' => 'dd/mm/yyyy',
                 ),
-                'constraints' => [  new NotBlank(),
-                                    new DateTime(['format' => 'd/m/Y']) ],
+                'constraints' => [  //new NotBlank(),
+                                    //new DateTime(['format' => 'd/m/Y'])
+                                     ],
             ))
             ->add('f_fin', TextType::class, array(
                 'required' => false,
@@ -65,8 +66,9 @@ class SgrEventoType extends AbstractType
                     'data-provide' => 'datepicker',
                     'data-format' => 'dd/mm/yyyy',
                 ),
-                'constraints' => [  new NotBlank(),
-                                    new DateTime(['format' => 'd/m/Y']) ],
+                'constraints' => [  //new NotBlank(),
+                                    //new DateTime(['format' => 'd/m/Y'])
+                                     ],
             ))
 
             ->add('h_inicio', TextType::class, array(
