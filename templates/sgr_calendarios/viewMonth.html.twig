@@ -87,35 +87,78 @@
                         {% if draw_event %}
                             <td class=''>
                         {% else %}
-                            <td class='{{ css_cal_day }}' style="height: 130px">
+                            <td class='{{ css_cal_day }}' style="height: 130px;">
                         {% endif %}
             
-                                {# // Add the day number #}
-                                <div class='{{ css_cal_day_number }}'> <small>{{ day }}</small></div>
-
-                                <div class="e" style="height: Calc(100% - 25px);overflow-y: hidden;margin-bottom: 5px">
+                                <div class="e" style="height: Calc(100% - 25px);margin-bottom: 5px">
                                 <div class="es">
                                 {# // Insert an event for this day #}
-                                {% for period in calendario.periods %}
-                                    <div class="evento" data-hinicio = "{{ period.evento.hInicio|date('U') }}" data-hfin = "{{ period.evento.hFin|date('U') }}" data-idevento="{{period.evento.id}}" style="width: 100%;background-color: transparent;">
+                                {% for key, period in calendario.periods %}
+                                    {% if key < 4 %}
+                                    <!--<div class="evento" data-hinicio = "{{ period.evento.hInicio|date('U') }}" data-hfin = "{{ period.evento.hFin|date('U') }}" data-idevento="{{period.evento.id}}" style="width: 100%;background-color: transparent;">
 
-                                        <a  href="javascript:;" class="m-0" data-animation="true" tabindex="0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center p-3'>
-                                                <p><b>{{ period.evento.titulo }}</b></p>
-                                                <p>{{ period.evento.actividad }}</p>
-                                                <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
-                                                <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
-                                                <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
-                                                <p>{{period.evento.espacio}}</p></div>"
-                                        >
+                                        -->
 
-                                            <div class="alert alert-info text-left p-0 m-0" role="alert" style="width: 100%;height: 100%;border:1px solid white">
-                                                <div class="align-middle text-wrap text-truncate pl-1">
+                                            <!--<div class="alert alert-info text-left p-0 m-0" role="alert" style="width: 100%;height: 100%;border:1px solid white">
+                                                -->
+                                                    <!--<div class="align-middle text-wrap text-truncate pl-1">-->
+                                                    <a  href="javascript:;" 
+                                                    style="width: 100%;height: 100%;border:1px solid white;" 
+                                                    role="button" 
+                                                    class="m-0 p-0 btn btn-sm btn-info"
+                                                    
+                                                    data-container="body"
+                                                    data-animation="true" 
+                                                    tabindex="{{ period.evento.titulo }}" 
+                                                    data-trigger="focus"
+                                                    data-html="true"
+                                                    data-toggle="popover"
+                                                    title="Información de la Reserva" 
+                                                    data-content="<div class='text-center p-3'>
+                                                        <p><b>{{ period.evento.titulo }}</b></p>
+                                                        <p>{{ period.evento.actividad }}</p>
+                                                        <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
+                                                        <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
+                                                        <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
+                                                        <p>{{period.evento.espacio}}</p></div>"
+                                                    >
+                                                    
                                                     {{ period.evento.titulo }} 
+                                                    
                                                     <span class="text-sm-left text-danger">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('H:i') }})</span>
-                                                </div>
-                                            </div>
+                                                        </a>
+                                                    <!--</div>-->
+                                            <!-- </div> -->
+                                        
+                                    <!-- </div> -->
+                                    {% else %}
+                                        <a class="oculto" style="display: none;clear: both;"
+                                         href="javascript:;" 
+                                                    style="width: 100%;height: 100%;border:1px solid white;" 
+                                                    role="button" 
+                                                    class="m-0 p-0 btn btn-sm btn-primary"
+                                                    
+                                                    data-container="body"
+                                                    data-animation="true" 
+                                                    tabindex="{{ period.evento.titulo }}" 
+                                                    data-trigger="focus"
+                                                    data-html="true"
+                                                    data-toggle="popover"
+                                                    title="Información de la Reserva" 
+                                                    data-content="<div class='text-center p-3'>
+                                                        <p><b>{{ period.evento.titulo }}</b></p>
+                                                        <p>{{ period.evento.actividad }}</p>
+                                                        <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
+                                                        <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
+                                                        <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
+                                                        <p>{{period.evento.espacio}}</p></div>"
+                                                    >
+                                                    
+                                                    {{ period.evento.titulo }} 
+                                                    
+                                                    <span class="text-sm-left text-danger">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('H:i') }})</span>
                                         </a>
-                                    </div>
+                                    {% endif %}
                                 {% endfor %}
                                 </div>
                                 </div>
@@ -125,7 +168,8 @@
                                         {{ (calendario.periods|length) - 5 }} más
                                     </a>
                                 {% endif %}
-
+                                {# // Add the day number #}
+                                <div class='{{ css_cal_day_number }}'> <small>{{ day }}</small></div>
                             {# // Close day cell #}
                             </td>
                     {# end draw cell #}    
@@ -170,31 +214,50 @@
                 e.preventDefault();
                 e.stopPropagation();
                 var td = $(this).closest('td');
-                console.log($(td).height());
+                //console.log($(td).height());
                 $(td).children('div.e').css('position', 'absolute').css('height','unset').css('z-index', 5).css('padding','20px').css('background-color','#eee').css('top', 0);
+                console.log($(td).find('a.oculto'));//
+                $(td).find('a.oculto').css('display','block');
                 //console.log($(td).children('div.e').offset().top);
             });
 
             $('td').on('mouseleave',function(e){
 
-                var td = $(this).closest('td');
-                console.log($(this).height() - 25);
-                $(this).children('div.e').css('height', $(this).height() - 25 ).css('padding','0px').css('background-color','transparent').css('position','unset').css('z-index', 0);//.css('top','unset'); 
+                //var td = $(this).closest('td');
+                //console.log($(this).height() - 25);
+                
+                $(this).find('a.oculto').each(function(e){
+                    $(this).fadeOut();
+                });
+                $(this).children('div.e').css('height', $(this).height() - 25 ).css('padding','0px').css('background-color','transparent').css('position','unset').css('z-index', 0); 
+                $(this).find('[data-toggle="popover"]').popover('hide');
             });
 
-            $('[data-toggle="popover"]').on('click',function(e){
+            $('[data-toggle="popover"]').on('show.bs.popover',function(e){
+               
+
                var td = $(this).closest('td');
-               $(td).off('mouseleave'); 
-            })
+               //$(td).off('mouseleave');
+               
+               //var div = $(this).closest('div.e');
+               //$(div).css('overflow-y','visible'); 
+            });
+
+            $('[data-toggle="popover"]').on('hidden.bs.popover',function(e){
+                var td = $(this).closest('td');
+
+                /*$(td).children('div.e').css('height', $(this).height() - 25 ).css('padding','0px').css('background-color','transparent').css('position','unset').css('z-index', 0);*///.css('top','unset'); 
+                
+            });
         });
     </script>
 
     <script type="text/javascript">        
         $(function () {
             $('[data-toggle="popover"]').popover({
-                trigger: 'focus',
-                animation: true,
-                delay: { "show": 300, "hide": 100 },
+                //trigger: 'focus',
+                //animation: true,
+                //delay: { "show": 300, "hide": 100 },
             });
         });
     </script>
