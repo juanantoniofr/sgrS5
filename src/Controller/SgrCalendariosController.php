@@ -54,8 +54,8 @@ class SgrCalendariosController extends AbstractController
                     $template = 'sgr_calendarios/viewWeek.html.twig';
                     break;
                 case 'mensual':
-                    $begin = new \DateTime('Monday this week', new \DateTimeZone('Europe/Madrid')); 
-                    $end = new \DateTime('Sunday this week', new \DateTimeZone('Europe/Madrid'));
+                    $begin = new \DateTime('first day of this month', new \DateTimeZone('Europe/Madrid')); 
+                    $end = new \DateTime('last day of this month', new \DateTimeZone('Europe/Madrid'));
                     $template = 'sgr_calendarios/viewMonth.html.twig';
                     break;    
                 default: //case 'anual':
