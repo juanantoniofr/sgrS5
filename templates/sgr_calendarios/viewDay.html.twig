@@ -168,7 +168,6 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block morescripts %}
@@ -198,19 +197,17 @@
         });
     </script>
     
+    {# Modify when Upload #}
+    
     <script type="text/javascript" src="/build/formFiltersInput.js"></script>
-
     <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
     <script type="text/javascript" src="/build/datetimepicker-calendarViewDay.js"></script>
-
     
-    <!-- 
-        <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewDay.js"></script>
-
-        
-    -->
+    <!--
+    <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewDay.js"></script>
+    --> 
 
     <script type="text/javascript">
 
@@ -247,11 +244,11 @@
                 
                         e.preventDefault();
                         
-                        $('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
-                        
                         var data = $('form[name="sgr_evento"]').serialize();
                         $.ajax({
-                            url : '/admin/sgr/calendario/ajax/new/evento',
+                            /*{# Modify when Upload #}*/
+                            url : '/reservasfgh/admin/sgr/calendario/ajax/new/evento',    
+                            /*url : '/admin/sgr/calendario/ajax/new/evento',*/
                             type: 'POST',//$form.attr('method'),
                             data : data,
                             success: function(respuesta) {

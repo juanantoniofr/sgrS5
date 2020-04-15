@@ -80,11 +80,6 @@ class SgrUploadCSVController extends AbstractController
 
             //Validations solapaCsv            
             $rowsCsv = $csv->setSolapamientos($rowsCsv);
-            //dump($rowsCsv);
-            //exit;
-            
-            
-            
             
             $entityManager = $this->getDoctrine()->getManager();
                         
@@ -99,15 +94,23 @@ class SgrUploadCSVController extends AbstractController
                 
                 $sgrEvento = new SgrEvento;    
                 //Validations existAula pass??
-                //dump($row['AULA']);
-                //exit;
                 $espacio = $repositoryEspacio->exist($row['AULA']);
                 if($espacio)
                 {
                     $row['validations']['existAula'] = true;
                     $row[$key] = $row;
                 }
-                //dump( $csv->passValidations($row) );                
+
+                //Validations existsTitulación
+                $titulacion = $repositoryTitulacion->findOneBy([ 'codigo' => $row['ES'] ]);
+                if ($titulacion)
+                {							
+                	$row['validations']['existTitulacion'] = true;
+                	$row[$key] = $row;
+                }
+
+                //dump( $row );
+                //exit;                
                 if ($csv->passValidations($row)){
                     //dump($espacio);
                     $sgrEvento->setEspacio($espacio);
@@ -164,10 +167,7 @@ class SgrUploadCSVController extends AbstractController
                     }
                 }
             }
-            //dump($rowsSgrEventos);
-            //dump($rowsCsv);
-            //exit;
-            // añadir ! al if solapa
+            
             if ($rowsSgrEventos)
                 
                 foreach ($rowsSgrEventos as $sgrEvento) {

@@ -18,6 +18,7 @@ use App\Form\SgrFiltersSgrEventosType;
 
 
 use App\Repository\SgrEventoRepository;
+use App\Repository\SgrEspacioRepository;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +41,7 @@ class SgrEventoController extends AbstractController
     /**
      * @Route("/index/{page}", name="sgr_evento_index", defaults={"page"=1}, methods={"GET","POST"})
      */
-    public function index(Request $request, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page ): Response
+    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page ): Response
     {
                         
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
@@ -51,7 +52,7 @@ class SgrEventoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
-
+            //dump($data);
             $id_titulacion = '';
             if ($data['titulacion'])
                 $id_titulacion = $data['titulacion']->getId();
@@ -68,16 +69,23 @@ class SgrEventoController extends AbstractController
 
             $f_inicio = '';
             if ($data['f_inicio'])
-                $f_inicio = $data['f_inicio'];//date_create_from_format('d-m-Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//->getId();
+                $f_inicio = date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//$data['f_inicio'];////->getId();
             
             $f_fin = '';
             if ($data['f_fin'])
-                $f_fin = $data['f_fin'];//date_create_from_format('d-m-Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];//->getId();
+                $f_fin = date_create_from_format('d/m/Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];////$data['f_fin'];//->getId();
             
-            $id_espacio = '';
+            $sgrEspacios = new ArrayCollection();
             if ($data['espacio']->isEmpty() === false)
-                $id_espacio = $data['espacio']->getId();
-
+            {
+                $espacios = $data['espacio'];
+                $sgrEspacios = ( new ArrayCollection( $sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) 
+                    {
+                        return $espacios->contains($sgrEspacio);
+                    });
+            }
+            //dump($espacios);
+            
             $id_actividad = '';
             if ($data['actividad']) 
                 $id_actividad = $data['actividad']->getId();
@@ -85,7 +93,11 @@ class SgrEventoController extends AbstractController
             //dump($data['actividad']->getId());
             
 
-            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $id_espacio, $id_actividad);
+            //$sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $id_espacio, $id_actividad);
+            $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $sgrEspacios, $id_actividad);
+            //dump($sgrEventos);
+            //exit;
+
         }
 
         //dump($sgrEventos);

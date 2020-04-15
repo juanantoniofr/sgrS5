@@ -11,34 +11,17 @@
         
         {# 'app' must match the first argument to addEntry() in webpack.config.js #}
             
+            {# Modify when Upload #}
+            {# encore_entry_link_tags('app') #}
+           <!-- <link href="/font-awesome/css/all.css" rel="stylesheet">-->
             
-            {# Dev #}
-                {# descomentar esta linea en dev y comentar bloque Prod #}
-                    {{ encore_entry_link_tags('app') }}
-                    <link href="/font-awesome/css/all.css" rel="stylesheet">
-                
-            {# end Dev#}
-
+            {# descomentar estas lineas#}
             
-            {# Prod #}
-            {# descomentar estas lineas y comentar bloque Dev #}
-                
-                <!--
-                
-                <link href="/reservasfgh/public/font-awesome/css/all.css" rel="stylesheet">
-                <link href="/reservasfgh/public/build/sgr.css" rel="stylesheet">
-                
-                -->                
-                
-             {# end Prod #}   
+            <link href="/reservasfgh/public/font-awesome/css/all.css" rel="stylesheet">
+            <link href="/reservasfgh/public/build/sgr.css" rel="stylesheet">
             
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-            
-
         {% block stylesheets %}{% endblock %}
-        
-        
-
     </head>
     <body class="d-flex flex-column h-100">
         <header>
@@ -76,25 +59,19 @@
                <!-- <script src="/build/runtime.js"></script>
                 <script src="/build/app.js"></script> -->
         
-        <!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>       
-        {# datepicker boostrap #}
-        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment-with-locales.min.js"></script>-->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  
-
-        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-        -->
-
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-        <script type="text/javascript" src="/build/es.js"></script>
-  
-
-
-
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>       
         
+            {# datepicker boostrap #}
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+        
+            {# Modify when Upload #}
+            <!-- <script type="text/javascript" src="/build/es.js"></script> -->
+        
+            <script type="text/javascript" src="/reservasfgh/public/build/es.js"></script>
+
         {# Dinamyc file input bootstrap #}
         
         <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>

@@ -305,9 +305,7 @@
            			$(this).css('top', nuevapositon);
            		});
            	});
-        });//fin $()function        
-		
-        
+        });//fin $()function            
     </script>
 	
 	<script type="text/javascript">        
@@ -320,6 +318,8 @@
 	 	});
 	</script>
 	
+	{# Modify when Upload #}
+	<!--
 	<script type="text/javascript" src="/build/formFiltersInput.js"></script>
 	<script type="text/javascript" src="/build/datetimepickerInit.js"></script>
 	{% if view == 'anual' %}
@@ -328,14 +328,20 @@
 	{% if view == 'semanal' %}
 		<script type="text/javascript" src="/build/datetimepicker-calendarViewWeek.js"></script>
 	{% endif %}
-    <!-- 
-        <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-        <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewCustom.js"></script>
+    -->
+     
+    <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+	<script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
+	{% if view == 'anual' %}
+		<script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewYear.js"></script>
+	{% endif %}
+	{% if view == 'semanal' %}
+		<script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewWeek.js"></script>
+	{% endif %}
+        <!--<script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewCustom.js"></script>-->
 
         
-    -->
-
+    
 	<script type="text/javascript">
 
 		$('#showMoreFilters').click( function(e){
@@ -370,7 +376,7 @@
     			
     					e.preventDefault();
     					
-    					$('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
+    					//$('form[name="sgr_evento"]').attr('action','/admin/sgr/calendario/ajax/new/evento');
 		    			var data = $('form[name="sgr_evento"]').serialize();
 		    			$.ajax({
 			                url : '/admin/sgr/calendario/ajax/new/evento',

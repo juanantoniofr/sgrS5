@@ -27,7 +27,8 @@ $(function () {
             console.log(data);
             // Submit data via AJAX to the form's action path.
             $.ajax({
-                url : '/admin/sgr/evento/ajax/getAsignaturas',
+                //url : '/admin/sgr/evento/ajax/getAsignaturas',
+                url : '/reservasfgh/admin/sgr/evento/ajax/getAsignaturas',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {
@@ -59,7 +60,8 @@ $(function () {
 
            // Submit data via AJAX to the form's action path.
             $.ajax({
-                url : '/admin/sgr/evento/ajax/getProfesores',
+                //url : '/admin/sgr/evento/ajax/getProfesores',
+                url : '/reservasfgh/admin/sgr/evento/ajax/getProfesores',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {
@@ -85,7 +87,8 @@ $(function () {
             data[$('#sgr_filters_sgr_eventos_termino').attr('name')] = $('#sgr_filters_sgr_eventos_termino').val();
             // Submit data via AJAX to the form's action path.
             $.ajax({
-                url : '/admin/sgr/espacio/ajax/getEspacios',
+                //url : '/admin/sgr/espacio/ajax/getEspacios',
+                url : '/reservasfgh/admin/sgr/espacio/ajax/getEspacios',
                 type: 'GET',//$form.attr('method'),
                 data : data,
                 success: function(html) {

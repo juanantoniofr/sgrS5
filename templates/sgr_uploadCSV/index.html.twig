@@ -53,7 +53,7 @@
             <tr>
                 <td>
                     {# dump(fila.validations) #}
-                    {% if fila.validations.existAula and fila.validations.solapa is empty and fila.validations.solapaCsv is empty and fila.validations.valuesNotValid is empty %}
+                    {% if fila.validations.existTitulacion and fila.validations.existAula and fila.validations.solapa is empty and fila.validations.solapaCsv is empty and fila.validations.valuesNotValid is empty %}
                         <span class="text-success"><b><i class="fas fa-check"></i> Evento salvado con éxito.</b></span>
                     {% else %}
                         <span class="text-danger"><b>Fila con errores.</b></span><br />
@@ -62,7 +62,9 @@
                     {% if fila.validations.valuesNotValid %}
                         <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Valores no válidos: {{ fila.validations.valuesNotValid|join(', ', ' y ') }}</span>
                     {% elseif not fila.validations.existAula %}
-                            <span class="text-danger"><i class="fas fa-exclamation-circle"></i> No existe espacio</span>
+                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> No existe espacio</span>
+                    {% elseif not fila.validations.existTitulacion %}
+                        <span class="text-danger"><i class="fas fa-exclamation-circle"></i> No existe titulación</span>
                     {% else %}
                         {% if fila.validations.solapaCsv %}
                                 <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Solapamiento con la/s fila/s: {{ fila.validations.solapaCsv|join(', ', ' y ') }}</span>

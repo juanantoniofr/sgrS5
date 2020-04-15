@@ -1,16 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SgrEvento index{% endblock %}
+{% block title %}SGR: Calendarios{% endblock %}
 
 {% block stylesheets %}
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-    <link rel="stylesheet" href="/build/calendar.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
     
-    {# Upload change #}
-    <!--
-        <link href="/reservasfgh/public/build/calendar.css" rel="stylesheet">
-    -->
+    {# Modify when Upload #}
+
+    <!--<link rel="stylesheet" href="/build/calendar.css">-->
+    <link href="/reservasfgh/public/build/calendar.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -30,6 +29,7 @@
     {# //Table headings #}
     {% set headings = ['L', 'M', 'X', 'J', 'V', 'S', 'D'] %}
     
+
     {% for calendario in aCalendarios %}
         <h2>{{ calendario.sgrEspacio.nombre }}</h2>
         <div class="row">
@@ -101,11 +101,11 @@
 
                                             <!--<div class="alert alert-info text-left p-0 m-0" role="alert" style="width: 100%;height: 100%;border:1px solid white">
                                                 -->
-                                                    <!--<div class="align-middle text-wrap text-truncate pl-1">-->
+                                                
                                                     <a  href="javascript:;" 
-                                                    style="width: 100%;height: 100%;border:1px solid white;" 
+                                                    style="max-width: 240px; width: 100%;height: 24px;border:1px solid white;" 
                                                     role="button" 
-                                                    class="m-0 p-0 btn btn-sm btn-info"
+                                                    class=" text-truncate m-0 p-0 btn btn-sm btn-info"
                                                     
                                                     data-container="body"
                                                     data-animation="true" 
@@ -125,9 +125,9 @@
                                                     
                                                     {{ period.evento.titulo }} 
                                                     
-                                                    <span class="text-sm-left text-danger">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('H:i') }})</span>
+                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
                                                         </a>
-                                                    <!--</div>-->
+                                                
                                             <!-- </div> -->
                                         
                                     <!-- </div> -->
@@ -156,7 +156,7 @@
                                                     
                                                     {{ period.evento.titulo }} 
                                                     
-                                                    <span class="text-sm-left text-danger">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('H:i') }})</span>
+                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
                                         </a>
                                     {% endif %}
                                 {% endfor %}
@@ -165,7 +165,7 @@
                                 {% if calendario.periods|length > 5 %}
                                     
                                     <a  href="javascript:;" class="showMore"> 
-                                        {{ (calendario.periods|length) - 5 }} más
+                                        {{ (calendario.periods|length) - 4 }} más
                                     </a>
                                 {% endif %}
                                 {# // Add the day number #}
@@ -201,12 +201,12 @@
         {# // End the table #}
         </table>
     {% endfor %}
-    {{ dump(aCalendarios) }}
 {% endblock%}
 
 {% block morescripts %}
     
     <script type="text/javascript">        
+        
         $(function () {
             
             $('a.showMore').on('click',function(e){
@@ -223,8 +223,6 @@
 
             $('td').on('mouseleave',function(e){
 
-                //var td = $(this).closest('td');
-                //console.log($(this).height() - 25);
                 
                 $(this).find('a.oculto').each(function(e){
                     $(this).fadeOut();
