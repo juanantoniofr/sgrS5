@@ -262,7 +262,8 @@ class Evento extends AbstractController
     {
 
         $fechas = [];
-
+        //dump($this->sgrEvento);
+        //exit;
         $start = $this->sgrEvento->getFInicio();
         $end = clone $this->sgrEvento->getFFin();
         $end->add(new \DateInterval('PT24H'));

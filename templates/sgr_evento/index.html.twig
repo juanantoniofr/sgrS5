@@ -8,7 +8,10 @@
 {% endblock %}
 
 {% block body %}
+    
     <h1>Eventos</h1>
+
+
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="alert alert-{{ label }}" role="alert">
@@ -17,93 +20,143 @@
         {% endfor %}
     {% endfor %}
     
-    <!-- Collapse buttons by filters -->
-    <!--<p>
-        <a class="btn btn-info" data-toggle="collapse" href="#Filtros" aria-expanded="false" aria-controls="Filtros">
-           <i class="far fa-eye"></i> Ver filtros
-        </a>
-    </p>-->
-    <!-- / Collapse buttons -->
+    <div class="row">    
+        
+        <div class="col-2">
 
-    <!-- Collapsible element -->
-    <div id="filtros">
-        <div class="mt-3 mb-3">
+            <p>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFiltros" aria-expanded="{{ showFilters == 1 ? 'true' : '' }}" aria-controls="collapseFiltros">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </p>
+            <div class="collapse {{ showFilters == 1 ? 'show' : '' }}" id="collapseFiltros">
+                <div id="filtros">
+                    <div class="mt-3 mb-3">
 
-            {{ include('sgr_form/_formFiltersSrgEvento.html.twig', {'button_label': 'Filtrar eventos'}) }}
+                        {{ include('sgr_form/_formFiltersSrgEvento.html.twig', {'button_label': 'Filtrar eventos'}) }}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <!-- / Collapsible element -->    
-    
-
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Id</th>
-                <th>Titulo</th>
-                <th>Actividad</th>
-                <th>Recurso</th>
-                <th>F_inicio</th>
-                <th>F_fin</th>
-                <th>Día/s</th>
-                <th>Desde</th>
-                <th>Hasta</th>
-                <th>Estudios</th>
-                <!--<th>CreatedAt</th>-->
-                <!--<th>UpdatedAt</th>-->
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {# dump(pagination) #}
-        {% for sgr_evento in pagination %}
-            <tr>
-                <td>{{ sgr_evento.id }}</td>
-                <td>{{ sgr_evento.titulo }}</td>
-                <td>{{ sgr_evento.actividad }}</td>
-                <td>{{ sgr_evento.espacio }}</td>
-                <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('d-m-Y') : '' }}</td>
-                <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('d-m-Y') : '' }}</td>
-                <td>{{ sgr_evento.getDiasStringFormat|join(', ',' y ') }} </td>
-                <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i') : '' }}</td>
-                <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i') : '' }}</td>
-                <td>{% if sgr_evento.asignatura %}{{ sgr_evento.asignatura }}{% endif %} {% if sgr_evento.grupoAsignatura %}- Gpr -{{ sgr_evento.grupoAsignatura }} {% endif %} {% if sgr_evento.profesor %} - {{ sgr_evento.profesor }} {% endif %}</td>
-                <!--<td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>-->
-                <!--<td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>-->
+        
+        <div id="colCalendar" class="col-{{ showFilters == 1 ? '10' : '12' }}">
+            
+            <div class="row mb-3">
                 
-                <td>
-                    <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_evento_show', {'id': sgr_evento.id}) }}"> Ver </a>
-                    <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}"> Editar </a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="11">No se encontraron eventos...</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <div class="col-6 content-justify-left text-left">
+                    <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_new') }}">Nuevo evento</a>     
+            
+                </div>    
+                <div class="col-6 text-right text-info">
+                    listado de eventos: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+                </div>
+            </div>
 
-    <div>
-        Total de eventos: {{ pagination.getTotalItemCount }}    
-    </div>
-    <div>
-    {{ knp_pagination_render(pagination) }}
-    </div>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Titulo</th>
+                        <th>Actividad</th>
+                        <th>Recurso</th>
+                        <th>F_inicio</th>
+                        <th>F_fin</th>
+                        <th>Día/s</th>
+                        <th>Desde</th>
+                        <th>Hasta</th>
+                        <th>Estudios</th>
+                        <!--<th>CreatedAt</th>-->
+                        <!--<th>UpdatedAt</th>-->
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# dump(pagination) #}
+                {% for sgr_evento in pagination %}
+                    <tr>
+                        <td>{{ sgr_evento.id }}</td>
+                        <td>{{ sgr_evento.titulo }}</td>
+                        <td>{{ sgr_evento.actividad }}</td>
+                        <td>{{ sgr_evento.espacio }}</td>
+                        <td>{{ sgr_evento.fInicio ? sgr_evento.fInicio|date('d-m-Y') : '' }}</td>
+                        <td>{{ sgr_evento.fFin ? sgr_evento.fFin|date('d-m-Y') : '' }}</td>
+                        <td>{{ sgr_evento.getDiasStringFormat|join(', ',' y ') }} </td>
+                        <td>{{ sgr_evento.hInicio ? sgr_evento.hInicio|date('H:i') : '' }}</td>
+                        <td>{{ sgr_evento.hFin ? sgr_evento.hFin|date('H:i') : '' }}</td>
+                        <td>{% if sgr_evento.asignatura %}{{ sgr_evento.asignatura }}{% endif %} {% if sgr_evento.grupoAsignatura %}- Gpr -{{ sgr_evento.grupoAsignatura }} {% endif %} {% if sgr_evento.profesor %} - {{ sgr_evento.profesor }} {% endif %}</td>
+                        <!--<td>{{ sgr_evento.createdAt ? sgr_evento.createdAt|date('Y-m-d H:i:s') : '' }}</td>-->
+                        <!--<td>{{ sgr_evento.updatedAt ? sgr_evento.updatedAt|date('Y-m-d H:i:s') : '' }}</td>-->
+                        
+                        <td>
+                            <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_evento_show', {'id': sgr_evento.id}) }}"> Ver </a>
+                            <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_evento_edit', {'id': sgr_evento.id}) }}"> Editar </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="11">No se encontraron eventos...</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            
+            <div>
+                <div><small>(<span>Total de eventos: {{ pagination.getTotalItemCount }}</span>)</small></div>   
+                <div>{{ knp_pagination_render(pagination) }}</div>
+            </div>
+
+            {% if filtros %}
+            <div class="alert alert-info justify-content-start" role="alert">
+                <p>
+                    <h3>Filtros aplicados en la busqueda</h3>
+                    {% for key, filtro in filtros %}
+                        {% if filtro %}
+                            <span><b>{{ key|capitalize }}:</b> {{filtro|capitalize}} </span>
+
+                        {% endif %}     
+                    {% endfor %}
+                </p>
+            </div>
+            {% endif %}
 
 
-    <a class="btn btn-primary" type="button" href="{{ path('sgr_evento_new') }}">Nuevo evento</a>
+            
+        </div>
+    </div><!-- //.row -->
+
+
 {% endblock %}
 
 {% block morescripts %}
     
     {# Modify when Upload #}
+    <!--
     <script type="text/javascript" src="/build/formFiltersInput.js"></script>
     <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
     <script type="text/javascript" src="/build/datetimepicker-calendarViewYear.js"></script>
-    
-    <!-- 
+    -->
+     
     <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
     <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
-    <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewCustom.js"></script>
-    -->
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewYear.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/calendarios.js"></script>
+
+        <script type="text/javascript">        
+            
+            $(function () {
+                
+                $('a.page-link').on('click', function(e){
+                    
+                    //e.preventDefault();
+                    //console.log('link pagination');
+                    //if (window.sessionStorage) 
+                    //{
+                    //    ui = JSON.parse( sessionStorage.getItem("ui") );
+                    //    $('input[name="sgr_filters_sgr_eventos[ui]"]').val(JSON.stringify(ui));
+                    //}
+                });
+            });
+        </script>
+
 {% endblock %}

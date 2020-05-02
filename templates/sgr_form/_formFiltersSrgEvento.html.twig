@@ -1,119 +1,101 @@
 {# Modify when Upload ???#}
-{# form_start(form, {'action': '/reservasfgh' ~ app.request.pathinfo }) #}
-{{ form_start(form, {'action':  app.request.pathinfo }) }}
+{{ form_start(form, {'action': '/reservasfgh' ~ app.request.pathinfo }) }}
 <fieldset>
 
-    <div id="accordion">
     <div class="card">
-        <div class="card-header d-flex justify-content-start" id="headingOne">
-          <h5 class="mb-0">
-            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="showMoreFilters">
-                
-                <i class="far fa-eye"></i> Más filtros...
         
-              
-            </button>
-          </h5>
+        <div class="card-header d-flex justify-content-start" id="headingOne">
+          
+            <h5 class="mb-0">Filtros</h5>
+            
         </div>
 
-        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
-                <div class="form-row mb-1">
-                        <div class="form-group col-md-3 border-top pt-2">
-                            <label for="inputTermino">{{ form_label(form.actividad) }}</label>
-                                {{ form_widget(form.actividad) }}
-                        </div>      
-                        <div class="form-group col-md-3 border-top pt-2">
-                            <label for="inputTermino">{{ form_label(form.titulacion) }}</label>
-                                {{ form_widget(form.titulacion) }}
+        
+        <div class="card card-body">
+            
+            <div class="form-row mb-1">
+                
+                
+                    <div class="form-group" >
+                        <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha' }) }}</label>
+                        <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
+                            {{ form_widget(form.f_inicio, {'attr': {'value': data['begin']|date('d/m/Y')}} ) }} 
+                            <div class="input-group-append" data-target="#datetimepicker-fi" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
                         </div>
-                        <div class="form-group col-md-3 border-top pt-2">
-                            <label for="inputCurso">{{ form_label(form.curso) }}</label>
-                            {{ form_widget(form.curso) }}
+                    </div>
+                    
+                
+                    {% if view == 'anual' %}
+                    <div class="form-group">
+                        <label>{{ form_label(form.f_fin,null, {'label' : 'Fecha Fin' }) }}</label>
+                        <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
+                            {{ form_widget(form.f_fin, {'attr': {'value': data['end']|date('d/m/Y')}} ) }}
+                            <div class="input-group-append" data-target="#datetimepicker-ff" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
                         </div>
-                        <div class="form-group col-md-3 border-top pt-2">
-                            <label for="inputTermino">{{ form_label(form.asignatura) }}</label>
-                                {{ form_widget(form.asignatura) }}
-                        </div>
-                        <div class="form-group col-md-3 border-top pt-2">
-                            <label for="inputTermino">{{ form_label(form.profesor) }}</label>
-                                {{ form_widget(form.profesor) }}
-                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row border-top mb-1">
+
+                <div class="form-group">
+          			<label for="inputTermino">{{ form_label(form.termino) }}</label>
+            				{{ form_widget(form.termino) }}
+                </div>
+
+          		<div class="form-group p-2">
+                    <div class="text-center">
+                    <div class="spinner-border d-none" style="width: 3rem; height: 3rem;" role="status" >
+                        <span class="sr-only">Loading...</span>
+                    </div> 
+                    </div>
+      			   {{ form_widget(form.espacio) }}
                 </div>
             </div>
-        </div>
-    </div>
-    </div>
-
-	<div class="form-row mb-1">
-		
-        <div class="col-md-4 p-2">
             
-            {% if view == 'diaria' or  view == 'semanal'%}
-                <div class="form-group col-md-8" >
-                    <div style="overflow:hidden;">
-                        
-                        <div class="col-md-12" >
-                            <label>{{ form_label(form.f_inicio,null, {'label' : 'Seleccione fecha' }) }}</label>
-                            <div style="height: 250px" >
-                                <div id="datetimepicker-fi-day" data-target="#datetimepicker-fi-day"></div>
-                            </div>
-                            <div class="row">
-                                    {{ form_widget(form.f_inicio, {'attr': {'class': '', 'data-target' : '#datetimepicker-fi-day'}}) }}
-                            </div>
+            <div class="form-row border-top mb-1">
 
+                <div class="form-group p-2">
+                    <label for="inputTermino">{{ form_label(form.actividad) }}</label>
+                    {{ form_widget(form.actividad ) }}
+                </div>      
 
-                        </div>
-                    </div>
-                </div>
-            {% else  %}    
-                <div class="form-group col-md-8" >
-                    <label>{{ form_label(form.f_inicio,null, {'label' : 'Fecha Inicio' }) }}</label>
-                    <div class="input-group date" id="datetimepicker-fi" data-target-input="nearest">
-                        {{ form_widget(form.f_inicio) }} 
-                        <div class="input-group-append" data-target="#datetimepicker-fi" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
+                <div class="form-group p-2">
+                    <label for="inputTermino">{{ form_label(form.titulacion) }}</label>
+                    {{ form_widget(form.titulacion) }}
                 </div>
                 
-                {# form_widget(form.f_inicio) #}
-                <div class="form-group col-md-8">
-                    <label>{{ form_label(form.f_fin) }}</label>
-                    <div class="input-group date" id="datetimepicker-ff" data-target-input="nearest">
-                        {{ form_widget(form.f_fin) }}
-                        <div class="input-group-append" data-target="#datetimepicker-ff" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
+                <div class="form-group p-2">
+                    <label for="inputCurso">{{ form_label(form.curso) }}</label>
+                    {{ form_widget(form.curso) }}
                 </div>
-            {% endif %}
-        </div>
+                
+                <div class="form-group p-2">
+                    <label for="inputTermino">{{ form_label(form.asignatura) }}</label>
+                        {{ form_widget(form.asignatura) }}
+                </div>
+                
+                <div class="form-group p-2">
+                    <label for="inputTermino">{{ form_label(form.profesor) }}</label>
+                        {{ form_widget(form.profesor) }}
+                </div>                
+            </div>        
 
-        <div class="col-md-8 d-flex flex-column justify-content-start">
-            	<div class="d-flex justify-content-end p-2">
-                    <div class="form-group col-md-4">
-        			<label for="inputTermino">{{ form_label(form.termino) }}</label>
-        				{{ form_widget(form.termino) }}
-                    </div>
-                </div>
-        		<div class="d-flex justify-content-end p-2">
-            		<div class="form-group p-2">
-            			{{ form_widget(form.espacio) }}
-            		</div>
-                </div>
-        	
+            <div class="form-row text-center p-2">
+                
+                    
+                {{ form_widget(form.ui) }}
+                
+                <button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-filter"></i> {{ button_label|default('Aplicar filtros') }}</button>
+            </div>
         </div>
+        <div class="collapse" id="collapseFiltros">
+    </div>
     	
-    	
-	</div>
-    
-    <div class="form-row d-flex justify-content-end mb-1">
-		<div class="col-md-12 text-right">
-			<button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Mostrar eventos') }}</button>
-		</div>
-	</div>
-	{{ form_row(form._token) }}  
+    {{ form_row(form._token) }}  
 </fieldset>  
 {{ form_end(form, {'render_rest': false}) }}
 

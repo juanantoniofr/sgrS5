@@ -111,8 +111,8 @@ class SgrEspacioController extends AbstractController
             else 
                 $sgrEspacios = $sgrEspacioRepository->findBy( array() );
 
-            if ($sgrEspacios)
-            {
+            //if ($sgrEspacios)
+            //{
                 switch ($inputType) {
                     
                     case 'select':
@@ -132,7 +132,7 @@ class SgrEspacioController extends AbstractController
                         ]);    
 
             return $this->json($html);
-            }
+            //}
         }
         return new Response('');
     }

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sgr: calendarios editar evento{% endblock %}
+
+{% block stylesheets %}
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+{% endblock %}
+
+{% block body %}
+    
+
+    <div class="row p-3">
+        <a href="{{ urlToBack }}"><h2> <i class="fas fa-angle-double-left"></i> Volver </h2></a>
+    </div>
+     <div class="row p-3">
+        
+        <h1>Nuevo Evento</h1>
+    	
+        {% for label, messages in app.flashes %}
+        	{% for message in messages %}
+            	<div class="alert alert-{{ label }}" role="alert">
+                	{{ message }}
+            	</div>
+        	{% endfor %}
+    	{% endfor %}
+        
+        <div id="errors"></div>
+        
+        {{ include('sgr_evento/_form.html.twig') }}
+    </div>
+{% endblock %}
+
+{% block morescripts %}
+    
+    <!--
+    <script type="text/javascript" src="/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
+    -->
+
+    <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script> 
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-eventoViews.js"></script>
+{% endblock %}

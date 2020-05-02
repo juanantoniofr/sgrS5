@@ -5,12 +5,14 @@ namespace App\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -44,31 +46,90 @@ class SgrFiltersSgrEventosType extends AbstractType
     private $transformerTime;
 
     private $entityManager;
+    //private $session;
 
-    public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime, EntityManagerInterface $entityManager)
+    public function __construct(DateTimeTransformer $transformerDateTime,TimeTransformer $transformerTime, EntityManagerInterface $entityManager, SessionInterface $session)
     {
         $this->transformerDateTime = $transformerDateTime;
         $this->transformerTime = $transformerTime;
 
         $this->entityManager = $entityManager;
+        $this->session = $session;
+
+        //dump($this->session);
+        //exit;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('ui', HiddenType::class,[
+                                    'data' => true])
+            ->add('f_inicio', DateTimeType::class, array(
+                                    'date_label' => 'Fecha inicio',
+                                    'widget' => 'single_text',
+                                    'format' => 'dd/MM/yyyy',
+                                    'html5' => false,
+                                    'input' => 'string',
+                                    'input_format' => 'd/m/Y',
+                                    'view_timezone' => 'Europe/Madrid',
+                                    'model_timezone' => 'Europe/Madrid',
+                                    'attr' => ['class' => 'datetimepicker-input', 'data-target' => '#datetimepicker-fi'],
+                                    'required' => true,                                  
+                                    'constraints' => [  new NotBlank(),
+                                                        new DateTime([ 'format' => 'd/m/Y']),
+                                                         ],
+            ))
+            ->add('f_fin', DateTimeType::class, array(
+                                    'date_label' => 'Fecha Fin',
+                                    'widget' => 'single_text',
+                                    'format' => 'dd/MM/yyyy',
+                                    'html5' => false,
+                                    'input' => 'string',
+                                    'input_format' => 'd/m/Y',
+                                    'view_timezone' => 'Europe/Madrid',
+                                    'model_timezone' => 'Europe/Madrid',
+                                    'attr' => ['class' => 'datetimepicker-input', 'data-target' => '#datetimepicker-ff'],
+                                    'required' => true,                                  
+                                    'constraints' => [  new NotBlank(),
+                                                        new DateTime(['format' => 'd/m/Y']),
+                                                        ],
+            ))
+            
             ->add('termino', EntityType::class, [
-                                    'label' => 'Categoría',
+                                    'label' => 'Tipo de espacio',
                                     'required' => false,
-                                    'placeholder' => 'Todo o Seleccione Categoría',
+                                    'placeholder' => 'Todo o Seleccione Categoría (término)',
                                     'class' => SgrTermino::class,
                                     'choice_label' => 'nombre',
+                                    'choice_attr' => function($choice, $key, $value) {
+                                                        if ($this->session->get('idTermino') == $value)
+                                                            return [ 'selected' => 'selected' ];
+                                                        return [];
+                                                    },
                                 ])
-            ->add('taxonomia', EntityType::class, [
-                                    'label' => 'Taxonomia',
+            ->add('espacio', EntityType::class,[
+                                    'label' => 'Espacio',
                                     'required' => false,
-                                    'placeholder' => 'Todas o Seleccione categoría',
-                                    'class' => SgrTaxonomia::class,
+                                    'placeholder' => 'Seleccione Espacio',
+                                    'class' => SgrEspacio::class,
                                     'choice_label' => 'nombre',
+                                    'expanded' => true,
+                                    'multiple' => true,
+                                    'attr' => ['class' => 'form-check'],
+                                ])
+            ->add('actividad', EntityType::class,[
+                                    'label' => 'Actividad',
+                                    'required' => false,
+                                    'placeholder' => 'Seleccione Actividad',
+                                    'class' => SgrTipoActividad::class,
+                                    'choice_label' => 'actividad',
+                                    'choice_attr' => function($choice, $key, $value) {
+                                        
+                                                        if ( $this->session->get('idActividad') == $value ) 
+                                                            return [ 'selected' => 'selected' ];
+                                                        return [];
+                                                    },
                                 ])
             ->add('titulacion', EntityType::class, [
                                     'label' => 'Titulación',
@@ -77,6 +138,11 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'class' => SgrTitulacion::class,
                                     'choice_label' => 'nombre',
                                     'attr' => ['class' => 'titulacion' ],
+                                    'choice_attr' => function($choice, $key, $value) {
+                                                        if ($this->session->get('idTitulacion') == $value)
+                                                            return [ 'selected' => 'selected' ];
+                                                        return [];
+                                                    },
                                 ])
             ->add('curso', ChoiceType::class, [
                                     'label' => 'Curso',
@@ -94,6 +160,11 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'placeholder' => 'Todas o Seleccione Asignatura',
                                     'class' => SgrAsignatura::class,
                                     'choice_label' => 'nombre',
+                                    'choice_attr' => function($choice, $key, $value) {
+                                                        if ($this->session->get('idAsignatura') == $value)
+                                                            return [ 'selected' => 'selected' ];
+                                                        return [];
+                                                    },
                                 ])
             ->add('profesor', EntityType::class,[
                                     'label' => 'Profesor',
@@ -101,58 +172,11 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'placeholder' => 'Todos o Seleccione Profesor',
                                     'class' => SgrProfesor::class,
                                     'choice_label' => 'nombre',
-                                ])
-            ->add('f_inicio', DateTimeType::class, array(
-                                    'date_label' => 'Fecha inicio',
-                                    'widget' => 'single_text',
-                                    'format' => 'dd/MM/yyyy',
-                                    'html5' => false,
-                                    'input' => 'string',
-                                    'input_format' => 'd/m/Y',
-                                    'view_timezone' => 'Europe/Madrid',
-                                    'model_timezone' => 'Europe/Madrid',
-                                    'attr' => ['class' => 'datetimepicker-input', 'data-target' => '#datetimepicker-fi'],
-                                    'required' => true,                                  
-                                    'constraints' => [  new NotBlank(),
-                                                        new DateTime([ 'format' => 'd/m/Y']),
-                                                         ],
-            ))
-            ->add('f_fin', DateTimeType::class, array(
-                                    //'date_label' => 'Fecha Fin',
-                                    'label' => 'Fecha Fin',
-                                    'widget' => 'single_text',
-                                    'format' => 'dd/MM/yyyy',
-                                    'html5' => false,
-                                    'input' => 'string',
-                                    'input_format' => 'd/m/Y',
-                                    'view_timezone' => 'Europe/Madrid',
-                                    'model_timezone' => 'Europe/Madrid',
-                                    'attr' => ['class' => 'datetimepicker-input', 'data-target' => '#datetimepicker-ff'],
-                                    'required' => true,                                  
-                                    'constraints' => [  new NotBlank(),
-                                                        new DateTime(['format' => 'd/m/Y']),
-                                                        /*new GreaterThanOrEqual( [
-                                                            'propertyPath' => 'parent.all[f_inicio]',
-                                                            //'value' => 'parent.all[f_inicio].normData',
-                                                            'message' => "Debe ser igual o mayor que fecha inicio {{ value }} -- {{ compared_value }} -- {{ compared_value_type }}"] ),*/ 
-                                                        ],
-            ))
-            ->add('espacio', EntityType::class,[
-                                    'label' => 'Espacio',
-                                    'required' => false,
-                                    'placeholder' => 'Seleccione Espacio',
-                                    'class' => SgrEspacio::class,
-                                    'choice_label' => 'nombre',
-                                    'expanded' => true,
-                                    'multiple' => true,
-                                    'attr' => ['class' => 'form-check-inline'],
-                                ])
-            ->add('actividad', EntityType::class,[
-                                    'label' => 'Actividad',
-                                    'required' => false,
-                                    'placeholder' => 'Seleccione Actividad',
-                                    'class' => SgrTipoActividad::class,
-                                    'choice_label' => 'actividad',
+                                    'choice_attr' => function($choice, $key, $value) {
+                                                        if ($this->session->get('idProfesor') == $value)
+                                                            return [ 'selected' => 'selected' ];
+                                                        return [];
+                                                    },
                                 ])
         ;
 
@@ -161,32 +185,59 @@ class SgrFiltersSgrEventosType extends AbstractType
         //$builder->get('f_fin')
         //    ->addModelTransformer($this->transformerDateTime);
         
-
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            function (FormEvent $event)
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) 
+        {
+            //$data = $event->getData();    
+            $form = $event->getForm();
+            $termino = $this->session->get('idTermino', null);
+            if ( $termino )
             {
-                //dump('asdads');
-                //exit;
+                    
+                    $choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $termino ]);    
+                    $form->add('espacio', EntityType::class,[
+                            'label' => 'Espacio',
+                            'required' => false,
+                            'placeholder' => 'Seleccione Espacio',
+                            'class' => SgrEspacio::class,
+                            'choices' => $choices,
+                            'choice_label' => 'nombre',
+                            'expanded' => true,
+                            'multiple' => true,
+                            'attr' => ['class' => 'form-check'],
+                            'choice_attr' => function($choice, $key, $value) {
+                                                        return [ 'checked' => 'checked' ];
+                                                },
+                        ]);
+            
+                    /*
+                    ->add('termino', EntityType::class, [
+                                    'label' => 'Tipo de espacio',
+                                    'required' => false,
+                                    'placeholder' => 'Todo o Seleccione Categoría (término)',
+                                    'class' => SgrTermino::class,
+                                    'choice_label' => 'nombre',
+                                    'choice_attr' => function($choice, $key, $value) use($termino) {
+                                                        if ($this->session->get('Termino') == $value)
+                                                            return [ 'selected' => 'selected' ];
+                                                        return [];
+                                                    },
+                    */
+            }
+                
+
+
+            
+        });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event)
+            {
                 
                 $data = $event->getData();
                 $form = $event->getForm();
                 
-                //No se añade al formulario de filtros cuando solo necesito f_inicio
-                //dump('PRE_SUBMIT');
-                //dump($data);
-                //dump($form);
-                //dump($form);
-                //$data['f_inicio'] ? $f_inicio = $data['f_inicio']->format('d/m/Y'): $_f_inicio = false; 
-                //$form->add('f_inicio',$f_inicio);
-                
                 if (!isset($data['f_fin']))
                 {
-                    //dump($data);
-                    //exit;
-                    //dump($form);
-                    // en controller $data['f_fin'] == null
-                    $form->add('f_fin', DateType::class, [ 'data' => date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'))/*$data['f_inicio']*/ ]);
+                    $form->add('f_fin', DateTimeType::class, [ 'data' => date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'))/*$data['f_inicio']*/ ]);
                 }
                 if ($data['termino'])
                 {
@@ -201,7 +252,10 @@ class SgrFiltersSgrEventosType extends AbstractType
                             'choice_label' => 'nombre',
                             'expanded' => true,
                             'multiple' => true,
-                            'attr' => ['class' => 'form-check-inline'],
+                            'attr' => ['class' => 'form-check'],
+                            'choice_attr' => function($choice, $key, $value) {
+                                                        return [ 'checked' => 'checked' ];
+                                                },
                         ]);
                 }
 

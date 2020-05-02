@@ -69,19 +69,30 @@
             <tr>
                 <td>
                     {% if 0 == sgr_espacio.solapes.count %}
-                        <i class="fas fa-check text-success"></i><span class="text-success"> Libre</span>
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed">
+                            <i class="fas fa-check text-success"></i><span class="text-success"> Libre</span></div>
+                            </button>
+                        </h2>
                     {% elseif not sgr_espacio.solapes is empty  %}
-                         
-                            <h5>Solapamientos</h5> 
-                            {% for solape in sgr_espacio.solapes%}
-
-                                <span class="text-danger">
-                                {{ solape.fecha|format_datetime('full','none', locale='es')|capitalize }} ({{ solape.evento.hinicio|format_datetime('none','short', locale='es') }}-{{ solape.evento.hfin|format_datetime('none','short', locale='es') }})
-                                    => </span>
-                                    <a href = "{{ path('sgr_evento_edit', {'id': solape.evento.id}) }}">{{ solape.evento.titulo }}</a> 
-                                </br>
-                            {% endfor %}
                         
+                            
+                            <h2 class="mb-0">
+                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ sgr_espacio[0].id }}" aria-expanded="false" aria-controls="collapseOne">
+                                <i class="fas fa-check text-danger"></i><span class="text-danger"> Ocupada ver solapamientos</span> 
+                                </button>
+                            </h2>
+                            
+                            <div id="collapse{{ sgr_espacio[0].id }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">    
+                            <ul>
+                            {% for solape in sgr_espacio.solapes %}    
+                                <li>
+                                    <a href = "{{ path('sgr_evento_edit', {'id': solape.evento.id}) }}">{{ solape.evento.titulo }}
+                                    <small>(<span class="text-secondary">{{ solape.fecha|format_datetime('full','none', locale='es')|capitalize }} {{ solape.evento.hinicio|format_datetime('none','short', locale='es') }}-{{ solape.evento.hfin|format_datetime('none','short', locale='es') }}</span>)</small></a>                                     
+                                </li>
+                            {% endfor %}
+                            </ul>
+                            </div>
                     {% endif %}
                     
                     

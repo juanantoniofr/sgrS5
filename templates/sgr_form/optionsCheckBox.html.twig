@@ -1,11 +1,12 @@
-{% if options is defined and options is not empty %}
 {% for option in options %}
                
-     <div class="form-check">
+    <div class="form-check">
     
      	<input type="checkbox" id="sgr_filters_sgr_eventos_espacio_{{ option.id }}" name="sgr_filters_sgr_eventos[espacio][]" class="form-check-input" value="{{ option.id }}">
-        <label class="form-check-label" for="sgr_filters_sgr_eventos_espacio_{{ option.id }}">{{ option.nombre }}</label>
+        <label class="form-check-label" for="sgr_filters_sgr_eventos_espacio_{{ option.id }}" checked="checked">{{ option.nombre }}</label>
     </div>
+{% else%}
+	<div class="alert alert-danger" role="alert">
+		<p>No hay espacios definidos...</p>
+	</div>
 {% endfor %}
-
-{% endif %}

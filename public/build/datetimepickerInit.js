@@ -19,7 +19,8 @@ $(function () {
 		locale: 'es',
 		autoclose: true,
 		format: 'DD/MM/Y',
-		//useCurrent:false,
+		//format: 'MM/dd/YYYY',
+		useCurrent:false,
 	});
 
 	$('#datetimepicker-hi, #datetimepicker-hf').datetimepicker({

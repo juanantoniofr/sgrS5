@@ -24,6 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,81 +39,139 @@ use Knp\Component\Pager\PaginatorInterface;
 class SgrEventoController extends AbstractController
 {
     
+     private $session;
+
     /**
      * @Route("/index/{page}", name="sgr_evento_index", defaults={"page"=1}, methods={"GET","POST"})
      */
-    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, $page ): Response
+    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository, PaginatorInterface $paginator, SessionInterface $session, $page ): Response
     {
-                        
+
+        //Session
+        $this->session = $session;
+
+        //form                
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
+        $filtros = array();
 
-        //$sgrEventos = $sgrEventoRepository->findAll();
-        $sgrEventos = $sgrEventoRepository->findAllOrderByUpdateAt();
+        $current_month = (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('m');
+        $current_year =  (new \DateTime('now',new \DateTimeZone('Europe/Madrid')) )->format('Y');
+        $current_month > 8 ?  $begin = new \DateTime('1-9-'.$current_year, new \DateTimeZone('Europe/Madrid')) : $begin = new \DateTime('1-9-'.($current_year-1), new \DateTimeZone('Europe/Madrid')); 
+        $current_month > 8 ?  $end = new \DateTime('31-8-'.($current_year+1), new \DateTimeZone('Europe/Madrid')) : $end = new \DateTime('31-8-'.$current_year, new \DateTimeZone('Europe/Madrid'));
+
+        
+        $sgrEventos = $sgrEventoRepository->findAllbetween($begin, $end);
+        
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $page = 1;
             $data = $form->getData();
-            //dump($data);
-            $id_titulacion = '';
-            if ($data['titulacion'])
+            
+            $id_titulacion = null;
+            if ($data['titulacion']){
+
+                $filtros['Titulacion'] = $data['titulacion']->getNombre();
                 $id_titulacion = $data['titulacion']->getId();
+            }
             
             $curso = $data['curso'];
             
-            $id_asignatura = '';
-            if ($data['asignatura'])
-                $id_asignatura = $data['asignatura']->getId();
-            
-            $id_profesor = '';
-            if ($data['profesor'])
-                $id_profesor = $data['profesor']->getId();
+            $id_asignatura = null;
+            if ($data['asignatura']){
 
-            $f_inicio = '';
-            if ($data['f_inicio'])
-                $f_inicio = date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//$data['f_inicio'];////->getId();
+                $filtros['Asignatura'] = $data['asignatura']->getNombre();
+                $id_asignatura = $data['asignatura']->getId();
+            }
             
-            $f_fin = '';
+            $id_profesor = null;
+            if ($data['profesor']){
+
+                $filtros['Profesor'] = $data['profesor']->getNombre();
+                $id_profesor = $data['profesor']->getId();
+            }
+
+            $f_inicio = null;
+            if ($data['f_inicio']){
+
+                $f_inicio = date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//$data['f_inicio'];////->getId();
+            }
+            
+            $f_fin = null;
             if ($data['f_fin'])
                 $f_fin = date_create_from_format('d/m/Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];////$data['f_fin'];//->getId();
             
-            $sgrEspacios = new ArrayCollection();
-            if ($data['espacio']->isEmpty() === false)
+            //All espacios.
+            $sgrEspacios = $sgrEspacioRepository->findAll();
+
+            //filter by termino
+            if($data['termino'])
             {
-                $espacios = $data['espacio'];
-                $sgrEspacios = ( new ArrayCollection( $sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) 
-                    {
-                        return $espacios->contains($sgrEspacio);
-                    });
+                $filtros['Categoria'] = $data['termino']->getNombre();    
+                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $data['termino'] ]);
             }
-            //dump($espacios);
-            
-            $id_actividad = '';
-            if ($data['actividad']) 
+                
+            //filter by espacio
+            if( !$data['espacio']->isEmpty())
+            {
+
+                $espacios = $data['espacio'];
+                $sgrEspacios = ( new ArrayCollection
+                ($sgrEspacioRepository->findAll() ))->filter(function($sgrEspacio) use ($espacios) {
+                                                                                return $espacios->contains($sgrEspacio);
+                });
+                    
+                $listEspacios = array();
+                foreach ($data['espacio'] as $espacio) {
+                    $listEspacios[] = ucwords($espacio->getNombre());
+                }
+                $filtros['Espacios'] = implode(', ', $listEspacios);
+            }
+
+            $id_actividad = null;
+            if ($data['actividad']){
+                $filtros['Actividad'] = $data['actividad']->getActividad();
                 $id_actividad = $data['actividad']->getId();
-
-            //dump($data['actividad']->getId());
-            
-
-            //$sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $id_espacio, $id_actividad);
+            } 
+                
             $sgrEventos = $sgrEventoRepository->getSgrEventosByFilters( $id_titulacion, $curso, $id_asignatura, $id_profesor, $f_inicio, $f_fin, $sgrEspacios, $id_actividad);
-            //dump($sgrEventos);
-            //exit;
-
         }
 
-        //dump($sgrEventos);
+        
+        if ( isset($data['ui']) )
+        {
+            //dump($data['ui']);
+            //exit;
+            $ui = json_decode($data['ui'],true);
+            //dump($ui);
+            
+            if ( isset($ui['filters']) ){
+                
+                $ui['filters'] ? $showFilters = true : $showFilters = false;
+                $this->session->set('showFilters', $ui['filters']);
+            }
+        }
+        
+        // the second argument is the value returned when the attribute doesn't exist
+        $showFilters = $this->session->get('showFilters', [true]);
+            
 
         $pagination = $paginator->paginate(
             $sgrEventos,
             $page,//$request->query->getInt('page', 1),
             10
         );
+
+
         //dump($pagination);
         //exit;
         return $this->render('sgr_evento/index.html.twig', [
-            'pagination' => $pagination,
-            'form'       => $form->createView(),
-            'view'       => 'anual',
+            'pagination'    => $pagination,
+            'form'          => $form->createView(),
+            'filtros'       => $filtros,
+            'data'          => [ 'begin' => $begin , 'end' => $end ],
+            'view'          => 'anual', 
+            'showFilters'   => $showFilters,
         ]);
     }
 
@@ -213,6 +272,7 @@ class SgrEventoController extends AbstractController
                 $sgrEvento->removeFecha($fecha);
             }
             
+            $evento->setEvento($sgrEvento);
             //check valid selected dias
             if ( !$evento->isValidDias() )
                 $errors[]['message'] = 'Selección de días no válida';
@@ -225,7 +285,10 @@ class SgrEventoController extends AbstractController
                     ]);    
             
             //No errors
-            $evento->setEvento($sgrEvento);
+            //dump($sgrEvento);
+            //dump('cpntroller');
+            //exit;
+            //$evento->setEvento($sgrEvento);
             //Si solapamientos
             if ( !$evento->hasSolape()->isEmpty()  )
             

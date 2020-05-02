@@ -74,4 +74,22 @@ class SgrEventoRepository extends ServiceEntityRepository
             //->setMaxResults(10)
         return $query->execute();
     }
+
+    public function findAllbetween(\DateTime $f_inicio, \DateTime $f_fin){
+
+        $qb = $this->createQueryBuilder('sgr_e');
+                
+
+        $qb->andWhere('sgr_e.f_inicio > :finicio')
+                ->setParameter('finicio', $f_inicio->format('Y-m-d'));
+
+        $qb->andWhere('sgr_e.f_fin < :ffin')
+                ->setParameter('ffin', $f_fin->format('Y-m-d'));
+        
+        $qb->orderBy('sgr_e.updatedAt', 'DESC');
+ 
+        $query = $qb->getQuery();
+            
+        return $query->execute();
+    }
 }

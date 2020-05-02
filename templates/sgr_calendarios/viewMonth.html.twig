@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SGR: Calendarios{% endblock %}
+{% block title %}SgrEvento Vista Calendarios de ocupación: Semanal{% endblock %}
 
 {% block stylesheets %}
     
@@ -14,7 +14,7 @@
 
 {% block body %}
     
-    <h1>Calendarios</h1>
+    <h1>Calendarios: Vista mensual</h1>
 
     {# //CSS classes #} 
     {% set css_cal = 'calendar' %}
@@ -29,182 +29,275 @@
     {# //Table headings #}
     {% set headings = ['L', 'M', 'X', 'J', 'V', 'S', 'D'] %}
     
+    <div class="row">
+       
+        <!-- col-2 -->
+        <div class="col-2">
+            <p>
+                <button  class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFiltros" aria-expanded="{{ showFilters == 1 ? 'true' : '' }}" aria-controls="collapseFiltros">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </p>
 
-    {% for calendario in aCalendarios %}
-        <h2>{{ calendario.sgrEspacio.nombre }}</h2>
-        <div class="row">
-            <div class="col-6 justify-content-start" >
-                <p>
-
-                    Ocupación desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
-                </p>
-            </div>
-            <div class=col-6>
-                {{ include('sgr_calendarios/nav.html.twig') }}
+            <div class="collapse {{ showFilters == 1 ? 'show' : '' }}" id="collapseFiltros">
+                <div id="filtros">
+                    <div class="">
+                        {{ include('sgr_form/_formFiltersSrgEvento.html.twig') }}
+                    </div>
+                </div>
             </div>
         </div>
-        {# // Start: draw table #} 
-        <table class=' table table-striped table-bordered {{ css_cal }}'>
-            
-            <caption class="text-center">
 
-                    Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b> ({# calendario.sgrEspacio.nombre #}) 
-            </caption>
-            <thead class="thead-dark">
-                <tr class='{{ css_cal_row }}'>
-                        
-                        {% for head  in headings %}
-                            <th class='{{ css_cal_day_head }}'>{{ head }}</th>
-                        {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-            {# // Days and weeks #}
-            {% set running_day = (year ~ '-' ~ month ~ '-1') | date('N') %}
-            {% set days_in_month = (year ~ '-' ~ month ~ '-1') | date('t') %}
+        <!-- col-10 -->
+        <div id="colCalendar" class="col-{{ showFilters == 1 ? '10' : '12' }}">
 
-            {# // Row for week one #}
-            <tr class='{{ css_cal_row }}'>
-            
-                {# // Print "blank" days until the first of the current week #}
-                {% if running_day > 1 %}
-                    {% for x in range(1, (running_day-1)) %}
-                        <td class='{{ css_cal_day_blank }}'> </td>
-                    {% endfor %}
-                {% endif %}
-                {# // Keep going with days...#}
-                
-                {% for day in 1..days_in_month %}
+            <div class="row mb-3">
+            <div class="col-6 content-justify-left text-left">
+                {{ include('sgr_calendarios/nav.html.twig') }}
+            </div>
+            <div class="col-6 text-right text-info">
+                Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+            </div>
+            </div>
 
-                    {# // Check if there is an event today #}
-                    {# set cur_date = year ~ '-' ~ month ~ '-' ~ day #}
-                    {% set draw_event = false %}
-                    {% if events is defined %} {# and events[cur_date] is defined  #}
-                        {% set draw_event = true %}
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                {% for key, calendario in aCalendarios %}
+                <li class="nav-item">
+                    {% set active = '' %}
+                    {% set selected = 'false' %}
+                    {% if tabActive is defined and calendario.sgrEspacio.id == tabActive %}
+                        {% set active = 'active' %}
+                        {% set selected = 'true' %} 
+                    {% endif %}
+                    <a class="nav-link {{ active }}" id="home-tab-{{ calendario.sgrEspacio.id }}" data-toggle="tab" data-idpanel="{{ calendario.sgrEspacio.id }}" href="#{{ calendario.sgrEspacio.id }}" role="tab" aria-controls="{{ calendario.sgrEspacio.id }}" aria-selected="{{ selected }}">{{ calendario.sgrEspacio.nombre }} <small><span class="badge badge-pill badge-success" style="font-size: 0.6em;">{{ calendario.periods.count }}</span></small></a> 
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                {% for key, calendario in aCalendarios %}
+                    {% set active='' %}
+                    {% if tabActive is defined and calendario.sgrEspacio.id == tabActive %}
+                        {% set active = 'show active' %} 
                     {% endif %}
 
-                    {# // Day cell #}
-                        {% if draw_event %}
-                            <td class=''>
-                        {% else %}
-                            <td class='{{ css_cal_day }}' style="height: 130px;">
-                        {% endif %}
-            
-                                <div class="e" style="height: Calc(100% - 25px);margin-bottom: 5px">
-                                <div class="es">
-                                {# // Insert an event for this day #}
-                                {% for key, period in calendario.periods %}
-                                    {% if key < 4 %}
-                                    <!--<div class="evento" data-hinicio = "{{ period.evento.hInicio|date('U') }}" data-hfin = "{{ period.evento.hFin|date('U') }}" data-idevento="{{period.evento.id}}" style="width: 100%;background-color: transparent;">
-
-                                        -->
-
-                                            <!--<div class="alert alert-info text-left p-0 m-0" role="alert" style="width: 100%;height: 100%;border:1px solid white">
-                                                -->
-                                                
-                                                    <a  href="javascript:;" 
-                                                    style="max-width: 240px; width: 100%;height: 24px;border:1px solid white;" 
-                                                    role="button" 
-                                                    class=" text-truncate m-0 p-0 btn btn-sm btn-info"
-                                                    
-                                                    data-container="body"
-                                                    data-animation="true" 
-                                                    tabindex="{{ period.evento.titulo }}" 
-                                                    data-trigger="focus"
-                                                    data-html="true"
-                                                    data-toggle="popover"
-                                                    title="Información de la Reserva" 
-                                                    data-content="<div class='text-center p-3'>
-                                                        <p><b>{{ period.evento.titulo }}</b></p>
-                                                        <p>{{ period.evento.actividad }}</p>
-                                                        <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
-                                                        <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
-                                                        <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
-                                                        <p>{{period.evento.espacio}}</p></div>"
-                                                    >
-                                                    
-                                                    {{ period.evento.titulo }} 
-                                                    
-                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
-                                                        </a>
-                                                
-                                            <!-- </div> -->
-                                        
-                                    <!-- </div> -->
-                                    {% else %}
-                                        <a class="oculto" style="display: none;clear: both;"
-                                         href="javascript:;" 
-                                                    style="width: 100%;height: 100%;border:1px solid white;" 
-                                                    role="button" 
-                                                    class="m-0 p-0 btn btn-sm btn-primary"
-                                                    
-                                                    data-container="body"
-                                                    data-animation="true" 
-                                                    tabindex="{{ period.evento.titulo }}" 
-                                                    data-trigger="focus"
-                                                    data-html="true"
-                                                    data-toggle="popover"
-                                                    title="Información de la Reserva" 
-                                                    data-content="<div class='text-center p-3'>
-                                                        <p><b>{{ period.evento.titulo }}</b></p>
-                                                        <p>{{ period.evento.actividad }}</p>
-                                                        <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
-                                                        <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
-                                                        <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
-                                                        <p>{{period.evento.espacio}}</p></div>"
-                                                    >
-                                                    
-                                                    {{ period.evento.titulo }} 
-                                                    
-                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
-                                        </a>
-                                    {% endif %}
-                                {% endfor %}
-                                </div>
-                                </div>
-                                {% if calendario.periods|length > 5 %}
-                                    
-                                    <a  href="javascript:;" class="showMore"> 
-                                        {{ (calendario.periods|length) - 4 }} más
-                                    </a>
-                                {% endif %}
-                                {# // Add the day number #}
-                                <div class='{{ css_cal_day_number }}'> <small>{{ day }}</small></div>
-                            {# // Close day cell #}
-                            </td>
-                    {# end draw cell #}    
-                    
-                    {#// New row #}
-                        {% if running_day == 7 %}
-                            </tr>
-                            {% if ( (day + 1) <= days_in_month ) %}
-                                <tr class='{{ css_cal_row}}'>
-                            {% endif %}
-                            {% set running_day = 1 %}
-                        {% else %}
+                    {# // Start: draw table #}
+                    <div class="tab-pane fade {{ active }}" id="{{ calendario.sgrEspacio.id }}" role="tabpanel" aria-labelledby="home-tab" data-idpanel="{{ calendario.sgrEspacio.id }}"> 
+                    <table class=' table table-striped table-bordered {{ css_cal }}'>
                         
-                            {# // Increment the running day #}
-                            {% set running_day = running_day + 1 %}
-                        {% endif %}
-                    {# end new row#}
-                {% endfor %} {#// for day #}
+                        <caption class="text-center">
 
-                {# // Finish the rest of the days in the week #}
-                {% if running_day != 1 %}
-                    {% for x in range(running_day, 7) %}
-                        <td class='{{ css_cal_day_blank }}'> </td>
+                                Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b> ({# calendario.sgrEspacio.nombre #}) 
+                        </caption>
+                        <thead class="thead-dark">
+                            <tr class='{{ css_cal_row }}'>
+                                    
+                                    {% for head  in headings %}
+                                        <th class='{{ css_cal_day_head }}' style="width: 200px;">{{ head }}</th>
+                                    {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {# // Days and weeks #}
+                        {% set running_day = (year ~ '-' ~ month ~ '-1') | date('N') %}
+                        {% set days_in_month = (year ~ '-' ~ month ~ '-1') | date('t') %}
+
+                        {# // Row for week one #}
+                        <tr class='{{ css_cal_row }}'>
+                        
+                            {# // Print "blank" days until the first of the current week #}
+                            {% if running_day > 1 %}
+                                {% for x in range(1, (running_day-1)) %}
+                                    <td class='{{ css_cal_day_blank }}'> </td>
+                                {% endfor %}
+                            {% endif %}
+                            {# // Keep going with days...#}
+                            
+                            {% for day in 1..days_in_month %}
+
+                                {# // Check if there is an event today #}
+                                {% set draw_event = false %}
+                                {% if events is defined %} {# and events[cur_date] is defined  #}
+                                    {% set draw_event = true %}
+                                {% endif %}
+
+                                {# // Day cell #}
+                                    
+                                    {% if draw_event %}
+                                        <td class=''>
+                                    {% else %}
+                                        <td class='{{ css_cal_day }}' style="height: 130px;">
+                                    {% endif %}
+                                        
+                                            <div class="e" style="height: Calc(100% - 25px);margin-bottom: 5px">
+                                            <div class="es">
+                                            {# // Insert an event for this day #}
+                                            {% set reservas = 0 %}
+                                            {% set cur_date = year ~ '-' ~ month ~ '-' ~ day %}
+                                                {% for key, period in calendario.periods %}
+                                                    {% if reservas < 4 %}
+                                                                {# dump( period.evento.dias ) #}
+                                                                {# dump( cur_date|date('d') ) #}
+                                                                {% if period.evento.finicio|date('Y-m-d')|date('U') <= cur_date|date('Y-m-d')|date('U') and cur_date|date('Y-m-d')|date('U') <= period.evento.ffin|date('Y-m-d')|date('U') and cur_date|date('N') in period.evento.dias %}
+                                                                    {% set reservas = reservas + 1 %}
+                                                                    {#tabindex="{{ period.evento.titulo }}" #}
+                                                                    <a  href="javascript:;" 
+                                                                        data-reservaid = "{{ period.evento.id }}"
+                                                                        data-animation="true"
+                                                                        tabindex="0" 
+                                                                        data-trigger="focus"
+                                                                        data-html="true"
+                                                                        data-toggle="popover"
+                                                                        title="Información de la Reserva" 
+                                                                        data-content="<div class='text-center p-3'>
+                                                                        <p><b>{{ period.evento.titulo }}</b></p>
+                                                                        <p>{{ period.evento.actividad }}</p>
+                                                                        <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
+                                                                        <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
+                                                                        <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
+                                                                        <p>{{period.evento.espacio}}</p></div>
+                                                                        <div><a class='editarEvento' href='{{ path('sgr_calendario_evento_edit', {'id': period.evento.id}) }}'>Editar</a></div>"
+
+                                                                        style="width: 200px; height: 24px;border:1px solid white;" 
+                                                                        role="button" 
+                                                                        class=" text-truncate m-0 p-0 btn btn-sm btn-info"
+                                                                        data-container="body"
+                                                                    >
+                                                                    
+                                                                    {{ period.evento.titulo }} 
+                                                                    
+                                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
+                                                                        </a>
+                                                                {% endif %}        
+                                                    {% else %}
+                                                        {% if period.datePeriod.getStartDate|date('Y-m-d') == cur_date|date('Y-m-d') %}
+                                                            {% set reservas = reservas + 1 %}
+                                                            <a class="oculto" style="display: none;clear: both;"
+                                                                href="javascript:;" 
+                                                                    style="width: 100%;height: 100%;border:1px solid white;" 
+                                                                    role="button" 
+                                                                    class="m-0 p-0 btn btn-sm btn-primary"
+                                                                    
+                                                                    data-container="body"
+                                                                    data-animation="true" 
+                                                                    tabindex="{{ period.evento.titulo }}" 
+                                                                    data-trigger="focus"
+                                                                    data-html="true"
+                                                                    data-toggle="popover"
+                                                                    title="Información de la Reserva" 
+                                                                    data-content="<div class='text-center p-3'>
+                                                                        <p><b>{{ period.evento.titulo }}</b></p>
+                                                                        <p>{{ period.evento.actividad }}</p>
+                                                                        <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
+                                                                        <p>{{ period.evento.hInicio|date('H:i')}} - {{ period.evento.hFin|date('H:i') }}</p>
+                                                                        <p>{{ period.evento.getDiasStringFormat|join(', ',' y ') }}</p>
+                                                                        <p>{{period.evento.espacio}}</p></div>
+                                                                        <div><a class='editarEvento' href='{{ path('sgr_calendario_evento_edit', {'id': period.evento.id}) }}'>Editar</a></div>"
+                                                                    >
+                                                                    
+                                                                    {{ period.evento.titulo }} 
+                                                                    
+                                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            </div>
+                                            {% if reservas > 5 %}
+                                                
+                                                <a  href="javascript:;" class="showMore"> 
+                                                    {{ reservas - 4 }} más
+                                                </a>
+                                            {% endif %}
+                                            {# // Add the day number #}
+                                            {% if running_day != 7 %}
+                                                <a  href="{{ path('sgr_calendarios_evento_new', {'espacioId': calendario.sgrEspacio.id, 'f_inicio': cur_date|date('Y-m-d') } ) }}"><i class="fas fa-plus-circle"></i> </a>
+                                            {% endif %}
+                                            <div class='{{ css_cal_day_number }}'> <small>{{ day }}</small></div>
+                                        {# // Close day cell #}
+                                        
+                                        </td>
+                                {# end draw cell #}    
+                                
+                                {#// New row #}
+                                    {% if running_day == 7 %}
+                                        </tr>
+                                        {% if ( (day + 1) <= days_in_month ) %}
+                                            <tr class='{{ css_cal_row}}'>
+                                        {% endif %}
+                                        {% set running_day = 1 %}
+                                    {% else %}
+                                    
+                                        {# // Increment the running day #}
+                                        {% set running_day = running_day + 1 %}
+                                    {% endif %}
+                                {# end new row#}
+                            {% endfor %} {#// for day #}
+
+                            {# // Finish the rest of the days in the week #}
+                            {% if running_day != 1 %}
+                                {% for x in range(running_day, 7) %}
+                                    <td class='{{ css_cal_day_blank }}'> </td>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                        {# // Final row #}
+                        </tbody>
+                    {# // End the table #}
+                    </table>
+                    </div>
+                {% endfor %}
+            </div>  
+            
+            {% if filtros %}
+            <div class="alert alert-info justify-content-start" role="alert">
+                <p>
+                    <h3>Filtros aplicados en la busqueda</h3>
+                    {% for key, filtro in filtros %}
+                        {% if filtro%}
+                            <span><b>{{ key|capitalize }}:</b> {{filtro|capitalize}} </span>
+                        {% endif %}     
                     {% endfor %}
-                {% endif %}
-            </tr>
-            {# // Final row #}
-            </tbody>
-        {# // End the table #}
-        </table>
-    {% endfor %}
+                </p>
+            </div>
+            {% endif %}
+    </div>
+
+    {# Modal #}
+    <div class="modal fade" id="newSgrEventoModal" tabindex="-1" role="dialog">
+        
+        <div class="modal-dialog modal-xl" role="document">
+            
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newSgrEventoModalLabel">Calendarios: Nuevo Evento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                    {{ include('sgr_calendarios/_formEvento.html.twig', {'button_label': 'Salvar Evento'}) }} 
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Salvar</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock%}
 
 {% block morescripts %}
-    
+    <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewMonth.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/calendarios.js"></script>
+
+
     <script type="text/javascript">        
         
         $(function () {
@@ -228,35 +321,103 @@
                     $(this).fadeOut();
                 });
                 $(this).children('div.e').css('height', $(this).height() - 25 ).css('padding','0px').css('background-color','transparent').css('position','unset').css('z-index', 0); 
-                $(this).find('[data-toggle="popover"]').popover('hide');
+                //$(this).find('[data-toggle="popover"]').popover('hide');
             });
 
-            $('[data-toggle="popover"]').on('show.bs.popover',function(e){
-               
 
-               var td = $(this).closest('td');
-               //$(td).off('mouseleave');
-               
-               //var div = $(this).closest('div.e');
-               //$(div).css('overflow-y','visible'); 
-            });
-
-            $('[data-toggle="popover"]').on('hidden.bs.popover',function(e){
-                var td = $(this).closest('td');
-
-                /*$(td).children('div.e').css('height', $(this).height() - 25 ).css('padding','0px').css('background-color','transparent').css('position','unset').css('z-index', 0);*///.css('top','unset'); 
-                
-            });
         });
     </script>
 
     <script type="text/javascript">        
         $(function () {
             $('[data-toggle="popover"]').popover({
-                //trigger: 'focus',
-                //animation: true,
-                //delay: { "show": 300, "hide": 100 },
+                trigger: 'focus',
+                animation: true,
+                delay: { "show": 300, "hide": 100 },
             });
+        });
+    </script>
+    
+    <script type="text/javascript">        
+
+    </script>
+
+    <script type="text/javascript">        
+        $(function () {
+            $('div.es a').hover(
+                    function() {
+                        var reservaid = $( this ).data('reservaid');
+                        $( '[data-reservaid="'+reservaid+'"]' ).removeClass('btn-info').addClass('btn-primary');
+                    }, 
+                    function() {
+                        var reservaid = $( this ).data('reservaid');
+                        $( '[data-reservaid="'+reservaid+'"]' ).removeClass('btn-primary').addClass('btn-info');
+                    });
+        });
+    </script>
+    
+    <script type="text/javascript">
+
+        $("#datetimepicker-fi").on("change.datetimepicker", function (e) {
+        
+            if (e.oldDate != null)
+                $('form[name="sgr_filters_sgr_eventos"]').submit();
+        });
+
+        $('#thisMonth').on('click',function(){
+            
+            //set f_inicio
+            $('#datetimepicker-fi').datetimepicker( 'date', moment().locale('es').startOf('month').format('DD/MM/YYYY') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( moment().locale('es').startOf('month').format('DD/MM/YYYY') );
+        });
+
+        $('#nextMonth').on('click',function(){
+        
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').add( 1, 'months' );
+            
+            //set f_inicio
+            $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('month').format('DD/MM/YYYY') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('month').format('DD/MM/YYYY') );
+        });
+
+        $('#prevMonth').on('click',function(){
+            
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').subtract( 1, 'months' );
+            
+            //set f_inicio
+            $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('month').format('DD/MM/YYYY') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('month').format('DD/MM/YYYY') );
+        });
+    </script>
+
+     <script type="text/javascript">
+        
+        $('#myTab a.nav-link').on('click',function(e){
+            
+            if (window.sessionStorage) {
+                ui = JSON.parse( sessionStorage.getItem("ui") );
+                ui.tabActive = $( this ).data('idpanel');
+                sessionStorage.setItem("ui",JSON.stringify(ui));  
+            }
+           
+            $('input[name="sgr_filters_sgr_eventos[ui]"]').val(JSON.stringify(ui));
+
+            //var data = { tabActive : $( this ).data('idpanel') };
+            console.log( $( this ).data('idpanel') );
+            var idpanel = $( this ).data('idpanel');
+            $.ajax({
+                url : '/reservasfgh/admin/sgr/calendario/ajax/setTabActive',
+                type: 'GET',
+                data : { tabActive : idpanel },
+                success: function(respuesta) {},
+                error: function(xhr, ajaxOptions, thrownError){
+                            alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
+                        }
+            });//fin Ajax
+           
+            console.log('tab');
+            console.log(JSON.stringify(ui));
+            console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
         });
     </script>
 {% endblock %}

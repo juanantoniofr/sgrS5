@@ -1,0 +1,134 @@
+{{ form_start(formEvento) }}
+
+	<fieldset>
+	
+	<legend>Evento</legend> 
+
+		{# solapes && errors#}
+		<div id="errors"></div>
+	
+		<div class="form-group p-3">
+	    	<label for="inputAddress">{{ form_label(formEvento.titulo) }}</label>
+	    	{{ form_widget(formEvento.titulo) }}
+	  	</div>
+	
+		<div class="form-row p-3">
+	    	<div class="form-group col-md-6">
+	    		<label for="inputTitulo">{{ form_label(formEvento.actividad) }}</label>
+	    		{{ form_widget(formEvento.actividad) }}
+	    	</div>
+	    	<div class="form-group col-md-6">
+	    		<label for="inputPassword4">{{ form_label(formEvento.espacio) }}</label>
+	    		{{ form_widget(formEvento.espacio) }}
+	    	</div>
+	  	</div>
+
+	  	<div class="form-row p-3">
+	    	
+	  		<div class="form-group col-md-4">
+	  			<label>{{ form_label(formEvento.f_inicio) }}</label>
+		    	<div class='input-group date' id='datetimepicker-fi-newSgrEvento' data-target-input="nearest">
+		    		{{ form_widget(formEvento.f_inicio) }}
+		            <div class="input-group-append" data-target="#datetimepicker-fi-newSgrEvento" data-toggle="datetimepicker">
+		    			<span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+		  			</div>
+				</div>
+			</div>
+
+	    	<div class="form-group col-md-4">
+	    		<label for="inputTitulo">{{ form_label(formEvento.h_inicio) }}</label>
+	    		<div class='input-group date' id='datetimepicker-hi' data-target-input="nearest">
+	                {{ form_widget(formEvento.h_inicio, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-hi'}}) }}
+	   	            <div class="input-group-append" data-target="#datetimepicker-hi" data-toggle="datetimepicker">
+	   	            	<span class="input-group-text">
+	                		<i class="fas fa-clock"></i>
+	                	</span>
+	            	</div>	
+	            </div>
+	    	</div>
+
+	    	<div class="form-group col-md-4">
+	    		<label for="inputTitulo">{{ form_label(formEvento.h_fin) }}</label>
+	    		<div class='input-group date' id='datetimepicker-hf' data-target-input="nearest">
+	                {{ form_widget(formEvento.h_fin, {'attr': {'class': 'datetimepicker-input', 'data-target' : '#datetimepicker-hf'}}) }}
+	   	            <div class="input-group-append" data-target="#datetimepicker-hf" data-toggle="datetimepicker">
+	   	            	<span class="input-group-text">
+	                		<i class="fas fa-clock"></i>
+	                	</span>
+	            	</div>	
+	            </div>
+	    	</div>
+
+		</div>
+	</fieldset>
+	
+	<fieldset>
+
+		<legend>Repetir</legend>
+
+		<div class="form-row p-3">
+	    	
+	    	<div class="form-group col-md-6">
+	    		<div class="form-check">
+	      			
+	      			<label class="form-check-label mb-3" for="gridCheck">
+	        			{{ form_label(formEvento.dias) }} 
+	      			</label>
+	      			{{ form_widget(formEvento.dias) }}
+	    		</div>
+	    	</div>
+	  		
+	  		<div class="form-group col-md-3">
+	  			<label>{{ form_label(formEvento.f_fin) }}</label>
+		    	<div class='input-group date' id='datetimepicker-ff-newSgrEvento' data-target-input="nearest">
+		    		{{ form_widget(formEvento.f_fin) }}
+		            <div class="input-group-append" data-target="#datetimepicker-ff-newSgrEvento" data-toggle="datetimepicker">
+		    			<span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+		  			</div>
+				</div>
+			</div>
+	  	</div>
+  	</fieldset>
+  	
+  	<fieldset>
+  	
+  		<legend>Opcional</legend>
+		
+		<div class="form-row p-3">
+		
+			<div class="form-group col-md-3">
+				<div class="form-group">
+			    	<label for="inputAddress2">{{ form_label(formEvento.titulacion) }}</label>
+			    	{{ form_widget(formEvento.titulacion) }}
+			  	</div>
+			</div>
+		
+			<div class="form-group col-md-3">
+				<div class="form-group">
+			    	<label for="inputAddress2">{{ form_label(formEvento.asignatura) }}</label>
+			    	{{ form_widget(formEvento.asignatura) }}
+			  	</div>
+			</div>
+		
+			<div class="form-group col-md-3">
+				<div class="form-group">
+			    	<label for="inputAddress2">{{ form_label(formEvento.grupoAsignatura) }}</label>
+			    	{{ form_widget(formEvento.grupoAsignatura) }}
+			  	</div>
+			</div>
+		
+			<div class="form-group col-md-3">
+				<div class="form-group">
+			    	<label for="inputAddress2">{{ form_label(formEvento.profesor) }}</label>
+			    	{{ form_widget(formEvento.profesor) }}
+			  	</div>
+			</div>
+		</div>
+	</fieldset>
+	{{ form_widget(formEvento.submit) }}
+	{{ form_rest(formEvento) }}
+    
+    <!-- <button class="btn btn-primary" role="button">{{ button_label|default('Salvar') }}</button> -->	
+
+	
+{{ form_end(formEvento, {'render_rest': false}) }}
