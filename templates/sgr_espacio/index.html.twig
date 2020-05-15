@@ -3,14 +3,24 @@
 {% block title %}Sgr: Espacios{% endblock %}
 
 {% block body %}
-    <h1>Espacios</h1>
+    <h1 class="mb-2">Espacios</h1>
+
+        {{ form_start(form) }}
+            
+                
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        {{ form_widget(form.termino ) }}
+                    </div> 
+                </div>
+            
+        {{ form_end(form) }}
 
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th>Id</th>
                 <th>Nombre</th>
-                <th>Término taxonomía</th>
+                <th>Categoría</th>
                 <th>Aforo Máximo</th>
                 <th>Aforo Examen</th>
                 <th>Equipamiento</th>
@@ -20,17 +30,14 @@
         <tbody>
         {% for sgr_espacio in sgr_espacios %}
             <tr>
-                <td>{{ sgr_espacio.id }}</td>
+                
                 <td>{{ sgr_espacio.nombre }}</td>
                 <td>{{ sgr_espacio.termino }}</td>
                 <td>{{ sgr_espacio.aforo }}</td>
                 <td>{{ sgr_espacio.AforoExamen }} </td>
                 <td>
-                    {% for medio in sgr_espacio.mediosDisponibles %}
-                        {{ medio }} &nbsp;
-                    {% else %}
-                        No hay medios definidos
-                    {% endfor %}
+                    {{ sgr_espacio.mediosDisponibles|join(', ', ' y ')}}
+                    
                 </td>
                 <td>
                     <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_espacio_show', {'id': sgr_espacio.id}) }}">Ver</a>
@@ -46,4 +53,42 @@
     </table>
 
     <a class="btn btn-primary" type="button" href="{{ path('sgr_espacio_new') }}">Nuevo espacio</a>
+
+    <div class="mt-2">
+        <div>{{ knp_pagination_render(sgr_espacios) }}</div>
+        <footer class="blockquote-footer">Total de espacios: <cite title="Source Title">{{ sgr_espacios.getTotalItemCount }}</cite></footer>
+    </div>
+
+{% endblock %}
+
+{% block morescripts %}
+
+    
+    <script type="text/javascript">
+        
+        $('form[name="form"]').on('submit', function(e){
+
+            showGifEspera();
+        });
+
+        function showGifEspera(){
+            $('#espera').css('display','inline').css('z-index','100');
+        }
+
+        function hideGifEspera(){
+            //console.log('ready');
+            $('#espera').css('display','none').css('z-index','-100');
+        }
+    </script>
+
+    <script type="text/javascript">        
+                
+        $(function () {
+                    
+            $('#form_termino').on('change', function(e){
+                    
+                $('form[name="form"]').submit();
+            });
+        });
+    </script>
 {% endblock %}

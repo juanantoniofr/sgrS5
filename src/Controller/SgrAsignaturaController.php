@@ -4,12 +4,21 @@ namespace App\Controller;
 
 use App\Entity\SgrAsignatura;
 use App\Entity\SgrGrupoAsignatura;
+use App\Entity\SgrTitulacion;
+
+
 use App\Form\SgrAsignaturaType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+
 use App\Repository\SgrAsignaturaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+// Include paginator interface
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/admin/sgr/asignatura")
@@ -17,13 +26,51 @@ use Symfony\Component\Routing\Annotation\Route;
 class SgrAsignaturaController extends AbstractController
 {
     /**
-     * @Route("/", name="sgr_asignatura_index", methods={"GET"})
+     * @Route("/index/{page}", name="sgr_asignatura_index", defaults={"page"=1}, methods={"GET","POST"})
      */
-    public function index(SgrAsignaturaRepository $sgrAsignaturaRepository): Response
+    public function index(Request $request, SgrAsignaturaRepository $sgrAsignaturaRepository, PaginatorInterface $paginator, $page): Response
     {
+
+        $asignaturas = $sgrAsignaturaRepository->findBy([],['sgrTitulacion' =>  'Asc','nombre' => 'Asc']);
+
+        //form
+        $form = $this->createFormBuilder()
+            ->add('titulacion', EntityType::class, [
+                                    'label' => 'Elija títulación',
+                                    'required' => false,
+                                    'placeholder' => 'Todas las titulaciones',
+                                    'class' => SgrTitulacion::class,
+                                    'choice_label' => 'nombre',
+                                    ])
+            ->getForm();
+        
+        $form->handleRequest($request);
+
+        if ( $form->isSubmitted() && $form->isValid() )
+        {
+            //titulación
+            $titulacion = $form['titulacion']->getData();
+            if ($titulacion)
+            {
+                $asignaturas = $sgrAsignaturaRepository->findBy( [ 'sgrTitulacion'=> $titulacion ], [ 'sgrTitulacion' => 'ASC' , 'nombre' => 'ASC' ]);    
+            }
+        }
+
+        $pagination = $paginator->paginate(
+            $asignaturas,
+            $page,
+            10
+        );
+
         return $this->render('sgr_asignatura/index.html.twig', [
-            'sgr_asignaturas' => $sgrAsignaturaRepository->findAll(),
+                    'pagination' => $pagination,
+                    'form' => $form->createView(),
         ]);
+
+
+        /*return $this->render('sgr_asignatura/index.html.twig', [
+            'sgr_asignaturas' => $sgrAsignaturaRepository->findAll(),
+        ]);*/
     }
 
     /**

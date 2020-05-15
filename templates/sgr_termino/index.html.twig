@@ -4,14 +4,14 @@
 
 {% block body %}
 
-    <h1>Términos</h1>
+    <h1 class="mb-2">Categorías</h1>
 
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Descripcion</th>
+                
+                <th>Categoría</th>
+                <th>Espacios</th>
                 <th>Taxonomía</th>
                 <th>Acciones</th>
             </tr>
@@ -19,9 +19,16 @@
         <tbody>
         {% for sgr_termino in sgr_terminos %}
             <tr>
-                <td>{{ sgr_termino.id }}</td>
-                <td>{{ sgr_termino.nombre }}</td>
-                <td>{{ sgr_termino.descripcion }}</td>
+                
+                <td>
+                    {{ sgr_termino.nombre }}
+                    {% if not sgr_termino.descripcion is empty%}
+                        <footer class="blockquote-footer">Descripción: <cite title="Source Title">{{ sgr_termino.descripcion }}</cite></footer>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ sgr_termino.sgrEspacios|join(', ', ' y ') }}
+                </td>
                 <td>{{ sgr_termino.taxonomia }}</td>
                 <td>
                     <a type="button" class="btn btn-secondary m-1" href="{{ path('sgr_termino_show', {'id': sgr_termino.id}) }}">Ver</a>
@@ -36,6 +43,6 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" type="button" href="{{ path('sgr_termino_new') }}">Nuevo término</a>
+    <a class="btn btn-primary" type="button" href="{{ path('sgr_termino_new') }}">Nueva categoría</a>
     <a class="btn btn-link" type="button" href="{{ path('sgr_taxonomia_index') }}">Ir a Taxonomías</a>
 {% endblock %}

@@ -7,4 +7,4 @@ td.calendar-day-np	{ background:#eee; min-height:80px; } * html div.calendar-day
 td.calendar-day-head { background:#ccc; font-weight:bold; text-align:center; width:120px; padding:5px; border-bottom:1px solid #999; border-top:1px solid #999; border-right:1px solid #999; }
 div.day-number		{ background:#999; padding:1px; color:#fff; font-weight:bold; float:right; margin:-5px -5px 0 0; width:15px; text-align:center; }
 /* shared */
-td.calendar-day, td.calendar-day-np { width:120px; padding:5px; border-bottom:1px solid #999; border-right:1px solid #999; }
+td.calendar-day, td.calendar-day-np { width:250px; padding:5px; border-bottom:1px solid #999; border-right:1px solid #999; }

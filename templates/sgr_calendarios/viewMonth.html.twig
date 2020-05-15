@@ -52,13 +52,42 @@
         <div id="colCalendar" class="col-{{ showFilters == 1 ? '10' : '12' }}">
 
             <div class="row mb-3">
-            <div class="col-6 content-justify-left text-left">
-                {{ include('sgr_calendarios/nav.html.twig') }}
+                
+                <div class="col-6">
+                    
+                    <div class="content-justify-left text-left float-left">
+                        {{ include('sgr_calendarios/nav.html.twig') }}
+                    
+                    </div>
+
+                    <div class="content-justify-left text-left float-left ml-1">
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="far fa-calendar mr-1"></i>Vista
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                <a class="dropdown-item changeView"  href="{{ path('sgr_calendarios_vista', {view: 'diaria', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Diaria</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'semanal', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Semanal</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'mensual', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Mensual</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 text-left text-info mt-2">
+                
+                    Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+                </div>
             </div>
-            <div class="col-6 text-right text-info">
-                Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
-            </div>
-            </div>
+
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 {% for key, calendario in aCalendarios %}
@@ -83,7 +112,7 @@
 
                     {# // Start: draw table #}
                     <div class="tab-pane fade {{ active }}" id="{{ calendario.sgrEspacio.id }}" role="tabpanel" aria-labelledby="home-tab" data-idpanel="{{ calendario.sgrEspacio.id }}"> 
-                    <table class=' table table-striped table-bordered {{ css_cal }}'>
+                    <table class='table table-striped table-bordered {{ css_cal }} table-pane'>
                         
                         <caption class="text-center">
 
@@ -158,25 +187,25 @@
                                                                         <p>{{period.evento.espacio}}</p></div>
                                                                         <div><a class='editarEvento' href='{{ path('sgr_calendario_evento_edit', {'id': period.evento.id}) }}'>Editar</a></div>"
 
-                                                                        style="width: 200px; height: 24px;border:1px solid white;" 
+                                                                        style="width: 240px; height: 24px;border:1px solid white;text-align: left;" 
                                                                         role="button" 
-                                                                        class=" text-truncate m-0 p-0 btn btn-sm btn-info"
+                                                                        class=" text-truncate m-0 p-0 pl-1 btn btn-sm btn-info visible"
                                                                         data-container="body"
                                                                     >
                                                                     
                                                                     {{ period.evento.titulo }} 
                                                                     
-                                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
+                                                                    {# <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>#}
                                                                         </a>
                                                                 {% endif %}        
                                                     {% else %}
                                                         {% if period.datePeriod.getStartDate|date('Y-m-d') == cur_date|date('Y-m-d') %}
                                                             {% set reservas = reservas + 1 %}
-                                                            <a class="oculto" style="display: none;clear: both;"
+                                                            <a  style="display: none;clear: both;"
                                                                 href="javascript:;" 
                                                                     style="width: 100%;height: 100%;border:1px solid white;" 
                                                                     role="button" 
-                                                                    class="m-0 p-0 btn btn-sm btn-primary"
+                                                                    class="m-0 p-0 btn btn-sm btn-info oculto"
                                                                     
                                                                     data-container="body"
                                                                     data-animation="true" 
@@ -197,22 +226,22 @@
                                                                     
                                                                     {{ period.evento.titulo }} 
                                                                     
-                                                                    <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small>
+                                                                    {# <small><span class="text-sm-left">({{ period.evento.hInicio|date('H:i') }}</span>-<span class="text-sm-right">{{ period.evento.fFin|date('H:i') }})</span></small> #}
                                                             </a>
                                                         {% endif %}
                                                     {% endif %}
                                                 {% endfor %}
                                             </div>
                                             </div>
-                                            {% if reservas > 5 %}
+                                            {% if reservas > 4 %}
                                                 
-                                                <a  href="javascript:;" class="showMore"> 
-                                                    {{ reservas - 4 }} más
+                                                <a   class="text-success rounded-circle mr-1 showMore" href="javascript:;"> 
+                                                    +{{ reservas - 4 }}
                                                 </a>
                                             {% endif %}
                                             {# // Add the day number #}
                                             {% if running_day != 7 %}
-                                                <a  href="{{ path('sgr_calendarios_evento_new', {'espacioId': calendario.sgrEspacio.id, 'f_inicio': cur_date|date('Y-m-d') } ) }}"><i class="fas fa-plus-circle"></i> </a>
+                                                <a  href="{{ path('sgr_calendarios_evento_new', {'espacioId': calendario.sgrEspacio.id, 'f_inicio': cur_date|date('Y-m-d') } ) }}"><i class="far fa-calendar-plus"></i></a>
                                             {% endif %}
                                             <div class='{{ css_cal_day_number }}'> <small>{{ day }}</small></div>
                                         {# // Close day cell #}
@@ -263,32 +292,6 @@
             </div>
             {% endif %}
     </div>
-
-    {# Modal #}
-    <div class="modal fade" id="newSgrEventoModal" tabindex="-1" role="dialog">
-        
-        <div class="modal-dialog modal-xl" role="document">
-            
-            <div class="modal-content">
-                
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newSgrEventoModalLabel">Calendarios: Nuevo Evento</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    {{ include('sgr_calendarios/_formEvento.html.twig', {'button_label': 'Salvar Evento'}) }} 
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <!-- <button type="button" class="btn btn-primary">Salvar</button> -->
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock%}
 
 {% block morescripts %}
@@ -297,6 +300,17 @@
     <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewMonth.js"></script>
     <script type="text/javascript" src="/reservasfgh/public/build/calendarios.js"></script>
 
+    <script type="text/javascript"> 
+       $('.changeView').on('click',function(e){
+
+           /* e.preventDefault();
+            var f_inicio = $('#datetimepicker-fi').datetimepicker( 'date').format('Y-MM-DD');
+            var url = $(this).attr('href');
+            var newUrl = url + '/' + f_inicio;
+
+            window.location.href = newUrl; */
+        });
+    </script>
 
     <script type="text/javascript">        
         
@@ -311,14 +325,19 @@
                 $(td).children('div.e').css('position', 'absolute').css('height','unset').css('z-index', 5).css('padding','20px').css('background-color','#eee').css('top', 0);
                 console.log($(td).find('a.oculto'));//
                 $(td).find('a.oculto').css('display','block');
+                $(td).find('a.visible').css('width','100%');
+                $(td).find('a.oculto').css('width','100%');
+                
                 //console.log($(td).children('div.e').offset().top);
             });
 
             $('td').on('mouseleave',function(e){
 
-                
+                $(this).find('a.visible').css('width','240px');
+                $(this).find('a.oculto').css('width','240px');
                 $(this).find('a.oculto').each(function(e){
                     $(this).fadeOut();
+                    $(this).css('width','200px');
                 });
                 $(this).children('div.e').css('height', $(this).height() - 25 ).css('padding','0px').css('background-color','transparent').css('position','unset').css('z-index', 0); 
                 //$(this).find('[data-toggle="popover"]').popover('hide');

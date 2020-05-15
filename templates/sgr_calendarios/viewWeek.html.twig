@@ -36,14 +36,45 @@
 			{% if aCalendarios is defined %}
 			
 			<div class="row mb-3">
-				<div class="col-6 content-justify-left text-left">
-	                {{ include('sgr_calendarios/nav.html.twig') }}
-	            </div>
-	            <div class="col-6 text-right text-info">
-	                Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+				
+				<div class="col-6">
+                    
+					<div class="content-justify-left text-left float-left">
+             
+                        {{ include('sgr_calendarios/nav.html.twig') }}
+                    </div>
+
+                    <div class="content-justify-left text-left float-left ml-1">
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="far fa-calendar mr-1"></i>Vista
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item changeView"  href="{{ path('sgr_calendarios_vista', {view: 'diaria', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Diaria</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'semanal', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Semanal</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'mensual', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Mensual</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+	            
+	            <div class="col-12 text-left text-info mt-2">
+	            
+	            	Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
 	            </div>
         	</div>
 			
+			{% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
 			
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 	  			{% for key, calendario in aCalendarios %}
@@ -118,10 +149,10 @@
 											{% set id = 1 %}
 										
 											{% for period in calendario.periods %}
-										
+												
 												{% for codDiaEvento in period.evento.dias %}
-										
 													{% if codDiaEvento == cod %}	
+
 														{# dump(period) #}
 														{% if period.datePeriod.start|date('H:i') >= hour|date('H:i') and period.datePeriod.start|date('H:i') < (hour+step)|date('H:i') %}
 
@@ -147,7 +178,9 @@
 																position:absolute;
 																top:0px;
 																left:{{ offset }}%;
-																background-color: transparent;">
+																background-color: transparent;
+																/*max-height: 140px;*/
+																">
 																
 																<a  href="javascript:;" 
 																	data-reservaid="{{ period.evento.id }}" 
@@ -167,10 +200,10 @@
 																					</div>
 																					<div><a class='editarEvento' href='{{ path('sgr_calendario_evento_edit', {'id': period.evento.id}) }}'>Editar</a></div>"
 																>	
-																	<div class="badge badge-info text-left" style="width: 100%;height: 100%;border:1px solid white">
+																	<div class="badge badge-info text-left" style="width: 100%;height: 100%;border:1px solid white;overflow-y: hidden;">
 						  												<div class="align-middle text-wrap text-truncate">
 						  												{{ period.evento.titulo }} 
-						  												<span class="text-sm-left text-danger">({{ period.evento.fInicio|date('d-m-Y') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('d-m-Y') }})</span>
+						  												{#<span class="text-sm-left text-danger">({{ period.evento.fInicio|date('d-m-Y') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('d-m-Y') }})</span>#}
 						  												</div>
 						  													
 						  											</div>
@@ -218,6 +251,18 @@
 
 {% block morescripts %}
 	
+	<script type="text/javascript"> 
+       $('.editarEvento').on('click',function(e){
+
+	       /* e.preventDefault();
+	        var f_inicio = $('#datetimepicker-fi').datetimepicker( 'date').format('Y-MM-DD');
+	        var url = $(this).attr('href');
+	        var newUrl = url + '/' + f_inicio;
+	        alert (newUrl);
+			*/
+	        //window.location.href = newUrl; 
+       });
+    </script>
 	
 	<script type="text/javascript">
 		
@@ -264,10 +309,11 @@
            			});
            	});
 
-           	$('tr').each(function(index,tr){
+           	$('.tespacio tr').each(function(index,tr){
            		
            		//todos los eventos de la fila
            		eventosEnfila = $(tr).find( '.evento');
+           		//console.log(eventosEnfila);
            		var otrosEventosEnLafila = '';
            		var eventoscontenidos = '';
            		//Para cada evento en la fila
@@ -283,6 +329,11 @@
            				$(this).css('top', nuevapositon);
            				
            				var myHeight = $(this).outerHeight();
+           				if (myHeight == 0){
+	           				//console.log('cero');
+	           				//$(this).closest('td').css('border', '1px solid red');
+	           				myHeight = 100;
+	           			}
            				var myPercentage = (myHeight / $(this).closest('td').height()) * 100;
            				var nuevoPercentage = myPercentage - 20 ;
 						
@@ -300,6 +351,13 @@
            					$(this).css('top', nuevapositon);
 
            					var myHeight = $(this).outerHeight();
+           					//console.log('onLoad myHeight');
+	           				//console.log(myHeight);
+	           				if (myHeight == 0){
+	           					//console.log('cero');
+	           					//$(this).closest('td').css('border', '1px solid red');
+	           					myHeight = 100;
+	           				}
            					var myPercentage = (myHeight / $(this).closest('td').height()) * 100;
            					var nuevoPercentage = myPercentage - 20 ;
 						
@@ -357,14 +415,24 @@
 	           			var eventoscontenidos = getSolapesInternos(evento, otrosEventosEnLafila);
 
 	           			$(eventoscontenidos).each(function(position){
+	           				/*console.log('top');
+	           				console.log($(this).position().top);
 	           				var nuevapositon = $(this).position().top + 20;// - 2;
 	           				$(this).css('top', nuevapositon);
-	           				
+	           				*/
 	           				var myHeight = $(this).outerHeight();
+	           				if (myHeight == 0){
+	           					//console.log('cero');
+	           					//$(this).closest('td').css('border', '1px solid red');
+	           					myHeight = 100;
+	           				}
+	           				//console.log('myHeight');
+	           				//console.log(myHeight);
 	           				var myPercentage = (myHeight / $(this).closest('td').height()) * 100;
 	           				var nuevoPercentage = myPercentage - 20 ;
 							
 							$(this).outerHeight( nuevoPercentage + '%');
+							//$(this).css('border', '1px solid red');
 						});
 
 	           			var eventosSolapeParcial = getSolapesParciales(evento, otrosEventosEnLafila);
@@ -374,11 +442,16 @@
 	           			
 	           			if ($(eventosSolapeParcial).length > 0){	
 		           			$(eventosSolapeParcial).each(function(position){
-		           				var nuevapositon = $(this).position().top + ( 20 * (position+1));
-		           				$(this).css('top', nuevapositon);
-		           				console.log($(this).closest('div.e').outerHeight());
-		           				console.log($(eventosSolapeParcial).length);
+		           				//var nuevapositon = $(this).position().top + ( 20 * (position+1));
+		           				//$(this).css('top', nuevapositon);
+		           				//console.log($(this).closest('div.e').outerHeight());
+		           				//console.log($(eventosSolapeParcial).length);
 		           				var myHeight = $(this).closest('div.e').outerHeight() / ($(eventosSolapeParcial).length + 1 );
+		           				if (myHeight == 0){
+	           						//console.log('cero');
+	           						//$(this).closest('td').css('border', '1px solid red');
+	           						myHeight = 100;
+	           					}
 		           				var myPercentage = (myHeight / $(this).closest('div.e').outerHeight()) * 100;
 		           				var nuevoPercentage = myPercentage - 20 ;
 								
@@ -398,8 +471,8 @@
 
            			$(td).find('.evento').css('height', $(td).height() / $(td).find('.evento').length);
            			$(td).find('.evento').each(function(position,evento){
-           				var nuevapositon = $(this).position().top + ( 20 * position) - 2;
-           				$(this).css('top', nuevapositon);
+           				//var nuevapositon = $(this).position().top + ( 20 * position) - 2;
+           				//$(this).css('top', nuevapositon);
            			});
            		});
 	           	//*****
@@ -448,8 +521,6 @@
 		$('#showMoreFilters').click( function(e){
                 e.preventDefault();//     toggle: false
          });
-
-  		
 	</script>
 
 	<script type="text/javascript">        
@@ -498,7 +569,6 @@
             $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
             $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
         });
-
     </script>
 
     <script type="text/javascript">
@@ -515,23 +585,23 @@
 
 	        //var data = { tabActive : $( this ).data('idpanel') };
 	        //console.log(data);
-	        console.log( $( this ).data('idpanel') );
+	        //console.log( $( this ).data('idpanel') );
 	        var idpanel = $( this ).data('idpanel');
 	    	$.ajax({
 		        url : '/reservasfgh/admin/sgr/calendario/ajax/setTabActive',
 		        type: 'GET',
 		        data : { tabActive : idpanel },
 		        success: function(respuesta) {
-		        	console.log(respuesta);
+		        	//console.log(respuesta);
 		        },
 		        error: function(xhr, ajaxOptions, thrownError){
 		                    alert(xhr.responseText + ' (codeError: ' + xhr.status  +')');
 		                }
 	        });//fin Ajax
 	       
-	        console.log('tab');
-	        console.log(JSON.stringify(ui));
-	        console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
+	        //console.log('tab');
+	        //console.log(JSON.stringify(ui));
+	        //console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
    		});
     </script>
 {% endblock %}

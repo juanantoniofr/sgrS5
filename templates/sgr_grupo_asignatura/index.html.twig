@@ -3,7 +3,7 @@
 {% block title %}Sgr: Grupos (Asignatura){% endblock %}
 
 {% block body %}
-    <h1>Grupo (Asignatura)</h1>
+    <h1 class="mb-2">Grupo (Asignatura)</h1>
 
     <table class="table">
         <thead class="thead-dark">
@@ -35,5 +35,11 @@
         </tbody>
     </table>
 
-    <a href="{{ path('sgr_grupo_asignatura_new') }}">Create new</a>
+
+    <a class="btn btn-primary m-2" type="button" href="{{ path('sgr_grupo_asignatura_new') }}">Nuevo Grupo</a>
+    <div>
+        
+        <div>{{ knp_pagination_render(sgr_grupo_asignaturas) }}</div>
+        <footer class="blockquote-footer">Total de grupos (asignaturas): <cite title="Source Title">{{ sgr_grupo_asignaturas.getTotalItemCount }}</cite></footer>
+    </div>
 {% endblock %}

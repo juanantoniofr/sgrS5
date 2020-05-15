@@ -34,10 +34,10 @@
                             <i class="far fa-calendar mr-1"></i>Calendarios
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{{ path('sgr_calendarios_vista', {view: 'diaria'} ) }}">Hoy</a>
-                            <a class="dropdown-item" href="{{path('sgr_calendarios_vista', {view: 'semanal'} ) }}">Semana</a>
-                            <a class="dropdown-item" href="{{path('sgr_calendarios_vista', {view: 'mensual'} ) }}">Mes</a>
-                            <a class="dropdown-item" href="{{path('sgr_calendarios_vista', {view: 'anual'} ) }}">Año académico</a>
+                            <a class="dropdown-item" href="{{ path('sgr_calendarios_vista', {view: 'diaria', action: 'show', f_inicio: date()|date('Y-m-d') } ) }}">Hoy</a>
+                            <a class="dropdown-item" href="{{ path('sgr_calendarios_vista', {view: 'semanal', action: 'show', f_inicio: date()|date('Y-m-d')} ) }}">Semana en curso</a>
+                            <a class="dropdown-item" href="{{ path('sgr_calendarios_vista', {view: 'mensual', action: 'show', f_inicio: date()|date('Y-m-d')} ) }}">Mes en curso</a>
+                            <a class="dropdown-item" href="{{ path('sgr_calendarios_vista', {view: 'anual'} ) }}">Curso académico</a>
                         </div>
                     </div>
                     
@@ -45,10 +45,10 @@
 
                     <div class="dropdown mx-3">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="far fa-calendar-check mr-1"></i>Eventos
+                            <i class="far fa-calendar-check mr-1"></i>Reservas
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{{path('sgr_evento_index')}}">Eventos</a>
+                            <a class="dropdown-item" href="{{path('sgr_evento_index')}}">Reservas</a>
                             <a class="dropdown-item" href="{{path('sgr_tipo_actividad_index')}}">Actividades</a>
                         </div>
                     </div>
@@ -58,8 +58,8 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="{{path('sgr_espacio_index')}}">Espacios</a>
+                            <a class="dropdown-item" href="{{path('sgr_termino_index')}}">Categorías</a>
                             <a class="dropdown-item" href="{{path('sgr_equipamiento_index')}}">Equipamiento</a>
-                            <a class="dropdown-item" href="{{path('sgr_taxonomia_index')}}">Taxonomías</a>
                         </div>
                     </div>
                     <div class="dropdown mx-3">

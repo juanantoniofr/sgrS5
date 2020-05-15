@@ -1,9 +1,11 @@
 $(function () {
 
+    //console.log(JSON.parse( sessionStorage.getItem("ui") ));
     if (window.sessionStorage) {
+        //console.log('load page..');
 
         ui = JSON.parse( sessionStorage.getItem("ui") );
-        
+        //ui = null;
         if (ui == null)
         {
             var ui = new Object();
@@ -15,11 +17,11 @@ $(function () {
         else
             $('input[name="sgr_filters_sgr_eventos[ui]"]').val(JSON.stringify(ui));
 
-        console.log('load page..');
-        console.log(ui);
+        
+        //if (ui != null)
+            //console.log(ui);
         
     }
-    
 
     $('#collapseFiltros').on('hidden.bs.collapse', function () {
         
@@ -57,12 +59,25 @@ $(function () {
         console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
     });
 
-
-
     $('a.editarEvento').on('click',function(e){
 
         e.preventDefault();
         console.log(JSON.stringify(ui));
     });
 
+    $('form[name="sgr_filters_sgr_eventos"]').on('submit', function(e){
+
+        showGifEspera();
+    });
+
+    function showGifEspera(){
+    
+        $('#espera').css('display','inline').css('z-index','100');
+    }
+
+    function hideGifEspera(){
+    
+
+        $('#espera').css('display','none').css('z-index','-100');
+    }
 });

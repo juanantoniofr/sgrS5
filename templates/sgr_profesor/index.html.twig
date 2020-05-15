@@ -3,14 +3,23 @@
 {% block title %}Sgr: Profesores{% endblock %}
 
 {% block body %}
-    <h1>Profesores</h1>
-
+    <h1 class="mb-2">Profesores</h1>
+    {#
+    {{ form_start(form) }}
+        
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                {{ form_widget(form.titulacion ) }}
+            </div> 
+        </div>
+            
+    {{ form_end(form) }}
+    #}
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>Id</th>
                 <th>Nombre</th>
-                <th>Dni</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -19,7 +28,6 @@
             <tr>
                 <td>{{ sgr_profesor.id }}</td>
                 <td>{{ sgr_profesor.nombre }}</td>
-                <td>{{ sgr_profesor.dni }}</td>
                 <td>
                     <a class="btn btn-secondary m-1" role="button" href="{{ path('sgr_profesor_show', {'id': sgr_profesor.id}) }}">Ver</a>
                     <a class="btn btn-primary m-1" role="button" href="{{ path('sgr_profesor_edit', {'id': sgr_profesor.id}) }}">Editar</a>
@@ -33,5 +41,44 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" role="button" href="{{ path('sgr_profesor_new') }}">Nuevo profesor</a>
+    <a class="btn btn-primary m-2" role="button" href="{{ path('sgr_profesor_new') }}">Nuevo profesor</a>
+
+    <div>
+        
+        <div>{{ knp_pagination_render(sgr_profesors) }}</div>
+        <footer class="blockquote-footer">Total de profesores: <cite title="Source Title">{{ sgr_profesors.getTotalItemCount }}</cite></footer>
+    </div>
+{% endblock %}
+
+
+{% block morescripts %}
+
+    
+    <script type="text/javascript">
+        
+        $('form[name="form"]').on('submit', function(e){
+
+            showGifEspera();
+        });
+
+        function showGifEspera(){
+            $('#espera').css('display','inline').css('z-index','100');
+        }
+
+        function hideGifEspera(){
+            //console.log('ready');
+            $('#espera').css('display','none').css('z-index','-100');
+        }
+    </script>
+
+    <script type="text/javascript">        
+                
+        $(function () {
+                    
+            $('#form_titulacion').on('change', function(e){
+                    
+                $('form[name="form"]').submit();
+            });
+        });
+    </script>
 {% endblock %}

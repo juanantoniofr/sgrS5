@@ -5,19 +5,21 @@
 {% block body %}
     <h1>Actividades</h1>
 
+    <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_tipo_actividad_new') }}">Nueva actividad</a>
+
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th>Id</th>
                 <th>Actividad</th>
                 <th>Descripcion</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-        {% for sgr_tipo_actividad in sgr_tipo_actividads %}
+        
+        {% for sgr_tipo_actividad in pagination %}
             <tr>
-                <td>{{ sgr_tipo_actividad.id }}</td>
+                
                 <td>{{ sgr_tipo_actividad.actividad }}</td>
                 <td>{{ sgr_tipo_actividad.descripcion }}</td>
                 <td>
@@ -33,5 +35,8 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" type="button" href="{{ path('sgr_tipo_actividad_new') }}">Nueva actividad</a>
+    <div>
+        <div>{{ knp_pagination_render(pagination) }}</div>
+        <div><small>(<span>Total de actividades: {{ pagination.getTotalItemCount }}</span>)</small></div>   
+    </div>
 {% endblock %}

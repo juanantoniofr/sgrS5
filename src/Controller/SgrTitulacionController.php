@@ -20,8 +20,11 @@ class SgrTitulacionController extends AbstractController
      */
     public function index(SgrTitulacionRepository $sgrTitulacionRepository): Response
     {
+
+        $titulaciones = $sgrTitulacionRepository->findBy([],['codigo' => 'ASC']);
         return $this->render('sgr_titulacion/index.html.twig', [
-            'sgr_titulacions' => $sgrTitulacionRepository->findAll(),
+            //'sgr_titulacions' => $sgrTitulacionRepository->findAll(),
+            'sgr_titulacions' => $titulaciones,
         ]);
     }
 

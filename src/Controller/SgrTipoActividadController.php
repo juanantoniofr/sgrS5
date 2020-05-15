@@ -10,18 +10,31 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+// Include paginator interface
+use Knp\Component\Pager\PaginatorInterface;
+
 /**
- * @Route("/admin/sgr/tipo/actividad")
+ * @Route("/admin/sgr/tipo/actividades")
  */
 class SgrTipoActividadController extends AbstractController
 {
     /**
-     * @Route("/", name="sgr_tipo_actividad_index", methods={"GET"})
+     * @Route("/index/{page}", name="sgr_tipo_actividad_index", defaults={"page"=1}, methods={"GET"})
      */
-    public function index(SgrTipoActividadRepository $sgrTipoActividadRepository): Response
+    public function index(SgrTipoActividadRepository $sgrTipoActividadRepository, PaginatorInterface $paginator, $page): Response
     {
+
+        //$actividades = $sgrTipoActividadRepository->findAll();
+        $actividades = $sgrTipoActividadRepository->findBy([],['actividad' => 'ASC']);
+        $pagination = $paginator->paginate(
+            $actividades,
+            $page,//$request->query->getInt('page', 1),
+            10
+        );
+        
         return $this->render('sgr_tipo_actividad/index.html.twig', [
-            'sgr_tipo_actividads' => $sgrTipoActividadRepository->findAll(),
+            'pagination'    => $pagination,
+            //'sgr_tipo_actividads' => $sgrTipoActividadRepository->findAll(),
         ]);
     }
 

@@ -3,14 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\SgrEspacio;
+use App\Entity\SgrTermino;
+
 use App\Form\SgrEspacioType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 use App\Repository\SgrEspacioRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+
+// Include paginator interface
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/admin/sgr/espacio")
@@ -18,13 +27,45 @@ use Doctrine\Common\Collections\Collection;
 class SgrEspacioController extends AbstractController
 {
     /**
-     * @Route("/", name="sgr_espacio_index", methods={"GET"})
+     * @Route("/index/{page}", name="sgr_espacio_index", defaults={"page"=1}, methods={"GET","POST"})
      */
-    public function index(SgrEspacioRepository $sgrEspacioRepository): Response
+    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, PaginatorInterface $paginator, $page): Response
     {
+
+        //espacios
+        $espacios = $sgrEspacioRepository->findBy( array(), ['termino' => 'ASC', 'nombre' => 'ASC']);
+        //form
+        $form = $this->createFormBuilder()
+            ->add('termino', EntityType::class, [
+                                    'label' => 'Tipo de espacio',
+                                    'required' => false,
+                                    'placeholder' => 'Todas las Categorías',
+                                    'class' => SgrTermino::class,
+                                    'choice_label' => 'nombre',
+                                    ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ( $form->isSubmitted() && $form->isValid() )
+        {
+            //termino
+            $termino = $form['termino']->getData();
+            if ($termino)
+            {
+                $espacios = $sgrEspacioRepository->findBy( [ 'termino'=> $termino ], [ 'termino' => 'ASC' , 'nombre' => 'ASC' ]);    
+            }
+        }
+
+        $pagination = $paginator->paginate(
+            $espacios,
+            $page,
+            10
+        );
+        
         return $this->render('sgr_espacio/index.html.twig', [
-            //'sgr_espacios' => $sgrEspacioRepository->findAll(),
-            'sgr_espacios' => $sgrEspacioRepository->findBy( array(), ['termino' => 'ASC', 'nombre' => 'ASC']),
+            'sgr_espacios' => $pagination,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -52,7 +93,7 @@ class SgrEspacioController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sgr_espacio_show", methods={"GET"})
+     * @Route("/show/{id}", name="sgr_espacio_show", methods={"GET"})
      */
     public function show(SgrEspacio $sgrEspacio): Response
     {
@@ -82,7 +123,7 @@ class SgrEspacioController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sgr_espacio_delete", methods={"DELETE"})
+     * @Route("/delete/{id}", name="sgr_espacio_delete", methods={"DELETE"})
      */
     public function delete(Request $request, SgrEspacio $sgrEspacio): Response
     {

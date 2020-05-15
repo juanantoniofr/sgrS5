@@ -3,12 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\SgrProfesor;
+use App\Entity\SgrTitulacion;
+
 use App\Form\SgrProfesorType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 use App\Repository\SgrProfesorRepository;
+use App\Repository\SgrAsignaturaRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+// Include paginator interface
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/admin/sgr/profesor")
@@ -16,12 +25,73 @@ use Symfony\Component\Routing\Annotation\Route;
 class SgrProfesorController extends AbstractController
 {
     /**
-     * @Route("/", name="sgr_profesor_index", methods={"GET"})
+     * @Route("/index/{page}", defaults={"page"=1}, name="sgr_profesor_index", methods={"GET","POST"})
      */
-    public function index(SgrProfesorRepository $sgrProfesorRepository): Response
+    public function index(Request $request, SgrProfesorRepository $sgrProfesorRepository, SgrAsignaturaRepository $sgrAsignaturaRepository, PaginatorInterface $paginator, $page): Response
     {
+
+        $sgrProfesors = $sgrProfesorRepository->findBy([],['nombre' =>  'Asc']);
+
+        /*dump($sgrProfesors);
+        
+        //form
+        $form = $this->createFormBuilder()
+            ->add('titulacion', EntityType::class, [
+                                    'label' => 'Elija títulación',
+                                    'required' => false,
+                                    'placeholder' => 'Elija títulación',
+                                    'class' => SgrTitulacion::class,
+                                    'choice_label' => 'nombre',
+                                    ])
+            ->getForm();
+        
+        $form->handleRequest($request);
+
+        if ( $form->isSubmitted() && $form->isValid() )
+        {
+            $sgrProfesors = array();
+            //titulación
+            $titulacion = $form['titulacion']->getData();
+            if ($titulacion)
+            {
+                $sgrProfesors = array();
+                $asignaturas = $sgrAsignaturaRepository->findBy( [ 'sgrTitulacion'=> $titulacion ], [ 'sgrTitulacion' => 'ASC' , 'nombre' => 'ASC' ]);
+
+                //cada asignatura tiene One Or Many grupos
+                foreach ($asignaturas as $asignatura)
+                {
+                        
+                        $grupos = $asignatura->getGrupos();
+
+                        //cada grupo tiene One Or Many profesores
+                        $profesors = array();
+                        foreach ($grupos as $grupo)
+                        {
+                            $profesors[] = $grupo->getSgrProfesors();   
+                        }
+                        //Si hay profesores, lo añadimos al array $profesors
+                        if (!empty($profesors))
+                            foreach ($profesors as $profesor)
+                            {
+                                dump($profesor->initialize());
+                                $sgrProfesors[] = $profesor;
+                            }
+                }    
+            }
+
+            dump($sgrProfesors);
+            exit;
+        }*/
+
+        $pagination = $paginator->paginate(
+            $sgrProfesors,
+            $page,
+            10
+        );
+
         return $this->render('sgr_profesor/index.html.twig', [
-            'sgr_profesors' => $sgrProfesorRepository->findAll(),
+            'sgr_profesors' => $pagination,
+            //'form' => $form->createView(),
         ]);
     }
 

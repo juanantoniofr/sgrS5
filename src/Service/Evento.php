@@ -87,7 +87,11 @@ class Evento extends AbstractController
     public function setTitulacion ($codigoAsignatura, $repositoryTitulacion)
     {
 
-        $this->sgrEvento->setTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($codigoAsignatura,0,3) ]));
+        '5' == substr($codigoAsignatura,0,1) ? $codigoTitulacion = 'M' . substr($codigoAsignatura,1,3) : $codigoTitulacion = substr($codigoAsignatura,0,3);
+
+        $titulacion = $repositoryTitulacion->findOneBy([ 'codigo' => $codigoTitulacion ]);
+
+        $this->sgrEvento->setTitulacion($titulacion);
 
         return $this;
     }
@@ -102,11 +106,16 @@ class Evento extends AbstractController
         }
         else
         {
+            '5' == substr($codigoAsignatura,0,1) ? $codigoTitulacion = 'M' . substr($codigoAsignatura,1,3) : $codigoTitulacion = substr($codigoAsignatura,0,3);  
+
+            //dump($codigoTitulacion);
+            //exit;
+
             $asignatura = new SgrAsignatura;
             $asignatura->setCodigo($codigoAsignatura);
             $asignatura->setNombre($nombreAsignatura);
             $asignatura->setCuatrimestre($cuatrimestre);
-            $asignatura->setSgrTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => substr($codigoAsignatura,0,3) ])); //LANZAR EXCEPTION SI NO EXISTE TITULACIÓN
+            $asignatura->setSgrTitulacion($repositoryTitulacion->findOneBy([ 'codigo' => $codigoTitulacion ])); //LANZAR EXCEPTION SI NO EXISTE TITULACIÓN
             $entityManager->persist($asignatura);
             $entityManager->flush();
 

@@ -19,6 +19,7 @@ use Symfony\Component\Form\FormEvents;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityRepository;
 
 
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -117,6 +118,12 @@ class SgrFiltersSgrEventosType extends AbstractType
                                     'expanded' => true,
                                     'multiple' => true,
                                     'attr' => ['class' => 'form-check'],
+                                    'query_builder' => function (EntityRepository $er) {
+                                                            return $er->createQueryBuilder('e')
+                                                                      ->where('e.termino = :termino')
+                                                                      ->setParameter('termino', $this->session->get('idTermino',2))
+                                                                      ->orderBy('e.nombre', 'ASC');
+                                                        },
                                 ])
             ->add('actividad', EntityType::class,[
                                     'label' => 'Actividad',

@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Doctrine\ORM\EntityRepository;
 
 use App\Service\Csv;
 use App\Service\Evento;
@@ -39,15 +41,30 @@ class SgrUploadCSVController extends AbstractController
 
         $form = $this->createFormBuilder()
             ->add('fileCsv', FileType::class,['label' => 'Campo requerido','label_attr' => ["data-browse" => "Seleccionar archivo"] ])
+            ->add('actividad', EntityType::class,[
+                                    'label' => 'Actividad',
+                                    'required' => true,
+                                    'placeholder' => 'Seleccione Actividad',
+                                    'class' => SgrTipoActividad::class,
+                                    'choice_label' => 'actividad',
+                                    'query_builder' => function (EntityRepository $er) {
+                                                            return $er->createQueryBuilder('a')
+                                                                      ->where('a.id In (:ids)')
+                                                                      ->setParameter('ids', [1, 12])
+                                                                      ->orderBy('a.actividad', 'ASC');
+                                                        },])
             ->getForm();
 
-        //$form = $this->createForm(Request $request);
         $form->handleRequest($request);
 
         if ( $form->isSubmitted() && $form->isValid() ) {
 
+
             //Procesar csv
             $file = $form['fileCsv']->getData();
+
+            //actividad
+            $actividad = $form['actividad']->getData();//$repositoryActividad->findOneBy([ 'actividad' => 'Docencia Reglada POD' ]);
 
             $aKeysValid = [ 'ES','C.ASIG.','ASIGNATURA','DUR.','GRP.','PROFESOR','F_DESDE','F_HASTA','C.DIA','H_INICIO','H_FIN','AULA'];
             
@@ -90,6 +107,7 @@ class SgrUploadCSVController extends AbstractController
             $repositoryGrupoAsignatura = $this->getDoctrine()->getRepository(SgrGrupoAsignatura::class);
             $rowsSgrEventos = array();
             
+            //dump($rowsCsv);
             foreach ($rowsCsv as $key => $row) {
                 
                 $sgrEvento = new SgrEvento;    
@@ -98,21 +116,26 @@ class SgrUploadCSVController extends AbstractController
                 if($espacio)
                 {
                     $row['validations']['existAula'] = true;
-                    $row[$key] = $row;
+                    //$row[$key] = $row;
                 }
 
                 //Validations existsTitulación
+                //dump($row['ES']);
+                //dump($repositoryTitulacion->findOneBy([ 'codigo' => $row['ES'] ]));
+                
                 $titulacion = $repositoryTitulacion->findOneBy([ 'codigo' => $row['ES'] ]);
                 if ($titulacion)
                 {							
                 	$row['validations']['existTitulacion'] = true;
-                	$row[$key] = $row;
+                    
+                    //dump($row['validations']);
+                	//$rowsCsv[$key] = $row;
+                    //dump($row);
                 }
-
-                //dump( $row );
-                //exit;                
+                
                 if ($csv->passValidations($row)){
-                    //dump($espacio);
+                    //dump($row);
+
                     $sgrEvento->setEspacio($espacio);
                     //dump($sgrEvento);
                     $evento->setEvento($sgrEvento);
@@ -142,7 +165,7 @@ class SgrUploadCSVController extends AbstractController
                         $evento->setGrupo($row['GRP.'], $entityManager, $repositoryGrupoAsignatura);
 
                         //set Actividad
-                        $actividad = $repositoryActividad->findOneBy([ 'actividad' => 'Docencia Reglada POD' ]);
+                        //$actividad = $repositoryActividad->findOneBy([ 'actividad' => 'Docencia Reglada POD' ]);
                         if($actividad)
                             $sgrEvento->setActividad($actividad);
                         else{
@@ -166,8 +189,13 @@ class SgrUploadCSVController extends AbstractController
                         $rowsSgrEventos[] = $sgrEvento;
                     }
                 }
+                //dump($row);
+                $rowsCsv->set($key,$row);
             }
             
+            //dump( $rowsCsv );
+            //exit;
+
             if ($rowsSgrEventos)
                 
                 foreach ($rowsSgrEventos as $sgrEvento) {

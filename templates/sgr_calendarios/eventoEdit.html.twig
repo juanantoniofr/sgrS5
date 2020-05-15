@@ -18,16 +18,11 @@
        
        <h1>Editar Evento</h1>
        
-        {% for label, messages in app.flashes %}
-        	{% for message in messages %}
-            	<div class="alert alert-{{ label }}" role="alert">
-                	{{ message }}
-            	</div>
-        	{% endfor %}
-    	{% endfor %}
-
-        {# solapes && errors#}
-        {{ include('sgr_form/_errors.html.twig') }}    
+        <div id="errors">
+            
+            {# solapes && errors#}
+            {{ include('sgr_form/_errors.html.twig') }}
+        </div>
 
         {{ include('sgr_evento/_form.html.twig') }}
         
@@ -45,7 +40,7 @@
     <script type="text/javascript" src="/build/datetimepicker-eventoViews.js"></script>
     -->
     
-    <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+    <!--<script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>-->
     <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
     <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-eventoViews.js"></script>
 {% endblock %}

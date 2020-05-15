@@ -27,8 +27,6 @@ $(function () {
         var $h_fin = $('#datetimepicker-hf').datetimepicker('date');
         if ($h_fin == null || $h_fin.isBefore(e.date))
             $('#datetimepicker-hf').datetimepicker('date', e.date);
-        //$(this).datetimepicker('hide');
-    
     });
 
     $("#datetimepicker-hf").on("change.datetimepicker", function (e) {

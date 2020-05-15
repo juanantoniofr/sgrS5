@@ -49,10 +49,15 @@ class SgrSearchController extends AbstractController
                 //Search by equipamiento
                 //$data['equipamiento'] -> será un array
                 $sgrEspacio->getMediosDisponibles()->initialize();
-                if( $data['equipamiento'] && false == $sgrEspacio->getMediosDisponibles()->contains($data['equipamiento']) )
-                    //if not contains equipamiento => remove(sgrEspacio)
-                    $aSolapes->remove($sgrEspacio->getId());
+                foreach ($data['equipamiento'] as $equipamiento) {
+                    
+                    if( false == $sgrEspacio->getMediosDisponibles()->contains($equipamiento) )   
+                        //if not contains equipamiento => remove(sgrEspacio)
+                        $aSolapes->remove($sgrEspacio->getId());
+                }
 
+                //if( $data['equipamiento'] && false == $sgrEspacio->getMediosDisponibles()->contains($data['equipamiento']) )
+                
                 //search by aforo
                 if($data['aforo'])
                     if( $sgrEspacio->getAforo() < $data['aforo'])

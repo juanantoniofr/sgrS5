@@ -3,12 +3,12 @@
 {% block title %}SGR: Titulaciones{% endblock %}
 
 {% block body %}
-    <h1>Titulaciones</h1>
+    <h1 class="mb-2">Titulaciones</h1>
 
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th>Id</th>
+                
                 <th>Codigo</th>
                 <th>Nombre</th>
                 <th>Tipo</th>
@@ -19,7 +19,7 @@
         <tbody>
         {% for sgr_titulacion in sgr_titulacions %}
             <tr>
-                <td>{{ sgr_titulacion.id }}</td>
+                
                 <td>{{ sgr_titulacion.codigo }}</td>
                 <td>{{ sgr_titulacion.nombre }}</td>
                 <td>{{ sgr_titulacion.tipo }}</td>

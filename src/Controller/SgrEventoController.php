@@ -8,9 +8,7 @@ use App\Entity\SgrTitulacion;
 use App\Entity\SgrAsignatura;
 use App\Entity\SgrProfesor;
 use App\Entity\SgrGrupoAsignatura;
-//use App\Entity\SgrEspacio;
 
-//use App\Service\Filters;
 use App\Service\Evento;
 
 use App\Form\SgrEventoType;
@@ -50,7 +48,7 @@ class SgrEventoController extends AbstractController
         //Session
         $this->session = $session;
 
-        //form                
+        //form filter               
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
         $filtros = array();
@@ -140,10 +138,7 @@ class SgrEventoController extends AbstractController
         
         if ( isset($data['ui']) )
         {
-            //dump($data['ui']);
-            //exit;
             $ui = json_decode($data['ui'],true);
-            //dump($ui);
             
             if ( isset($ui['filters']) ){
                 
@@ -158,13 +153,11 @@ class SgrEventoController extends AbstractController
 
         $pagination = $paginator->paginate(
             $sgrEventos,
-            $page,//$request->query->getInt('page', 1),
-            10
+            $page,
+            20
         );
 
 
-        //dump($pagination);
-        //exit;
         return $this->render('sgr_evento/index.html.twig', [
             'pagination'    => $pagination,
             'form'          => $form->createView(),
@@ -180,9 +173,9 @@ class SgrEventoController extends AbstractController
      */
     public function new(Request $request, Evento $evento): Response
     {
+
         $sgrEvento = new SgrEvento();
-        //dump($sgrEvento);
-        //exit;
+
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
             
@@ -232,8 +225,8 @@ class SgrEventoController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                          'success',
-                            'Evento salvado con éxito '
+                        'success',
+                        'Evento salvado con éxito '
                         );
             return $this->redirectToRoute('sgr_evento_index');
         }
@@ -335,6 +328,54 @@ class SgrEventoController extends AbstractController
 
         return $this->redirectToRoute('sgr_evento_index');
     }
+
+    /**
+     * @Route("/massivedelete", name="sgr_evento_massive_delete", methods={"POST"})
+     */
+    public function massiveDelete(Request $request, SgrEventoRepository $sgrEventoRepository): Response
+    {
+
+        $titulos = array();
+        $entityManager = $this->getDoctrine()->getManager();
+        $result = false;
+
+        //Array con los id de eventos a borrar.
+        if ($request->request->get('sgr_evento_massive_delete')['eventos'])
+        {
+            
+            $sgrIdsEventos = $request->request->get('sgr_evento_massive_delete')['eventos'];
+            
+            foreach ($sgrIdsEventos as $id)
+            {
+                $sgrEvento = $sgrEventoRepository->find($id);
+                if ($sgrEvento)
+                {
+                    $titulos[] = $sgrEvento->getTitulo();
+                    $entityManager->remove($sgrEvento);
+                    $entityManager->flush();    
+                }
+            }
+
+            
+            if( !empty($titulos) ) $result = true;
+            
+            $this->addFlash(
+                          'success',
+                          count($titulos) .' reservas borradas: ' . implode(", ", $titulos)
+                        );        
+        }
+        else
+        {
+            $this->addFlash(
+                          'danger',
+                          'Reservas no encontradas o selección vacía...'
+                        );        
+        
+        }
+        
+        return $this->redirectToRoute('sgr_evento_index');
+    }
+
 
     /**
      * @Route("/ajax/getProfesores", methods={"GET"})

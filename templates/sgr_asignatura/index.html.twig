@@ -3,12 +3,19 @@
 {% block title %}Sgr: Asignaturas{% endblock %}
 
 {% block body %}
-    <h1>Asignaturas</h1>
+    <h1 class="mb-2">Asignaturas</h1>
+
     
-    <a class="btn btn-primary m-2" type="button" href="{{ path('sgr_asignatura_new') }}">Nueva asignatura</a>
-    <a class="btn btn-secondary m-2" type="button" href="{{ path('sgr_grupo_asignatura_index') }}"> Gestionar Grupos</a>
-
-
+    {{ form_start(form) }}
+        
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                {{ form_widget(form.titulacion ) }}
+            </div> 
+        </div>
+            
+    {{ form_end(form) }}
+    
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
@@ -23,7 +30,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for sgr_asignatura in sgr_asignaturas %}
+        {% for sgr_asignatura in pagination %}
             <tr>
                 <td>{{ sgr_asignatura.id }}</td>
                 <td>{{ sgr_asignatura.codigo }}</td>
@@ -49,4 +56,43 @@
         </tbody>
     </table>
 
+    <a class="btn btn-primary m-2" type="button" href="{{ path('sgr_asignatura_new') }}">Nueva asignatura</a>
+    <a class="btn btn-secondary m-2" type="button" href="{{ path('sgr_grupo_asignatura_index') }}"> Gestionar Grupos</a>
+    <div>
+        
+        <div>{{ knp_pagination_render(pagination) }}</div>
+        <footer class="blockquote-footer">Total de asignaturas: <cite title="Source Title">{{ pagination.getTotalItemCount }}</cite></footer>
+    </div>
+{% endblock %}
+
+{% block morescripts %}
+
+    
+    <script type="text/javascript">
+        
+        $('form[name="form"]').on('submit', function(e){
+
+            showGifEspera();
+        });
+
+        function showGifEspera(){
+            $('#espera').css('display','inline').css('z-index','100');
+        }
+
+        function hideGifEspera(){
+            //console.log('ready');
+            $('#espera').css('display','none').css('z-index','-100');
+        }
+    </script>
+
+    <script type="text/javascript">        
+                
+        $(function () {
+                    
+            $('#form_titulacion').on('change', function(e){
+                    
+                $('form[name="form"]').submit();
+            });
+        });
+    </script>
 {% endblock %}

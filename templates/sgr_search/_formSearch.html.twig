@@ -57,35 +57,38 @@
     <div class="form-row p-3">
         <div class="form-group col-md-6">
                 <label for="inputDias">{{ form_label(form.dias) }}</label>
-                {{ form_widget(form.dias, {'attr' : {'class' : 'form-check form-check-inline'}}) }}
+                {{ form_widget(form.dias, {'attr' : {'class' : 'form-check form-check-inline'} } ) }}
         </div>    
     </div>
     #}
     <div class="form-row p-3">
 
-        <div class="form-group col-md-3">
-            <label id="inputTermino"></label>
-            <label for="inputTermino">{{ form_label(form.termino) }}</label>
-            {{ form_widget(form.termino) }}
-        </div>
-
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             <label id="inputEquipamiento"></label>
             <label for="inputEquipamiento">{{ form_label(form.equipamiento) }}</label>
             {{ form_widget(form.equipamiento) }}
         </div>
 
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
+            <label id="inputTermino"></label>
+            <label for="inputTermino">{{ form_label(form.termino) }}</label>
+            {{ form_widget(form.termino) }}
+        </div>
+
+
+        <div class="form-group col-md-2">
             <label id="inputAforo"></label>
             <label for="inputAforo">{{ form_label(form.aforo) }}</label>
             {{ form_widget(form.aforo) }}
         </div>
 
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             <label id="inputAforoExamen"></label>
             <label for="inputAforoExamen">{{ form_label(form.aforoExamen) }}</label>
             {{ form_widget(form.aforoExamen) }}
         </div>
+
+        
     </div>
   
     <button class="btn btn-primary" id="sgr_filters_sgr_eventos_submit" role="button" ><i class="fas fa-search"></i> {{ button_label|default('Filtrar') }}</button>

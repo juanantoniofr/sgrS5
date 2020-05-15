@@ -51,6 +51,8 @@ class SgrSearchSgrEspacioType extends AbstractType
                                     'class' => SgrEquipamiento::class,
                                     // uses the User.username property as the visible option string
                                     'choice_label' => 'nombre',
+                                    'expanded' => true,
+                                    'multiple' => true,
                                 ])
             ->add('termino', EntityType::class,[
                                     'label' => 'Término Taxonomía',
@@ -84,7 +86,7 @@ class SgrSearchSgrEspacioType extends AbstractType
                                         'data-format' => 'hh:mm',
                                     ],
                                     'constraints' => [  new NotBlank(),
-                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o menor que fecha inicio"] ), 
+                                                        new GreaterThanOrEqual( ['propertyPath' => 'parent.all[f_inicio].data' , 'message' => "Debe ser igual o mayor que fecha inicio"] ), 
                                     ],
             ])
             ->add('h_inicio', TextType::class, array(

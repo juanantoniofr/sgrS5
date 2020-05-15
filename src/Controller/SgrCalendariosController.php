@@ -29,9 +29,9 @@ class SgrCalendariosController extends AbstractController
     private $session;
 
     /**
-       * @Route("/vista/{view}/{action}", name="sgr_calendarios_vista", methods={"GET","POST"}), defaults={"view": "diaria", "action" : "none"}
+       * @Route("/vista/{view}/{action}/{f_inicio}", name="sgr_calendarios_vista", methods={"GET","POST"}), defaults={"view": "diaria", "action" : "show", "f_inicio" : ""}
     */
-    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, String $view, String $action = 'none', SessionInterface $session){
+    public function index(Request $request, SgrEspacioRepository $sgrEspacioRepository, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, SessionInterface $session, String $view = 'diaria', String $action = 'show', String $f_inicio = ''){
         
         //Session
         $this->session = $session;
@@ -55,85 +55,110 @@ class SgrCalendariosController extends AbstractController
         // save --> no submit, referer edit, new or delete
         // filter --> submit form
         
-        $template = $this->getTemplate($view);
-        $begin = $this->getBegin($view, $current_month, $current_year, $action);
-        $end = $this->getEnd($view, $current_month, $current_year, $action);
+        if (!$form->isSubmitted())
+        {
 
-        //set f_inicio and f_fin
-        $this->session->set( 'f_inicio', $begin->format('d/m/Y'));
-        $this->session->set( 'f_fin', $end->format('d/m/Y'));
-        
-        //Si no submit tomamos datos filtros de session si existen
-        //estas variables se usan en SgrFiltersSgrEventosType.php para determinar el valor por defecto cuando se envía formulario vacio (al cargar la página por primera vez)
-        $id_actividad = $this->session->get('idActividad', null);
-        $filtros['Actividad'] = $this->session->get('nombreActividad', null);
+            $template = $this->getTemplate($view);
 
-        $id_titulacion = $this->session->get('idTitulacion', null);
-        $filtros['Titulacion'] = $this->session->get('nombreTitulacion', null);
+            //dump($f_inicio);
+            $begin = $this->getBegin($view, $current_month, $current_year, $action, $f_inicio);
+            $end = $this->getEnd($view, $current_month, $current_year, $action, $f_inicio);
 
-        $id_asignatura = $this->session->get('idAsignatura', null);
-        $filtros['Asignatura'] = $this->session->get('nombreAsignatura', null);
+            //set f_inicio and f_fin
+            $this->session->set( 'f_inicio', $begin->format('d/m/Y'));
+            $this->session->set( 'f_fin', $end->format('d/m/Y'));
             
-        $id_profesor = $this->session->get('idProfesor', null);
-        $filtros['Profesor'] = $this->session->get('nombreProfesor', null);
+            //Si no submit tomamos datos filtros de session si existen
+            //estas variables se usan en SgrFiltersSgrEventosType.php para determinar el valor por defecto cuando se envía formulario vacio (al cargar la página por primera vez)
+            $id_actividad = $this->session->get('idActividad', null);
+            $filtros['Actividad'] = $this->session->get('nombreActividad', null);
 
-        $id_termino = $this->session->get('idTermino', '');
-        $filtros['Categoria'] = $this->session->get('termino', null);
+            $id_titulacion = $this->session->get('idTitulacion', null);
+            $filtros['Titulacion'] = $this->session->get('nombreTitulacion', null);
 
-        //$ids_espacios --> No definido, sería un array de ids 
-        $filtros['Espacios'] = $this->session->get('espacios', []);
+            $id_asignatura = $this->session->get('idAsignatura', null);
+            $filtros['Asignatura'] = $this->session->get('nombreAsignatura', null);
+                
+            $id_profesor = $this->session->get('idProfesor', null);
+            $filtros['Profesor'] = $this->session->get('nombreProfesor', null);
+
+            $id_termino = $this->session->get('idTermino', 2); //Si no está definido, el término por defecto es Aulas de docencia
+            $this->session->set('idTermino',$id_termino);
+            $filtros['Categoria'] = $id_termino; //$this->session->get('termino', null);
+
+            //$ids_espacios --> No definido, sería un array de ids 
+            $filtros['Espacios'] = $this->session->get('espacios', []);
+
+            
+            //Filtramos
+            $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
+            
+            $sgrFechasEvento = $this->filterByActividad($sgrFechasEvento, $this->session->get('nombreActividad', null));
+            $sgrFechasEvento = $this->filterByTitulacion($sgrFechasEvento, $this->session->get('nombreTitulacion', null));
+            $sgrFechasEvento = $this->filterByAsignatura($sgrFechasEvento, $this->session->get('nombreAsignatura', null));
+            $sgrFechasEvento = $this->filterByProfesor($sgrFechasEvento, $this->session->get('nombreProfesor', null));
+
+            //Por espacios 
+            //1. todos los espacios // default sgrEspacios con idtermino = 2 -Aulas de docencia-
+            $sgrEspacios = $sgrEspacioRepository->findBy(
+            												['termino' => 2],
+            												['nombre' => 'ASC']
+            											);
         
-        //Filtramos
-        //dump('no form submit...');
-        //dump($action);
-        //dump($view);
-        //dump($begin);
-        //dump($end);
-        $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-        
-        $sgrFechasEvento = $this->filterByActividad($sgrFechasEvento, $this->session->get('nombreActividad', null));
-        $sgrFechasEvento = $this->filterByTitulacion($sgrFechasEvento, $this->session->get('nombreTitulacion', null));
-        $sgrFechasEvento = $this->filterByAsignatura($sgrFechasEvento, $this->session->get('nombreAsignatura', null));
-        $sgrFechasEvento = $this->filterByProfesor($sgrFechasEvento, $this->session->get('nombreProfesor', null));
+            //2. Filtro por categoría (Aulas de docencia, aulas de teoría, ....) 
+            //dump($sgrEspacios);
+            if ( $this->session->get('termino') != null )
+            {
+                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $this->session->get('idTermino') ]);
 
-        //Por espacios 
-        //1. todos los espacios
-        $sgrEspacios = $sgrEspacioRepository->findAll();
-        //dump( $this->session->get('idTermino', null) );
-        //2. Filtro por categoría (Aulas de docencia, aulas de teoría, ....)
-        if ( $this->session->get('termino', null) != null )
-        {
-            $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $this->session->get('idTermino') ]);
+                $listIdEspacios = $this->getIdEspacios($sgrEspacios);
+                $this->session->set('idEspacios',$listIdEspacios);
 
-            $listIdEspacios = $this->getIdEspacios($sgrEspacios);
-            $this->session->set('idEspacios',$listIdEspacios);
-
-            $listNombreEspacios = $this->getNombreEspacios($sgrEspacios);
-            $this->session->set('espacios', implode(', ', $listNombreEspacios) );    
+                $listNombreEspacios = $this->getNombreEspacios($sgrEspacios);
+                $this->session->set('espacios', implode(', ', $listNombreEspacios) );    
+            }
+            //3. Filtro por espacios concreto (Aula XX1, Aula II....)
+            //dump('no submit && session->termino=null ');
+            //dump($sgrEspacios);
+            //dump($this->session->get('termino', null));
+            if ( $this->session->get('idEspacios') != null && empty($this->session->get('idEspacios')) === false )
+            {
+                //dump('esto no debe salir');
+                //dump($this->session->get('idEspacios', null));
+                //dump($this->session->get('idEspacios'));
+                /*foreach ($sgrEspacios as $espacio) {
+                    dump($espacio->getId());
+                }*/
+                $sgrEspacios = $this->filterByEspaciosIdInSession($sgrEspacios, $this->session->get('idEspacios') );
+            }
+            //dump($this->session->get('idEspacios'));
+            //dump($this->session->get('termino'));
+            //dump($sgrEspacios);
+            //dump('no submit');
         }
-        //3. Filtro por espacios concreto (Aula XX1, Aula II....)
-        if ( $this->session->get('idEspacios', null) != null && empty($this->session->get('idEspacios')) === false )
-        {
-            $sgrEspacios = $this->filterByEspaciosIdInSession($sgrEspacios, $this->session->get('idEspacios') );
-        }
-        
-
+            
         if ($form->isSubmitted())
         {
             if ($form->isValid()) 
             {
-                //dump('form submit...');
+                //dump('submit');
+                
 	            $data = $form->getData();
                 
                 $action = 'filter';
                 
                 //f_inicio
-                $data['f_inicio'] ? $begin = date_create_from_format('d/m/Y H:i', $data['f_inicio'] . " 00:00", new \DateTimeZone('Europe/Madrid')) : null;
-                $this->session->set( 'f_inicio', $begin->format('d/m/Y'));
-
+                $data['f_inicio'] ? $f_inicio = $data['f_inicio'] : $f_inicio = '';
+                
                 //f_fin
-                $data['f_fin'] ? $end = date_create_from_format('d/m/Y H:i', $data['f_fin'] . " 00:00", new \DateTimeZone('Europe/Madrid')) : $end = $this->getEnd($view, $current_month, $current_year, $action);
-                $this->session->set('f_fin',$end->format('d/m/Y'));
+                $data['f_fin'] ? $f_fin = $data['f_fin']  : $f_fin = '';
+                
+                $begin = $this->getBegin($view, $current_month, $current_year, $action, $f_inicio);
+                $end = $this->getEnd($view, $current_month, $current_year, $action, $f_inicio,$f_fin);
+                
+                //set f_inicio and f_fin
+                $this->session->set( 'f_inicio', $begin->format('d/m/Y'));
+                $this->session->set( 'f_fin', $end->format('d/m/Y'));
 
                 $template = $this->getTemplate($view);
                 
@@ -141,12 +166,9 @@ class SgrCalendariosController extends AbstractController
                 //información para $view == mensual
                 $current_month = $begin->format('m'); 
                 $current_year = $begin->format('Y');
-                //dump($action);
-                //dump($begin);
-                //dump($end);
+
                 //filter by fechas
                 $sgrFechasEvento = $sgrFechasEventoRepository->findBetween($begin, $end);
-                //dump($sgrFechasEvento);
                 
                 //filter by actividad
                 $data['actividad'] ? $this->session->set('nombreActividad', $data['actividad']->getActividad()) : $this->session->set('nombreActividad', null);
@@ -179,7 +201,7 @@ class SgrCalendariosController extends AbstractController
                 $data['termino'] ? $this->session->set('termino',$data['termino']->getNombre()) : $this->session->set('termino', null);
                 $data['termino'] ? $this->session->set('idTermino',$data['termino']->getId()) : $this->session->set('idTermino', '');
                 $data['termino'] ? $filtros['Categoria'] = $data['termino']->getNombre() : $filtros['Categoria'] = null;
-                
+
                 if ($data['termino'])
                 {
                     $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $data['termino'] ]);
@@ -193,6 +215,7 @@ class SgrCalendariosController extends AbstractController
                 
                 //Filtro por espacios
                 //dump($data['espacio']);
+                //dump($data['termino']);
                 if ($data['espacio']->isEmpty() != true)
                 {
                     $listIdEspacios = $this->getIdEspacios($sgrEspacios);
@@ -203,15 +226,15 @@ class SgrCalendariosController extends AbstractController
 
                     $sgrEspacios = $data['espacio']->toArray();
                 }
-                
+                //dump($this->session->get('idEspacios'));
+                //dump($this->session->get('termino'));
             } //fin sumbit->isValid()
             else
             {
                 //******
                 // No valid form
                 //********
-                //dump($view);
-                //dump($form);//->isSubmitted());
+
                 dump($form->getData());//['f_inicio']);
                 dump($form->getErrors(true));
                 foreach ($form->getErrors(true) as $error) {
@@ -223,12 +246,10 @@ class SgrCalendariosController extends AbstractController
         $filtros['Espacios'] = $this->session->get('espacios');
 
         $aCalendarios = array();
-        //dump($sgrFechasEvento);
-        //dump($sgrEspacios);
- 
-        
         $aCalendarios = $this->getCalendarios($sgrEspacios, $sgrFechasEvento);
-        //dump($aCalendarios);
+
+        //dump('data->ui');
+        //dump(isset($data['ui']));
         if ( isset($data['ui']) )
         {
            $ui = json_decode($data['ui'],true);
@@ -250,19 +271,21 @@ class SgrCalendariosController extends AbstractController
         }
         else
         {
-            //dump('No submit form....');
+
             // the second argument is the value returned when the attribute doesn't exist
             $showFilters = $this->session->get('showFilters', true);
+            //dump('ui=false');
+            //dump($sgrEspacios);
             is_array($sgrEspacios) ? $findEspacios = new ArrayCollection($sgrEspacios) : $findEspacios = $sgrEspacios;
-            //dump($this->session->get('tabActive'));
+
             $tab = $this->getSelectedTab($this->session->get('tabActive', ''),$findEspacios);
-            //$tab = $this->getSelectedTab( $this->session->get('tabActive', ''), $sgrEspacios);
             $this->session->set('tabActive', $tab);
-            //dump($tab);    
+ 
         }
         
-        //dump($aCalendarios);
-        //exit;
+        //dump('calendarios controller');
+        //dump($view);
+
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'formEvento'  => $formEvento->createView(), 
@@ -278,52 +301,87 @@ class SgrCalendariosController extends AbstractController
         ]);
     }
 
-    private function getEnd($view, $current_month, $current_year, $action){
+    private function getEnd($view, $current_month, $current_year, $action, $f_inicio, $f_fin = ''){
 
+        //dump('getEnd');
+        //dump($action);
+        //dump($f_inicio);
+        //format f_inicio = d/m/Y
+        $fecha = $this->normalize($f_inicio);
         switch ($view) {
             case 'semanal':
 
-                $action == 'none' ? $end = new \DateTime('Sunday this week', new \DateTimeZone('Europe/Madrid')) : $end = ( date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid')) )->modify('Sunday this week');
+                $action == 'show' ? $end = new \DateTime('Sunday this week', new \DateTimeZone('Europe/Madrid')) : $end = $fecha->modify('Sunday this week');
                 break;
             case 'mensual':
-                $action == 'none' ? $end = new \DateTime('last day of this month', new \DateTimeZone('Europe/Madrid')) : $end = ( date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid')) )->modify('last day of this month');
+                
+                 $action == 'show' ? $end = new \DateTime('last day of this month', new \DateTimeZone('Europe/Madrid')) : $end = $fecha->modify('last day of this month');
+                
                 break;    
             case 'anual':
-                if ( $action == 'none' )
+                if ( $action == 'show' )
                     $current_month > 8 ?  $end = new \DateTime('31-8-'.($current_year+1), new \DateTimeZone('Europe/Madrid')) : $end = new \DateTime('31-8-'.$current_year, new \DateTimeZone('Europe/Madrid'));
                 else
-                    $end = date_create_from_format('d/m/Y H:i', $this->session->get('f_fin') . " 00:00", new \DateTimeZone('Europe/Madrid'));
-            break;
+                    !empty($f_fin) ? $end = date_create_from_format('d/m/Y H:i', $f_fin . " 00:00", new \DateTimeZone('Europe/Madrid')) : $end = new \DateTime('31-8-'.$current_year, new \DateTimeZone('Europe/Madrid'));
+                    
+                break;
             case 'diaria':
             default:
-                $action == 'none' ? $end = new \DateTime('now', new \DateTimeZone('Europe/Madrid')) : $end = date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid'));
+                $action == 'show' ? $end = new \DateTime('now', new \DateTimeZone('Europe/Madrid')) : $end = $fecha;
                 break;
         }
 
         return $end;
     }
 
-    private function getBegin($view, $current_month, $current_year, $action){
+    private function normalize($fecha){
 
+        $result = new \DateTime('now', new \DateTimeZone('Europe/Madrid'));
+
+        date_create_from_format('d/m/Y H:i', $fecha . " 00:00", new \DateTimeZone('Europe/Madrid')) != null ? $result = date_create_from_format('d/m/Y H:i', $fecha . " 00:00", new \DateTimeZone('Europe/Madrid')) : null;
+        date_create_from_format('Y-m-d H:i', $fecha . " 00:00", new \DateTimeZone('Europe/Madrid')) != null ? $result = date_create_from_format('Y-m-d H:i', $fecha . " 00:00", new \DateTimeZone('Europe/Madrid')) : null;
+
+        //dump($fecha);
+        return $result;
+    }
+
+    private function getBegin($view, $current_month, $current_year, $action , $f_inicio){
+
+        //dump('getBegin');
+        //dump($action);
+        //dump($f_inicio);
+        //dump(date_create_from_format('d/m/Y H:i', $f_inicio . " 00:00", new \DateTimeZone('Europe/Madrid')));
+        //format f_inicio = d/m/Y
+        
+        //
+        //dump($f_inicio);
+        $fecha = $this->normalize($f_inicio);
         switch ($view) {
             case 'semanal':
-                $action == 'none' ? $begin = new \DateTime('Monday this week', new \DateTimeZone('Europe/Madrid')) : $begin = ( date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid')) )->modify('Monday this week');
+                
+                $action == 'show' ? $begin = new \DateTime('Monday this week', new \DateTimeZone('Europe/Madrid')) : $begin = $fecha->modify('Monday this week');
                 break;
             case 'mensual':
-                $action == 'none' ? $begin = new \DateTime('first day of this month', new \DateTimeZone('Europe/Madrid')) : $begin = ( date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid')) )->modify('first day of this month');
+                
+                $action == 'show' ? $begin = new \DateTime('first day of this month', new \DateTimeZone('Europe/Madrid')) : $begin = $fecha->modify('first day of this month');
                 break;    
             case 'anual':
-                if ( $action == 'none' )
+                
+                if ( $action == 'show' )
                     $current_month > 8 ?  $begin = new \DateTime('1-9-'.$current_year, new \DateTimeZone('Europe/Madrid')) : $begin = new \DateTime('1-9-'.($current_year-1), new \DateTimeZone('Europe/Madrid')); 
                 else
-                    $begin = date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid'));
+                    //$begin = date_create_from_format('d/m/Y H:i', $f_inicio . " 00:00", new \DateTimeZone('Europe/Madrid'));
+                      $begin = $fecha;
+                    
                 break;
             case 'diaria':
+                $action == 'show' ? $begin = new \DateTime('now', new \DateTimeZone('Europe/Madrid')) : $begin = $fecha;
+                break;
             default:
-                $action == 'none' ? $begin = new \DateTime('now', new \DateTimeZone('Europe/Madrid')) : $begin = date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid'));
+                $begin = new \DateTime('now', new \DateTimeZone('Europe/Madrid'));
                 break;
         }
-
+        
         return $begin;
     }
 
@@ -351,14 +409,20 @@ class SgrCalendariosController extends AbstractController
 
     private function getSelectedTab($tabActive,$sgrEspacios){
 
-        $tabDefault = $sgrEspacios->first()->getId();
-        $tab = '';
-        foreach ($sgrEspacios as $espacio) 
-            $tabActive == $espacio->getId() ? $tab = $espacio->getId() : null;
+        //dump($sgrEspacios);
+        //exit;   
+        if ($sgrEspacios->isEmpty() == false){
+            $tabDefault = $sgrEspacios->first()->getId();
+            $tab = '';
+            foreach ($sgrEspacios as $espacio) 
+                $tabActive == $espacio->getId() ? $tab = $espacio->getId() : null;
         
-        $tab != '' ? $result = $tab : $result = $tabDefault;
+                $tab != '' ? $result = $tab : $result = $tabDefault;
 
-        return $result;
+            return $result;
+        }
+
+        return 0;
     }
 
     private function getNombreEspacios($espacios){
@@ -443,12 +507,15 @@ class SgrCalendariosController extends AbstractController
         return $sgrFechasEvento;
     }
 
+
     private function filterByEspaciosIdInSession($sgrEspacios, $espaciosIds){
-        
+    
+        $result = new ArrayCollection();
+
         if ( !empty($espaciosIds) )
         {
                         
-            $sgrEspacios = ( new ArrayCollection( $sgrEspacios ) )->filter(function($sgrEspacio) use ($espaciosIds) {
+            $result = ( new ArrayCollection( $sgrEspacios ) )->filter(function($sgrEspacio) use ($espaciosIds) {
                                                                                 $idSgrEspacio = $sgrEspacio->getId();
                                                                                 return in_array($idSgrEspacio,$espaciosIds);
                                                                             });
@@ -461,7 +528,12 @@ class SgrCalendariosController extends AbstractController
             $this->session->set('idEspacios',[]);
         }
         
-        return $sgrEspacios;
+        if ($result->isEmpty() == false)
+            return $result;
+
+        return new ArrayCollection( $sgrEspacios ); 
+
+        //return $sgrEspacios;
     }
 
 
@@ -538,7 +610,7 @@ class SgrCalendariosController extends AbstractController
         $view = $this->session->get('view', 'diaria');
 
         //Get url to back
-        $urlToback = $this->generateUrl('sgr_calendarios_vista', ['view' => $view, 'action' => 'save']);
+        $urlToback = $this->generateUrl('sgr_calendarios_vista', ['view' => $view, 'action' => 'save', 'f_inicio' => $f_inicio]);
             
         if ($form->isSubmitted() && $form->isValid()) {
             $errors = array();
@@ -591,7 +663,7 @@ class SgrCalendariosController extends AbstractController
                         'success',
                         'Evento salvado con éxito '
                         );
-            return $this->redirectToRoute('sgr_calendarios_vista', ['view' => $this->session->get('view', null), 'action' => 'save' ]);
+            return $this->redirectToRoute('sgr_calendarios_vista', ['view' => $this->session->get('view', null), 'action' => 'save', 'f_inicio' => $sgrEvento->getFInicio()->format('Y-m-d') ]);
         }
 
         
@@ -607,7 +679,7 @@ class SgrCalendariosController extends AbstractController
     /**
      * @Route("/evento/{id}/edit", name="sgr_calendario_evento_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, SgrEvento $sgrEvento, Evento $evento, SessionInterface $session): Response
+    public function edit(Request $request, SgrEvento $sgrEvento, Evento $evento, SessionInterface $session, $f_inicio = ''): Response
     {
         $form = $this->createForm(SgrEventoType::class, $sgrEvento);
         $form->handleRequest($request);
@@ -619,7 +691,7 @@ class SgrCalendariosController extends AbstractController
         $view = $this->session->get('view', 'diaria');
         
         //Get url to back
-        $urlToback = $this->generateUrl('sgr_calendarios_vista', ['view' => $view, 'action' => 'save']);
+        $urlToback = $this->generateUrl('sgr_calendarios_vista', ['view' => $view, 'action' => 'edit', 'f_inicio' => $f_inicio]);
 
         if ($form->isSubmitted() && $form->isValid()) {
             
@@ -670,7 +742,7 @@ class SgrCalendariosController extends AbstractController
                         'Evento salvado con éxito '
                         );
 
-            return $this->redirectToRoute('sgr_calendarios_vista', ['view' => $this->session->get('view', null), 'action' => 'save' ]);
+            return $this->redirectToRoute('sgr_calendarios_vista', ['view' => $this->session->get('view', null), 'action' => 'save', 'f_inicio' => $sgrEvento->getFInicio()->format('Y-m-d') ]);
         }
 
         return $this->render('sgr_calendarios/eventoEdit.html.twig', [
@@ -688,14 +760,17 @@ class SgrCalendariosController extends AbstractController
         
         //Session
         $this->session = $session;
-
+        //dump($this->session->get('f_inicio'));
+        $f_inicio = ( date_create_from_format('d/m/Y H:i', $this->session->get('f_inicio') . " 00:00", new \DateTimeZone('Europe/Madrid')) )->format('Y-m-d');
+        //dump($f_inicio);
+        //exit;
         if ($this->isCsrfTokenValid('delete'.$sgrEvento->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($sgrEvento);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('sgr_calendarios_vista', ['view' => $this->session->get('view', null), 'action' => 'save' ]);
+        return $this->redirectToRoute('sgr_calendarios_vista', ['view' => $this->session->get('view', null), 'action' => 'save', 'f_inicio' => $f_inicio ]);
         //return $this->redirectToRoute('sgr_evento_index');
     }
 

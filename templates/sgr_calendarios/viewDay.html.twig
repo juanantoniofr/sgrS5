@@ -34,17 +34,45 @@
             {% if aCalendarios is defined %}
             
             <div class="row mb-3">
-            <div class="col-6 content-justify-left text-left float-left">
-                {{ include('sgr_calendarios/nav.html.twig') }}
-            </div>
-            <div class="col-6 text-right float-right text-info">
-                Cuadrante de ocupación: <b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b>
-            </div>
+            
+                <div class="col-6">
+
+                    <div class="content-justify-left text-left float-left">
+             
+                        {{ include('sgr_calendarios/nav.html.twig') }}
+                    </div>
+
+                    <div class="content-justify-left text-left float-left ml-1">
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="far fa-calendar mr-1"></i>Vista
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item changeView"  href="{{ path('sgr_calendarios_vista', {view: 'diaria', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Diaria</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'semanal', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Semanal</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'mensual', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Mensual</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-12 text-left float-right text-info mt-2">
+             
+                    Cuadrante de ocupación: <b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b>
+                </div>
             </div>
             
-
-            <table class="table table-striped table-bordered">  
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
         
+            <table class="table table-striped table-bordered">  
+         
                 <caption class="text-center">
 
                     Cuadrante de ocupación: <b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b>
@@ -120,7 +148,7 @@
                                                                 
                                                                 <div class="align-middle text-wrap text-truncate">
                                                                     {{ period.evento.titulo }}
-                                                                    <span class="text-sm-left text-danger">({{ period.evento.fInicio|date('d-m-Y') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('d-m-Y') }})</span>
+                                                                    {#<span class="text-sm-left text-danger">({{ period.evento.fInicio|date('d-m-Y') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('d-m-Y') }})</span>#}
                                                                 </div>
                                                             </div>
                                                         </a>
@@ -162,18 +190,23 @@
 
 {% block morescripts %}
     
-    <script type="text/javascript"> 
-        $('.newEvento').hover(
-            function(e){
+    <script type="text/javascript">
+    
+        $('form[name="sgr_filters_sgr_eventos"]').on('submit', function(e){
 
-                //$(this).find('span').fadeIn('slow');
-            },
-            function(e){
+            showGifEspera();
+        });
 
-                //$(this).find('span').css('display', 'none');
-            }
-        );
+        function showGifEspera(){
+            $('#espera').css('display','inline').css('z-index','100');
+        }
+
+        function hideGifEspera(){
+            //console.log('ready');
+            $('#espera').css('display','none').css('z-index','-100');
+        }
     </script>
+
     <script type="text/javascript">        
         $(function () {
             $('.evento').each(function(){
@@ -215,7 +248,7 @@
         $(function() {
 
             $('#showMoreFilters').click( function(e){
-                e.preventDefault();//     toggle: false
+                e.preventDefault();
             });
 
         });
@@ -242,9 +275,13 @@
         	if (window.sessionStorage) 
         	{	
             		ui = JSON.parse( sessionStorage.getItem("ui") );
-            		ui.fInicio = e.date.format('DD/MM/Y');
-            		sessionStorage.setItem("ui",JSON.stringify(ui));
-        	}
+
+                    if (ui != null)
+                    {
+                        ui.fInicio = e.date.format('DD/MM/Y');    
+                        sessionStorage.setItem("ui",JSON.stringify(ui));
+                    }
+            }
 
             if (e.oldDate != null){
                 $('form').attr('action');
@@ -271,6 +308,5 @@
             $('#datetimepicker-fi').datetimepicker( 'date', date.subtract(1, 'days').format('DD/MM/Y') );
             $('#sgr_filters_sgr_eventos_f_inicio').val( date.subtract(1, 'days').format('DD/MM/Y') );    
         });
-
     </script>
 {% endblock %}

@@ -24,7 +24,7 @@ $(function () {
             //data[$(this).attr('name')] = $(this).val();
             $titulacion ? data[$titulacion.attr('name')] = $titulacion.val() : data[$form_name+'[titulacion]'] = null;
             $curso ? data[$curso.attr('name')] = $curso.val() : data[$form_name+'[curso]'] = null;
-            console.log(data);
+            //console.log(data);
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 //url : '/admin/sgr/evento/ajax/getAsignaturas',
@@ -91,6 +91,8 @@ $(function () {
                 url : '/reservasfgh/admin/sgr/espacio/ajax/getEspacios',
                 type: 'GET',//$form.attr('method'),
                 data : data,
+                beforeSend: loadStart('#sgr_filters_sgr_eventos_espacio'),
+                complete: loadStop('#sgr_filters_sgr_eventos_espacio'),
                 success: function(html) {
                     //console.log(html.sgrEspacios.content);//.espacio.content);
                     //console.log(html.asignaturas.content);
@@ -103,4 +105,13 @@ $(function () {
                 }
             });
         });
+
+        function loadStart(div) {
+            //console.log($(div).next(".spinner-border"));
+            $(div).next(".spinner-border").removeClass('d-none').fadeIn('slow');
+            //sleep(3000);
+        }
+        function loadStop(div) {
+            $(div).next(".spinner-border").addClass('d-none');
+        }
 });

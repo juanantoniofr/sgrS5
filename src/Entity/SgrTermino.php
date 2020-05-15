@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OrderBy;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SgrTerminoRepository")
@@ -36,6 +37,7 @@ class SgrTermino
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\SgrEspacio", mappedBy="termino")
+     * @ORM\OrderBy({"nombre" = "ASC"})
      */
     private $sgrEspacios;
 
@@ -43,8 +45,6 @@ class SgrTermino
     {
         $this->sgrEspacios = new ArrayCollection();
     }
-
-
 
     public function getId(): ?int
     {

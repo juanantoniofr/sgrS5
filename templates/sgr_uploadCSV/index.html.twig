@@ -3,19 +3,25 @@
 {% block title %}Upload CSV{% endblock %}
 
 {% block body %}
-    <h1>Upload CSV</h1>
+    
+
+    <h1 class="mb-2">Upload CSV</h1>
 
     {{ form_start(form) }}
     	<fieldset>
 			<legend class="col-md-8">Importar POD desde archivo CSV</legend>
-			<div class="form-row p-3">
-			<div class="form-group col-md-6">
-    			{{ form_label(form.fileCsv) }}
-    			{{ form_widget(form.fileCsv) }}
-    		</div>
-    		</div>
-  		</fieldset>
-  		<button class="btn btn-primary m-3">{{ button_label|default('Upload CSV') }}</button>
+			<div class="form-row p-1">
+    			<div class="form-group col-md-3">
+        			<label for="inpuCsvFile">{{ form_label(form.fileCsv) }}</label>
+        			{{ form_widget(form.fileCsv) }}
+        		</div>
+                <div class="form-group col-md-3">
+                    <label for="inputTermino">{{ form_label(form.actividad) }}</label>
+                    {{ form_widget(form.actividad ) }}
+                </div> 
+            </div>
+        </fieldset>
+  		<button class="btn btn-primary m-3" id="upload">{{ button_label|default('Upload CSV') }}</button>
     {{ form_end(form) }}
 
     {% if errors is defined %}
@@ -69,12 +75,19 @@
                         {% if fila.validations.solapaCsv %}
                                 <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Solapamiento con la/s fila/s: {{ fila.validations.solapaCsv|join(', ', ' y ') }}</span>
                         {% elseif fila.validations.solapa is not empty %}
-                                    <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado las fechas: 
-                                        <ul>
-                                        {% for sgrfecha in fila.validations.solapa%}
-                                            <li>{{ sgrfecha.fecha|date('d-m-Y') }} ({{ sgrfecha.evento.titulo }})</li> 
-                                        {% endfor %}
-                                        </ul>
+                                    <span class="text-danger"><i class="fas fa-exclamation-circle"></i> Espacio Ocupado: 
+                                        
+                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ fila.numfilaCsv }}" aria-expanded="false" aria-controls="collapseSolape">
+                                            <i class="fas fa-check text-danger"></i><span class="text-danger"> Ver solapamientos</span> 
+                                        </button>
+                                        
+                                        <div id="collapse{{ fila.numfilaCsv }}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSolape">
+                                            <ul>
+                                            {% for sgrfecha in fila.validations.solapa%}
+                                                <li>{{ sgrfecha.fecha|date('d-m-Y') }} ({{ sgrfecha.evento.titulo }})</li> 
+                                            {% endfor %}
+                                            </ul>
+                                        </div>
                                     </span>
                         {% endif %}
                         
@@ -105,4 +118,24 @@
 
         
     {% endif %}
+{% endblock %}
+
+{% block morescripts %}
+
+<script type="text/javascript">
+    
+    $('form[name="form"]').on('submit', function(e){
+
+        showGifEspera();
+    });
+
+    function showGifEspera(){
+        $('#espera').css('display','inline').css('z-index','100');
+    }
+
+    function hideGifEspera(){
+        //console.log('ready');
+        $('#espera').css('display','none').css('z-index','-100');
+    }
+</script>
 {% endblock %}
