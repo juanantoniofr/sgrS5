@@ -1,0 +1,43 @@
+{% extends 'layoutPdf.html.twig' %}
+
+
+
+{% block title %}<h1>Pdf core32 knp bundle dompdf for symfony</h1> {% endblock %}
+
+{% block content %}
+
+{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Domingo' } %}
+{% set  horaInicio = { 1: '08:30', 2: '09:30', 3: '10:30', 4: '11:30', 5: '12:30', 6: '13:30', 7: '14:30', 8: '15:30', 9: '16:30', 10: '17:30', 11: '18:30', 12: '19:30', 13: '20:30', 14: '21:30' } %}
+{% set  horaFin = { 1: '09:30', 2: '10:30', 3: '11:30', 4: '12:30', 5: '13:30', 6: '14:30', 7: '15:30', 8: '16:30', 9: '17:30', 10: '18:30', 11: '19:30', 12: '20:30', 13: '21:30', 14: '22:30' } %}
+	
+	{# key = espacio_id #}
+    {% for key, calendario in calendarios %}
+    	{# calendario = array [0 => sgrEspacio, 1 => Array con key = diaSemana (1=lunes..7=domingo)]#}
+    	
+    	<table class="">
+    		
+    		<caption class="">{{ calendario[0].nombre }}</caption>
+    		
+    		<thead class="">
+    			<th style="max-width: 100px"><div class="">Hora</div></th>
+    			{% for i in 1..7 %}
+    				<th style="max-width: 100px"><div class="">{{ diaSemana[i] }}</div></th>
+    			{% endfor %}
+    		</thead>
+
+    		<tbody>
+
+    			{% for j in 1..14 %}
+    				<tr>
+    					<td> {{ horaInicio[j] }} / {{ horaFin[j] }} </td>
+    					{% for i in 1..7 %}
+
+    						<td><div>E si exists </div></td>
+    					{% endfor %}
+    				</tr>
+    			{% endfor %}
+    		</tbody>
+
+    	</table>
+    {% endfor %}
+{% endblock %}

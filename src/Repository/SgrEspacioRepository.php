@@ -84,6 +84,25 @@ class SgrEspacioRepository extends ServiceEntityRepository
         return $query->execute();
     }
     
+    public function getByTerminoAndEspacios($termino, $aEspacios)
+    {
+        $qb = $this->createQueryBuilder('sgr_e');
+
+        if($termino)
+            $qb->andWhere('sgr_e.termino = :termino')
+                    ->setParameter('termino', $termino);
+        
+        if($aEspacios)
+            $qb->andWhere('sgr_e.id IN (:espacios)')
+             ->setParameter('espacios', $aEspacios);
+
+        $qb->orderBy('sgr_e.nombre');
+
+        $query = $qb->getQuery();
+            //->orderBy('s.id', 'ASC')
+            //->setMaxResults(10)
+        return $query->execute();   
+    }
     
     // /**
     //  * @return SgrEspacio[] Returns an array of SgrEspacio objects

@@ -63,6 +63,51 @@ class SgrEventoRepository extends ServiceEntityRepository
         //exit;
         return $query->execute();
     }
+
+    public function getByFilters($titulacion, $actividad, \DateTime $begin, \DateTime $end, $espacios)//, $curso, $id_asignatura, $id_profesor,  $id_actividad)
+    {
+
+        $qb = $this->createQueryBuilder('sgr_e');
+
+        if($titulacion)
+            $qb->andWhere('sgr_e.titulacion = :titulacion')
+                ->setParameter('titulacion', $titulacion);
+
+        //if($id_asignatura)
+        //    $qb->andWhere('sgr_e.asignatura = :id_asignatura')
+        //        ->setParameter('id_asignatura', $id_asignatura);
+
+        //if($id_profesor)
+        //    $qb->andWhere('sgr_e.profesor = :id_profesor')
+        //        ->setParameter('id_profesor', $id_profesor);
+
+        
+        if($begin && $end)
+            $qb->andWhere('sgr_e.f_inicio >= :begin')
+                ->andWhere('sgr_e.f_inicio < :end')
+                ->orWhere('sgr_e.f_inicio < :begin AND sgr_e.f_fin > :begin')
+                ->setParameter('begin', $begin->format('Y-m-d'))
+                ->setParameter('end', $end->format('Y-m-d'));
+
+        if($espacios)
+            $qb->andWhere('sgr_e.espacio IN (:espacios)')
+             ->setParameter('espacios', $espacios);
+
+        /*if ($termino)
+            $qb->leftJoin('sgr_e.espacio', 'espacios')
+                ->andWhere('espacios.termino = :termino')
+                ->setParameter('termino',$termino);
+        */
+        if($actividad)
+            $qb->andWhere('sgr_e.actividad = :actividad')
+                ->setParameter('actividad', $actividad);
+
+        $qb->orderBy('sgr_e.h_inicio', 'ASC');
+        //$qb->orderBy('sgr_e.f_inicio', 'ASC');
+        //$qb->orderBy('sgr_e.h_inicio','ASC');
+        $query = $qb->getQuery();
+        return $query->execute();
+    }
     
     public function findAllOrderByUpdateAt(){
 
