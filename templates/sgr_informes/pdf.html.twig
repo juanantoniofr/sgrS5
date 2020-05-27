@@ -6,37 +6,27 @@
 
 {% block content %}
 
-{% set begin = date("1970-1-1 07:30")%}
+	{% set begin = date("1970-1-1 07:30")%}
+	{% set h_inicio = [] %}
+	{% set h_fin = [] %}
 
-{{ dump(begin) }}
+	{% for i in 1..28 %}
+		
+		{% set minutos = 30 * i %}
+		{% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
+		{% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 30 minutes") %}
+		{% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
+		{% set h_fin= h_fin|merge({(i):next_h_fin})  %}
 
-{% set h_inicio = [] %}
-{% set h_fin = [] %}
+	{% endfor %}
 
-{% for i in 1..28 %}
-	
-	{% set minutos = 30 * i %}
-	{% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
-	{% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 30 minutes") %}
-	{% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
-	{% set h_fin= h_fin|merge({(i):next_h_fin})  %}
+	{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Domingo' } %}
 
-{% endfor %}
-
-{{ dump(h_inicio) }}
-{{ dump(h_fin) }}
-
-{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Domingo' } %}
-
-{% set  horaInicio = { 1: '08:30', 2: '09:30', 3: '10:30', 4: '11:30', 5: '12:30', 6: '13:30', 7: '14:30', 8: '15:30', 9: '16:30', 10: '17:30', 11: '18:30', 12: '19:30', 13: '20:30', 14: '21:30' } %}
-
-{% set  horaFin = { 1: '09:30', 2: '10:30', 3: '11:30', 4: '12:30', 5: '13:30', 6: '14:30', 7: '15:30', 8: '16:30', 9: '17:30', 10: '18:30', 11: '19:30', 12: '20:30', 13: '21:30', 14: '22:30' } %}
-	
 	{# key = espacio_id #}
     {% for key, calendario in calendarios %}
     	{# calendario = array [0 => sgrEspacio, 1 => Array con key = diaSemana (1=lunes..7=domingo)]#}
     	
-    	<table class="">
+    	<table class="blueTable">
     		
     		<caption class="">{{ calendario[0].nombre }}</caption>
     		
@@ -51,12 +41,22 @@
 
     			{% for j in 1..14 %}
     				<tr>
-    					<td> {{ horaInicio[j] }} / {{ horaFin[j] }} </td>
+    					<td> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
     					{% for i in 1..7 %}
 
     						<td>
     							{% if calendario[1][i] is defined %}
-    								<div> Aquí hay algo </div>
+    								{% if calendario[1][i][h_inicio[j]|date('H:i')] is defined %}
+    									<div style="height: 100%;position: relative;">
+	    									{% for reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
+	    										
+	    										{% set h = "100% - " ~ (reserva['concurrencias'] * 20) ~ "px" %}
+	    										{% set w = "100% - " ~ (reserva['concurrencias'] * 20) ~ "px" %}
+	    										{% set top = (reserva['concurrencias'] * 16)  ~ "px" %}
+	    										<div class="borde" style='max-width: 85px;max-height: 130px; width: 95%; padding-top: 3px; padding-left: 3px; height: Calc({{ h }});width: Calc({{ w }});background-color: aqua; position: absolute;top:  {{ top }}  '> {{ reserva['evento'].titulo }} , ( {{ reserva['concurrencias'] }} )</div>
+	    									{% endfor %}
+	    								</div>
+    								{% endif%}
     							{% endif %}	
     						</td>
     					{% endfor %}
