@@ -128,6 +128,7 @@ class SgrEvento
      */
     private $dias = [];
 
+
     /**
      * @ORM\PrePersist
      */
@@ -139,6 +140,7 @@ class SgrEvento
     public function __construct()
     {
         $this->fechas = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -390,6 +392,16 @@ class SgrEvento
         }
         
         return $d_es;
-    }    
+    } 
+
+    public function getDuracionHoras(){
+
+        $dateInterval = ($this->h_fin)->diff($this->h_inicio);
+        $numHoras = $dateInterval->format('%h');
+        $numMinutos = $dateInterval->format('%i');
+        $totalMinutos = ( 60 * $numHoras ) + $numMinutos;
+        return $totalMinutos;
+    }
+   
 
 }

@@ -68,6 +68,7 @@ class SgrEventoRepository extends ServiceEntityRepository
     {
 
         $qb = $this->createQueryBuilder('sgr_e');
+        //$qb->addSelect('DATE_DIFF(sgr_e.h_fin,sgr_e.h_inicio) as duracionHoras');
 
         if($titulacion)
             $qb->andWhere('sgr_e.titulacion = :titulacion')
@@ -102,8 +103,12 @@ class SgrEventoRepository extends ServiceEntityRepository
             $qb->andWhere('sgr_e.actividad = :actividad')
                 ->setParameter('actividad', $actividad);
 
+
+
+        $qb->orderBy('sgr_e.f_inicio', 'ASC');
         $qb->orderBy('sgr_e.h_inicio', 'ASC');
-        //$qb->orderBy('sgr_e.f_inicio', 'ASC');
+        $qb->addOrderBy('sgr_e.h_fin', 'DESC');
+        //
         //$qb->orderBy('sgr_e.h_inicio','ASC');
         $query = $qb->getQuery();
         return $query->execute();
