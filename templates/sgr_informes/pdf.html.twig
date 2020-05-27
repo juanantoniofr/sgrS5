@@ -6,8 +6,30 @@
 
 {% block content %}
 
+{% set begin = date("1970-1-1 07:30")%}
+
+{{ dump(begin) }}
+
+{% set h_inicio = [] %}
+{% set h_fin = [] %}
+
+{% for i in 1..28 %}
+	
+	{% set minutos = 30 * i %}
+	{% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
+	{% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 30 minutes") %}
+	{% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
+	{% set h_fin= h_fin|merge({(i):next_h_fin})  %}
+
+{% endfor %}
+
+{{ dump(h_inicio) }}
+{{ dump(h_fin) }}
+
 {% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Domingo' } %}
+
 {% set  horaInicio = { 1: '08:30', 2: '09:30', 3: '10:30', 4: '11:30', 5: '12:30', 6: '13:30', 7: '14:30', 8: '15:30', 9: '16:30', 10: '17:30', 11: '18:30', 12: '19:30', 13: '20:30', 14: '21:30' } %}
+
 {% set  horaFin = { 1: '09:30', 2: '10:30', 3: '11:30', 4: '12:30', 5: '13:30', 6: '14:30', 7: '15:30', 8: '16:30', 9: '17:30', 10: '18:30', 11: '19:30', 12: '20:30', 13: '21:30', 14: '22:30' } %}
 	
 	{# key = espacio_id #}
@@ -32,7 +54,11 @@
     					<td> {{ horaInicio[j] }} / {{ horaFin[j] }} </td>
     					{% for i in 1..7 %}
 
-    						<td><div>E si exists </div></td>
+    						<td>
+    							{% if calendario[1][i] is defined %}
+    								<div> Aquí hay algo </div>
+    							{% endif %}	
+    						</td>
     					{% endfor %}
     				</tr>
     			{% endfor %}
