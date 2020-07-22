@@ -98,13 +98,12 @@ class InformesController extends AbstractController
         //dump($sgrCalendarios);
         //exit; 
 
-        return $this->render('sgr_informes/pdf.html.twig', [
-            'calendarios' => $sgrCalendarios,
-        ]);
+        //return $this->render('sgr_informes/pdf.html.twig', [
+        //    'calendarios' => $sgrCalendarios,
+        //]);
 
     	$html = $this->renderView('sgr_informes/pdf.html.twig', [
-            'site_name' => 'FGH',
-            'site_app' => 'Reservas SGR FGH',
+            'calendarios' => $sgrCalendarios,
         ]);
     	
         $response = $wrapper->getStreamResponse($html, "document.pdf",[

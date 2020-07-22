@@ -20,7 +20,7 @@
 
 	{% endfor %}
 
-	{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Domingo' } %}
+	{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Dom' } %}
 
 	{# key = espacio_id #}
     {% for key, calendario in calendarios %}
@@ -28,38 +28,49 @@
     	
     	<table class="blueTable">
     		
-    		<caption class="">{{ calendario[0].nombre }}</caption>
+    		<caption>{{ calendario[0].nombre }}</caption>
     		
-    		<thead class="">
-    			<th style="max-width: 100px"><div class="">Hora</div></th>
-    			{% for i in 1..7 %}
-    				<th style="max-width: 100px"><div class="">{{ diaSemana[i] }}</div></th>
-    			{% endfor %}
+    		<thead style="width: 100%">
+                <tr>
+                    <th style=""><div class="">Hora</div></th>
+                    {% for i in 1..7 %}
+    				    <th><div class="">{{ diaSemana[i] }}</div></th>
+                    {% endfor %}
+                </tr>
     		</thead>
 
     		<tbody>
 
     			{% for j in 1..27 %}
     				<tr>
-    					<td> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
+    					<td style="height: 24px;font-size: 8px"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
     					{% for i in 1..7 %}
-
-    						<td style="height: 130px">
-    							{% if calendario[1][i] is defined %}
-    								{% if calendario[1][i][h_inicio[j]|date('H:i')] is defined %}
-    									<div style="height: 100%;position: relative;">
-	    									{% for reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
-	    										
-	    										{% set h = ( 132 * reserva['evento'].getDuracionHoras ) / 60 %}
-	    										{% set w = "100% - " ~ (reserva['concurrencias'] * 20) ~ "px" %}
-	    										{% set top = (reserva['concurrencias'] * 16)  ~ "px" %}
-	    										<div 	class="borde" 
-	    												style='max-width: 95%; padding-top: 3px; padding-left: 3px; height: {{ h }}px;width: Calc({{ w }});background-color: aqua; position: absolute;left: {{ top }}  '> {{ reserva['evento'].titulo }} , ( {{ reserva['concurrencias'] }}, {{ h }} {{ reserva['evento'].hInicio|date('H:i') }}-{{ reserva['evento'].hFin|date('H:i') }})</div>
-	    									{% endfor %}
-	    								</div>
-    								{% endif%}
-    							{% endif %}	
-    						</td>
+                            
+    						{% if calendario[1][i] is defined %}
+                                {% if calendario[1][i][h_inicio[j]|date('H:i')] is defined %}
+                                    <td  class="reserva" style="height: 24px;width: 100px;">
+            						<div style="position: relative;top: 0px;height: 24px;max-width: 100px">
+                            	
+    									
+	    								{% for reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
+	    									
+	    									{% set h = ( 26.5 * reserva['evento'].getDuracionHoras ) / 30 %}
+	    									{% set w = 100 -  (reserva['concurrencias'] * 12)  %}
+	    									{% set left = (reserva['concurrencias'] * 12)  ~ "px" %}
+	    									<div 	class="borde" 
+	    										style='overflow:hidden; font-size: 11px; max-width: 95px; padding-top: 3px; padding-left: 3px; height: {{ h }}px;background-color: aqua;left: {{left}};position: absolute; top:0px;z-index:100;width: {{ w }}px;'> {{ reserva['evento'].titulo }} , ( {{ reserva['concurrencias'] }}, {{ h }} {{ reserva['evento'].hInicio|date('H:i') }}-{{ reserva['evento'].hFin|date('H:i') }})
+                                            </div>
+	    								{% endfor %}
+	    							</div>
+                                    </td>
+                                
+                                {% else %}  
+                                    <td></td>
+                                {% endif %}
+                            {% else %}  
+                                    <td></td>
+                            {% endif %}
+                            
     					{% endfor %}
     				</tr>
     			{% endfor %}
