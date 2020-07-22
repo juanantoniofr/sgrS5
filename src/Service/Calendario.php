@@ -60,4 +60,30 @@ class Calendario extends AbstractController{
 		return $this->periods;
 	}
 
+	public function getConcurrencias($eventosDiaSemanaAgrupadosPorHinicio, $miEvento){
+        
+        $concurrencias = 0;
+        if ($eventosDiaSemanaAgrupadosPorHinicio->isEmpty() == false){
+
+            $miHoraInicio = $miEvento->getHInicio();
+        
+            foreach ($eventosDiaSemanaAgrupadosPorHinicio as $eventos) {
+        
+                if ( $eventos->isEmpty() == false){  
+        
+                    foreach ($eventos as $evento) {
+                        
+                            if ($evento['evento']->getHinicio() == $miHoraInicio || $miHoraInicio < $evento['evento']->getHFin())
+                                $concurrencias = $concurrencias + 1;
+                        
+                    }
+                    
+                }
+
+            }
+
+        }
+        return $concurrencias;
+    }
+
 }

@@ -84,7 +84,7 @@ class SgrEspacioRepository extends ServiceEntityRepository
         return $query->execute();
     }
     
-    public function getByTerminoAndEspacios($termino, $aEspacios)
+    public function getByTerminoAndEspacios($termino = null, $aEspacios = array() )
     {
         $qb = $this->createQueryBuilder('sgr_e');
 
@@ -92,7 +92,7 @@ class SgrEspacioRepository extends ServiceEntityRepository
             $qb->andWhere('sgr_e.termino = :termino')
                     ->setParameter('termino', $termino);
         
-        if($aEspacios)
+        if( !empty($aEspacios) )
             $qb->andWhere('sgr_e.id IN (:espacios)')
              ->setParameter('espacios', $aEspacios);
 

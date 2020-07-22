@@ -1,8 +1,6 @@
 {% extends 'layoutPdf.html.twig' %}
 
-
-
-{% block title %}<h1>Pdf core32 knp bundle dompdf for symfony</h1> {% endblock %}
+{% block title %}<h1>SGR: Informe de ocupación</h1> {% endblock %}
 
 {% block content %}
 
@@ -41,9 +39,9 @@
 
     		<tbody>
 
-    			{% for j in 1..27 %}
+    			{% for j in 0..27 %}
     				<tr>
-    					<td style="height: 24px;font-size: 8px"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
+    					<td style="height: 24px;font-size: 10px"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
     					{% for i in 1..7 %}
                             
     						{% if calendario[1][i] is defined %}
@@ -52,14 +50,30 @@
             						<div style="position: relative;top: 0px;height: 24px;max-width: 100px">
                             	
     									
-	    								{% for reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
+	    								{% for key, reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
 	    									
-	    									{% set h = ( 26.5 * reserva['evento'].getDuracionHoras ) / 30 %}
-	    									{% set w = 100 -  (reserva['concurrencias'] * 12)  %}
+	    									{% set h = ( 26 * reserva['evento'].getDuracionHoras ) / 30 %}
+	    									{% set w = 95 -  (reserva['concurrencias'] * 12)  %}
 	    									{% set left = (reserva['concurrencias'] * 12)  ~ "px" %}
-	    									<div 	class="borde" 
-	    										style='overflow:hidden; font-size: 11px; max-width: 95px; padding-top: 3px; padding-left: 3px; height: {{ h }}px;background-color: aqua;left: {{left}};position: absolute; top:0px;z-index:100;width: {{ w }}px;'> {{ reserva['evento'].titulo }} , ( {{ reserva['concurrencias'] }}, {{ h }} {{ reserva['evento'].hInicio|date('H:i') }}-{{ reserva['evento'].hFin|date('H:i') }})
+                                            {% if key < 6 %}
+                                            {% set color = reserva['evento'].actividad.color %}
+	    									<div 	class="borde div_reserva" 
+	    										style=' text-align: center;
+                                                        overflow:hidden;
+                                                        font-size: 11px;
+                                                        max-width: 95px;
+                                                        padding-top: 3px;
+                                                        padding-left: 3px;
+                                                        height: {{ h }}px;
+                                                        background-color: #{{ color }};
+                                                        position: absolute;
+                                                        top:0px;
+                                                        z-index:100;
+                                                        width: {{ w }}px;'>
+                                                
+                                                <span style="mix-blend-mode: difference;color: white">{{ reserva['evento'].titulo }}</span>
                                             </div>
+                                            {% endif %}
 	    								{% endfor %}
 	    							</div>
                                     </td>
@@ -77,5 +91,6 @@
     		</tbody>
 
     	</table>
+        <div style="page-break-after:always;"></div>
     {% endfor %}
 {% endblock %}

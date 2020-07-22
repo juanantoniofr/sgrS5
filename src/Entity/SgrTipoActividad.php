@@ -29,6 +29,12 @@ class SgrTipoActividad
     private $descripcion;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $color;
+
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\SgrEvento", mappedBy="actividad")
      */
     private $eventos;
@@ -63,6 +69,18 @@ class SgrTipoActividad
     public function setDescripcion(?string $descripcion): self
     {
         $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

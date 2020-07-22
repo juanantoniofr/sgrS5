@@ -1,0 +1,450 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TEST: SgrEvento Vista Calendarios de ocupación: {{ view }} {% endblock %}
+
+{% block stylesheets %}
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="/reservasfgh/public/build/blueTable.css">
+{% endblock %}
+
+
+{% block body %}
+    <h1>Calendarios: Vista {{ view }}</h1>
+
+    <div class="row">
+        
+        <div class="col-2 d-print-none">
+            <p>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFiltros" aria-expanded="{{ showFilters == 1 ? 'true' : '' }}" aria-controls="collapseFiltros">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </p>
+            <div class="collapse {{ showFilters == 1 ? 'show' : '' }} " id="collapseFiltros">
+                <div id="filtros">
+                    <div class="">
+                        {{ include('sgr_form/_formFiltersSrgEvento.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="col-10">
+        
+            <div class="row mb-3" id="content-header">
+                
+                <div class="col-6">
+                    
+                    <div class="content-justify-left text-left float-left">
+             
+                        {{ include('sgr_calendarios/nav.html.twig') }}
+                    </div>
+
+                    <div class="content-justify-left text-left float-left ml-1">
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="far fa-calendar mr-1"></i>Vista
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item changeView"  href="{{ path('sgr_calendarios_vista', {view: 'diaria', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Diaria</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'semanal', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Semanal</a>
+                                <a class="dropdown-item changeView" href="{{ path('sgr_calendarios_vista', {view: 'mensual', action: 'show', f_inicio: data['begin']|date('Y-m-d') } ) }}">Mensual</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 text-left text-info mt-2">
+                    {% if view == 'diaria' %}
+                        Cuadrante de ocupación: <b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b>
+                    {% else %}
+                        Cuadrante de ocupación: Desde<b> {{ data['begin']|format_datetime('full','none',locale='es')|capitalize }}</b> hasta<b> {{ data['end']|format_datetime('full','none',locale='es')|capitalize }}</b>
+                    {% endif %}
+                </div>
+            </div><!-- /#content-header -->
+
+            <div class="row mb-1" id="msg-flash">
+                
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div><!-- /#msg-flash -->
+
+            <div class="row mb-1" id="div-tablist">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    {% for key, calendario in calendarios %}
+                        <li class="nav-item">
+                            {% set active='' %}
+                            {% set selected = 'false' %}
+                            {% if tabActive is defined and calendario[0].id == tabActive %}
+                                {% set active = 'active' %} 
+                                {% set selected = 'true' %}
+                            {% endif %} 
+                            <a class="nav-link {{ active }}" id="home-tab-{{ calendario[0].id }}" data-toggle="tab" data-idpanel="{{ calendario[0].id }}" href="#{{ calendario[0].id }}" role="tab" aria-controls="{{ calendario[0].id }}" aria-selected="{{ selected }}">{{ calendario[0].nombre }} <small><span class="badge badge-pill badge-success" style="font-size: 0.6em;">{{ calendario[2] }}</span></small></a>
+                        </li>
+                    {% endfor %}    
+                </ul>
+            </div><!-- /#div-tablist -->
+            
+            <div class="tab-content" id="myTabContent">    
+            {% set begin = date("1970-1-1 07:30")%}
+            {% set h_inicio = [] %}
+            {% set h_fin = [] %}
+
+            {% for i in 1..28 %}
+                
+                {% set minutos = 30 * i %}
+                {% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
+                {% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 30 minutes") %}
+                {% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
+                {% set h_fin= h_fin|merge({(i):next_h_fin})  %}
+            {% endfor %}
+
+            {% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Dom' } %}
+
+                        
+            {% for key, calendario in calendarios %}
+            {# calendario = array [0 => sgrEspacio, 1 => Array con key = diaSemana (1=lunes..7=domingo)]#}
+
+                {% set active='' %}
+                
+                {% if tabActive is defined and calendario[0].id == tabActive %}
+                    {% set active = 'show active' %} 
+                {% endif %} 
+                <div class="tab-pane fade {{ active }}" id="{{ calendario[0].id }}" role="tabpanel" aria-labelledby="home-tab" data-idpanel="{{ calendario[0].id }}">
+
+                <table class="blueTable" style="border: 1px solid #aaa">
+                    
+                    <thead style="width: 100%">
+                        <tr>
+                            <th style="width: 5%"><div class="">Hora</div></th>
+                            
+                            {% for i in 1..7 %}
+
+                                <th class="">
+                                    <div> {{ diaSemana[i] }}</div>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for j in 0..27 %}
+                            <tr>
+                                <td style="height: 27px;font-size: 10px"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
+                                {% set wth = '150px' %}
+                                {% set nwth = 150 %}
+                                {% for i in 1..7 %}
+
+                                    {% if i == 7 %}  {% set wth = '50px' %} {% endif %}    
+                                    {% if calendario[1][i] is defined %}
+                                        {% if calendario[1][i][h_inicio[j]|date('H:i')] is defined %}
+                                            <td  class="reserva" style="height: 24px;min-width: {{ wth }}">
+                                            <div style="position: relative;top: 0px;height: 24px;/*max-width: 100px*/">
+                                        
+                                                
+                                                {% for key, reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
+                                                    
+                                                    {% set h = ( 26 * reserva['evento'].getDuracionHoras ) / 30 %}
+                                                    {# set w = 95 -  (reserva['concurrencias'] * 12)  #}
+                                                    {% set w = nwth -  (reserva['concurrencias'] * 12)  %}
+                                                    {% set left = (reserva['concurrencias'] * 12)  ~ "px" %}
+                                                    {% if key < 6 %}
+                                                    {% set color = reserva['evento'].actividad.color %}
+                                                    <div    class="borde div_reserva" 
+                                                            style=' text-align: center;
+                                                                    overflow:hidden;
+                                                                    font-size: 11px;
+                                                                    /*max-width: 95px;*/
+                                                                    padding-top: 3px;
+                                                                    padding-left: 3px;
+                                                                    height: {{ h }}px;
+                                                                    background-color: #{{ color }};
+                                                                    position: absolute;
+                                                                    top:0px;
+                                                                    z-index:100;
+                                                                    width: {{ w }}px;
+                                                                    '>
+                                                        <a  href="javascript:;" style="" data-reservaid = "{{ reserva['evento'].id }}" data-animation="true" tabindex="0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva"  data-content="<div class='text-center'>
+                                                            <p><b>{{ reserva['evento'].titulo }}</b></p>
+                                                            <p>{{ reserva['evento'].actividad }}</p>
+                                                            <p>{{ reserva['evento'].fInicio|date('d-m-Y') }} - {{ reserva['evento'].fFin|date('d-m-Y') }}</p>
+                                                            <p>{{ reserva['evento'].hInicio|date('H:i')}} - {{ reserva['evento'].hFin|date('H:i') }}</p>
+                                                            <p>{{ reserva['evento'].getDiasStringFormat|join(', ',' y ') }}</p>
+                                                            <p>{{ reserva['evento'].espacio}}</p></div>
+                                                            <div><a class='editarEvento' href='{{ path('sgr_calendario_evento_edit', {'id': reserva['evento'].id}) }}'>Editar</a></div>">
+                                                            <span style="mix-blend-mode: difference;color: white">{{ reserva['evento'].titulo }}</span>
+                                                        </a>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            </td>
+                                        
+                                        {% else %}  
+                                            <td style="height: 24px;min-width: {{ wth }};">
+                                
+                                                <a class="newEvento" href="{{ path('sgr_calendarios_evento_new', {'view': view ,'espacioId': calendario[0].id, 'f_inicio': data['begin']|date('Y-m-d'), 'h_inicio': h_inicio[j]|date('H:i')} ) }}">
+                                                    
+                                                    <div style="width:100%;height: 100%;min-height: 26px;">
+                                                        <div style="width: 100%;height: 100%;"> 
+                                                            <span style="display: none"><i class="fas fa-plus-circle"></i> </span>
+                                                        </div>
+                                                    
+                                                    </div> 
+                                                </a>                                                
+                                            
+                                            </td>
+                                        {% endif %}
+                                    {% else %}  
+                                            <td style="height: 24px;min-width: {{ wth }};">
+                                                <a class="newEvento" href="{{ path('sgr_calendarios_evento_new', {'view': view ,'espacioId': calendario[0].id, 'f_inicio': data['begin']|date('Y-m-d'), 'h_inicio': h_inicio[j]|date('H:i')} ) }}">
+                                                    
+                                                    <div style="width:100%;height: 100%;min-height: 26px;">
+                                                        <div style="width: 100%;height: 100%;"> 
+                                                            <span style="display: none"><i class="fas fa-plus-circle"></i> </span>
+                                                        </div>
+                                                    
+                                                    </div> 
+                                                </a>    
+                                            </td>
+                                    {% endif %}
+                                    
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                   
+                <div style="page-break-after:always;"></div>
+                </div><!-- /#calendario[0].id -->
+            {% endfor %}
+            </div><!-- /#myTabContent -->
+             
+            {% if filtros %}
+                <div class="alert alert-info justify-content-start" role="alert">
+                    <p>
+                        <h3>Filtros aplicados en la busqueda</h3>
+                        {% for key, filtro in filtros %}
+                            <span><b>{{ key|capitalize }}:</b>
+                            {% if key == "Espacios" %}
+                               
+                                {% for k, espacio in filtro %}
+                                    <span class="nombreEspacio"> {{ espacio.nombre }}, </span> 
+                                {% endfor %}
+                            {% else %}
+                                {{ filtro }}
+                            {% endif%}
+                            <br />
+                    {% endfor %}
+                    </p>
+                </div>
+            {% endif %}
+        </div><!-- /.col-10 -->
+    </div><!-- .row -->
+{% endblock %} 
+
+{% block morescripts %}
+    
+    <script type="text/javascript">
+    	$('.nav-link').on('click',function(e){
+
+    		alert($(this).data('idpanel'));
+    		/*cambiando el action del formulario:
+    			1. los botones de pre, hoy, next --> deben mantener el espacio seleccionado
+    			2. al filtrar --> deben mantener el espacio seleccionado
+
+    			Peeeero, al recargar la página, vuelve al idespacio original. (el usuario no debe recargar!!....)
+    		*/
+    	});
+    </script>	
+    <script type="text/javascript">
+    
+        $('form[name="sgr_filters_sgr_eventos"]').on('submit', function(e){
+
+            showGifEspera();
+        });
+
+        function showGifEspera(){
+            $('#espera').css('display','inline').css('z-index','100');
+        }
+
+        function hideGifEspera(){
+            //console.log('ready');
+            $('#espera').css('display','none').css('z-index','-100');
+        }
+    </script>
+
+    <script type="text/javascript">        
+        $(function () {
+            $('.evento').each(function(){
+                var $wtd = $(this).closest("td").width() + 2; //2 pixels del border del td
+                var $duration = $(this).data('duration');
+                /*
+                    60m => wtd
+                    duration => x 
+                */
+                $(this).width( ($wtd * $duration) / 60 );
+                $htd = $(this).closest("td").height();
+            });
+        });
+    </script>
+
+    <script type="text/javascript">        
+        $(function () {
+            $('[data-toggle="popover"]').popover({
+                trigger: 'focus',
+                animation: true,
+                delay: { "show": 300, "hide": 100 },
+            });
+        });
+    </script>
+    
+    {# Modify when Upload #}
+    <!--
+    <script type="text/javascript" src="/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
+    <script type="text/javascript" src="/build/datetimepicker-calendarViewDay.js"></script>
+    --> 
+    <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewDay.js"></script>
+    <script type="text/javascript" src="/reservasfgh/public/build/calendarios.js"></script>
+    
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('#showMoreFilters').click( function(e){
+                e.preventDefault();
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript">        
+        $(function () {
+            $('div.evento a').hover(
+                    function() {
+                        var reservaid = $( this ).data('reservaid');
+                        /*var colorRGB = $( this ).children('div.badge').css("background-color");
+                        var color = hexc(colorRGB);
+                        var colorInvert = invertHex(color);
+                        console.log($(this));
+                        console.log(color);
+                        console.log(colorInvert);
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('background-color','#'+colorInvert);*/
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('opacity',0.8);
+
+                    }, 
+                    function() {
+                        var reservaid = $( this ).data('reservaid');
+                        /*var colorRGB = $( this ).children('div.badge').css( "background-color" );
+                        var color = hexc(colorRGB);
+                        var colorInvert = invertHex(color);
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('background-color','#'+colorInvert);*/
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('opacity',1);
+                    });
+        });
+
+        function invertHex(hex) {
+            return (Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase();
+        }
+
+
+        function hexc(colorval) {
+            var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            delete(parts[0]);
+            for (var i = 1; i <= 3; ++i) {
+                parts[i] = parseInt(parts[i]).toString(16);
+                if (parts[i].length == 1) parts[i] = '0' + parts[i];
+            }
+            color = parts.join('');
+
+            return color;
+        }
+    </script>
+
+    <script type="text/javascript">
+
+    	//$('#datetimepicker-fi').datetimepicker('calendarWeeks', true);
+
+    //var myvar = '{{ tabActive }}';
+    //console.log(myvar);
+
+        $("#datetimepicker-fi").on("change.datetimepicker", function (e) {
+        	
+        	if (window.sessionStorage) 
+        	{	
+            		ui = JSON.parse( sessionStorage.getItem("ui") );
+
+                    if (ui != null)
+                    {
+                        ui.fInicio = e.date.format('DD/MM/Y');    
+                        sessionStorage.setItem("ui",JSON.stringify(ui));
+                    }
+            }
+
+            if (e.oldDate != null){
+                $('form').attr('action');
+                $('form[name="sgr_filters_sgr_eventos"]').submit();
+            }
+        });
+
+        $('button#hoy').on('click',function(){
+        
+            $('#datetimepicker-fi').datetimepicker( 'date', moment(new Date()).locale('es').format('DD/MM/Y') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( moment(new Date()).locale('es').format('DD/MM/Y') );    
+        });
+
+        $('button#nextDay').on('click',function(e){
+            //e.preventDefault();
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' );
+            console.log(date);
+            //alert(date);
+            
+            
+            $('#datetimepicker-fi').datetimepicker( 'date', date.add(1, 'days').format('DD/MM/Y') );
+            //$('#sgr_filters_sgr_eventos_f_inicio').val( 'date', date.add(1, 'days').format('DD/MM/Y') );    
+        });
+
+        $('button#prevDay').on('click',function(){
+        
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' );
+            $('#datetimepicker-fi').datetimepicker( 'date', date.subtract(1, 'days').format('DD/MM/Y') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( date.subtract(1, 'days').format('DD/MM/Y') );    
+        });
+
+        $('#thisWeek').on('click',function(){
+            
+            //set f_inicio
+            $('#datetimepicker-fi').datetimepicker( 'date', moment().locale('es').startOf('week').format('DD/MM/YYYY') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( moment().locale('es').startOf('week').format('DD/MM/YYYY') );
+        });
+
+        $('#nextWeek').on('click',function(){
+        
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').add( 1, 'weeks' );
+            
+            //set f_inicio
+            $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
+        });
+
+        $('#prevWeek').on('click',function(){
+            
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').subtract( 1, 'week' );
+            
+            //set f_inicio
+            $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
+            $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
+        });
+    </script>
+{% endblock %}

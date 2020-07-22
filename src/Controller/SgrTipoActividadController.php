@@ -26,6 +26,8 @@ class SgrTipoActividadController extends AbstractController
 
         //$actividades = $sgrTipoActividadRepository->findAll();
         $actividades = $sgrTipoActividadRepository->findBy([],['actividad' => 'ASC']);
+        //dump($actividades);
+        //exit;
         $pagination = $paginator->paginate(
             $actividades,
             $page,//$request->query->getInt('page', 1),

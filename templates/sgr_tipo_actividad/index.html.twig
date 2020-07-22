@@ -12,6 +12,7 @@
             <tr>
                 <th>Actividad</th>
                 <th>Descripcion</th>
+                <th>Color</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -22,6 +23,7 @@
                 
                 <td>{{ sgr_tipo_actividad.actividad }}</td>
                 <td>{{ sgr_tipo_actividad.descripcion }}</td>
+                <td> <div style="width: 50%;height: 100%; background-color: #{{ sgr_tipo_actividad.color }}">#{{ sgr_tipo_actividad.color }}</div></td>
                 <td>
                     <a class="btn btn-secondary m-1" type="button" href="{{ path('sgr_tipo_actividad_show', {'id': sgr_tipo_actividad.id}) }}">Ver</a>
                     <a class="btn btn-primary m-1" type="button" href="{{ path('sgr_tipo_actividad_edit', {'id': sgr_tipo_actividad.id}) }}">Editar</a>

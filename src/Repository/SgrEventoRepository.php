@@ -85,7 +85,7 @@ class SgrEventoRepository extends ServiceEntityRepository
         
         if($begin && $end)
             $qb->andWhere('sgr_e.f_inicio >= :begin')
-                ->andWhere('sgr_e.f_inicio < :end')
+                ->andWhere('sgr_e.f_inicio <= :end')
                 ->orWhere('sgr_e.f_inicio < :begin AND sgr_e.f_fin > :begin')
                 ->setParameter('begin', $begin->format('Y-m-d'))
                 ->setParameter('end', $end->format('Y-m-d'));

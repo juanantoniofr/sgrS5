@@ -12,6 +12,8 @@ use App\Repository\SgrEventoRepository;
 use App\Repository\SgrEspacioRepository;
 use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
 
+use App\Service\Calendario;
+
 
 class InformesController extends AbstractController
 {
@@ -19,7 +21,7 @@ class InformesController extends AbstractController
 	/**
        * @Route("/pdf", name="sgr_genPDF")
     */
-    public function genPdf(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository, DompdfWrapperInterface $wrapper)
+    public function genPdf(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository, DompdfWrapperInterface $wrapper, Calendario $calendario)
     {
 
         $request->request->has('sgr_filters_sgr_eventos') ? $dataForm = $request->request->get('sgr_filters_sgr_eventos') : $dataForm = null;
@@ -36,7 +38,7 @@ class InformesController extends AbstractController
         //dump($dataForm);
 
         //get Espacios
-        $sgrEspacios = $sgrEspacioRepository->getByTerminoAndEspacios($dataForm['termino'],[3]/*$dataForm['espacio']*/);
+        $sgrEspacios = $sgrEspacioRepository->getByTerminoAndEspacios($dataForm['termino'],$dataForm['espacio']);
         //dump($sgrEspacios);
 
         //set f_inicio y f_fin
@@ -80,7 +82,8 @@ class InformesController extends AbstractController
                     //$misEventosAgrupadosPorHoraInicio = $sgrEventos->get($diaEvento);
 
                     
-                    $concurrencias = $this->getConcurrencias($sgrEventos->get($diaEvento), $evento); 
+                    //$concurrencias = $this->getConcurrencias($sgrEventos->get($diaEvento), $evento);
+                    $concurrencias = $calendario->getConcurrencias($sgrEventos->get($diaEvento), $evento);  
                     
                     //(( $sgrEventos->get($diaEvento) )->get($horaInicio) )->add([ $evento, 'concurrencias' => $concurrencias]);
                     (( $sgrEventos->get($diaEvento) )->get($horaInicio) )->add( ['evento' => $evento, 'concurrencias' => $concurrencias ] );
@@ -92,15 +95,13 @@ class InformesController extends AbstractController
             $sgrCalendarios->set($keyForCalendario, [$sgrEspacio, $sgrEventos]);
 
         }
-        //dump('calendario');
         
-
         //dump($sgrCalendarios);
         //exit; 
 
-        //return $this->render('sgr_informes/pdf.html.twig', [
-        //    'calendarios' => $sgrCalendarios,
-        //]);
+        return $this->render('sgr_informes/pdf.html.twig', [
+            'calendarios' => $sgrCalendarios,
+        ]);
 
     	$html = $this->renderView('sgr_informes/pdf.html.twig', [
             'calendarios' => $sgrCalendarios,
@@ -112,28 +113,20 @@ class InformesController extends AbstractController
         $response->send();
     }
 
-    private function getConcurrencias($eventosDiaSemanaAgrupadosPorHinicio, $miEvento){
-        //dump('eventosDia');
-        //dump($eventosDiaSemanaAgrupadosPorHinicio);
-        //dump('mi evento');
-        //dump($miEvento);
+    /*private function getConcurrencias($eventosDiaSemanaAgrupadosPorHinicio, $miEvento){
+        
         $concurrencias = 0;
-        //dump($eventosDiaSemanaAgrupadosPorHinicio->isEmpty());
         if ($eventosDiaSemanaAgrupadosPorHinicio->isEmpty() == false){
 
             $miHoraInicio = $miEvento->getHInicio();
-            //dump($miHoraInicio);
-
+        
             foreach ($eventosDiaSemanaAgrupadosPorHinicio as $eventos) {
-                //dump('=====Eventos');
-                //dump($eventos);
+        
                 if ( $eventos->isEmpty() == false){  
-                    //dump($eventos);
-                    
+        
                     foreach ($eventos as $evento) {
                         
-                            //dump($evento['evento']->getHinicio());
-                            if ($evento['evento']->getHinicio() <= $miHoraInicio && $evento['evento']->getHFin() > $miHoraInicio)
+                            if ($evento['evento']->getHinicio() == $miHoraInicio || $miHoraInicio < $evento['evento']->getHFin())
                                 $concurrencias = $concurrencias + 1;
                         
                     }
@@ -143,8 +136,8 @@ class InformesController extends AbstractController
             }
 
         }
-        //dump($concurrencias);
         return $concurrencias;
     }
+    */
 
 }

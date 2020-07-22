@@ -13,13 +13,13 @@
 
     <div class="row">
         
-        <div class="col-2">
+        <div class="col-2 d-print-none">
             <p>
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFiltros" aria-expanded="{{ showFilters == 1 ? 'true' : '' }}" aria-controls="collapseFiltros">
                     <i class="fas fa-bars"></i>
                 </button>
             </p>
-            <div class="collapse {{ showFilters == 1 ? 'show' : '' }}" id="collapseFiltros">
+            <div class="collapse {{ showFilters == 1 ? 'show' : '' }} " id="collapseFiltros">
                 <div id="filtros">
                     <div class="">
                         {{ include('sgr_form/_formFiltersSrgEvento.html.twig') }}
@@ -33,7 +33,7 @@
             {% set diasSemana = {1: 'Lunes', 2:'Martes', 3: 'Miércoles',4: 'Jueves',5: 'Viernes',6: 'Sábado' } %}
             {% if aCalendarios is defined %}
             
-            <div class="row mb-3">
+            <div class="row mb-3 d-print-none">
             
                 <div class="col-6">
 
@@ -133,9 +133,9 @@
                                                 {% set diffInMinutes = (h_cuadrante.diff(h_inicio).format('%H')*60 + h_cuadrante.diff(h_inicio).format('%i')) %}
                                                 {% set offset = 100*diffInMinutes / 60 %}
 
-                                                    <div class="evento bg-info" data-duration="{{duration}}" style="z-index: 2;left:{{ offset }}%;position:absolute;top:0px;height: 100%;border: 1px solid white">
+                                                    <div class="evento" data-duration="{{duration}}" style="z-index: 2;left:{{ offset }}%;position:absolute;top:0px;height: 100%;border: 1px solid white">
                                             
-                                                        <a  href="javascript:;" data-reservaid = "{{ period.evento.id }}" data-animation="true" tabindex="0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva" data-content="<div class='text-center'>
+                                                        <a  href="javascript:;" style="" data-reservaid = "{{ period.evento.id }}" data-animation="true" tabindex="0" data-trigger="focus" data-html="true"  data-toggle="popover" title="Información de la Reserva"  data-content="<div class='text-center'>
                                                             <p><b>{{ period.evento.titulo }}</b></p>
                                                             <p>{{ period.evento.actividad }}</p>
                                                             <p>{{ period.evento.fInicio|date('d-m-Y') }} - {{ period.evento.fFin|date('d-m-Y') }}</p>
@@ -144,9 +144,9 @@
                                                             <p>{{period.evento.espacio}}</p></div>
                                                             <div><a class='editarEvento' href='{{ path('sgr_calendario_evento_edit', {'id': period.evento.id}) }}'>Editar</a></div>">   
                                                 
-                                                            <div class="badge badge-info text-left" style="width: 100%;height: 100%;">
+                                                            <div class="text-left" style="background-color: #{{period.evento.actividad.color}};width: 100%;height: 100%; overflow-y: hidden;font-size: 11px">
                                                                 
-                                                                <div class="align-middle text-wrap text-truncate">
+                                                                <div class="align-middle text-wrap text-truncate" style="mix-blend-mode: difference;color: white">
                                                                     {{ period.evento.titulo }}
                                                                     {#<span class="text-sm-left text-danger">({{ period.evento.fInicio|date('d-m-Y') }}</span>-<span class="text-sm-right text-danger">{{ period.evento.fFin|date('d-m-Y') }})</span>#}
                                                                 </div>
@@ -259,13 +259,42 @@
             $('div.evento a').hover(
                     function() {
                         var reservaid = $( this ).data('reservaid');
-                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').removeClass('bg-info').addClass('bg-primary');
+                        /*var colorRGB = $( this ).children('div.badge').css("background-color");
+                        var color = hexc(colorRGB);
+                        var colorInvert = invertHex(color);
+                        console.log($(this));
+                        console.log(color);
+                        console.log(colorInvert);
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('background-color','#'+colorInvert);*/
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('opacity',0.8);
+
                     }, 
                     function() {
                         var reservaid = $( this ).data('reservaid');
-                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').removeClass('bg-primary').addClass('bg-info');
+                        /*var colorRGB = $( this ).children('div.badge').css( "background-color" );
+                        var color = hexc(colorRGB);
+                        var colorInvert = invertHex(color);
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('background-color','#'+colorInvert);*/
+                        $( '[data-reservaid="'+reservaid+'"]' ).children('div.badge').css('opacity',1);
                     });
         });
+
+        function invertHex(hex) {
+            return (Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase();
+        }
+
+
+        function hexc(colorval) {
+            var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            delete(parts[0]);
+            for (var i = 1; i <= 3; ++i) {
+                parts[i] = parseInt(parts[i]).toString(16);
+                if (parts[i].length == 1) parts[i] = '0' + parts[i];
+            }
+            color = parts.join('');
+
+            return color;
+        }
     </script>
 
     <script type="text/javascript">
