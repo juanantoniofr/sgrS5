@@ -194,8 +194,11 @@ class SgrFiltersSgrEventosType extends AbstractType
         
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) 
         {
-            //$data = $event->getData();    
+            //$data = $event->getData();
+            
             $form = $event->getForm();
+            //dump($this->session->get('idTermino'));
+            //exit;    
             $termino = $this->session->get('idTermino', null);
             if ( $termino )
             {

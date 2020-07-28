@@ -138,7 +138,7 @@
 
                         {% for j in 0..27 %}
                             <tr>
-                                <td style="height: 27px;font-size: 10px"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
+                                <td style="height: 27px;font-size: 11px;text-align: center"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
                                 {% set wth = '150px' %}
                                 {% set nwth = 150 %}
                                 {% for i in 1..7 %}
@@ -254,9 +254,41 @@
 {% block morescripts %}
     
     <script type="text/javascript">
+
+    	if (window.sessionStorage) 
+    	{	
+        	ui = JSON.parse( sessionStorage.getItem("ui") );
+        	if (ui != null)
+            {
+            	$('.nav-link').removeClass('active');
+				$('#home-tab-' + ui.tabActive ).addClass('active');
+
+				$('#home-tab-' + ui.tabActive ).css('border','2px solid #180a09a1');
+            }
+		    //alert('sessionStorage');
+        	//alert(ui.fInicio);
+        }
+
+
     	$('.nav-link').on('click',function(e){
 
-    		alert($(this).data('idpanel'));
+    		//alert($(this).data('idpanel'));
+    		$('.nav-link').css('border','none');
+    		$(this).css('border','2px solid #180a09a1');
+    		if (window.sessionStorage) 
+        	{	
+            		ui = JSON.parse( sessionStorage.getItem("ui") );
+            		if (ui != null)
+                    {
+                        ui.tabActive = $(this).data('idpanel');
+                        sessionStorage.setItem("ui",JSON.stringify(ui));
+                        $('#sgr_filters_sgr_eventos_ui').val(JSON.stringify(ui));
+                    }
+
+                    //alert('sessionStorage');
+            		//alert(ui.fInicio);
+            }
+
     		/*cambiando el action del formulario:
     			1. los botones de pre, hoy, next --> deben mantener el espacio seleccionado
     			2. al filtrar --> deben mantener el espacio seleccionado
@@ -373,27 +405,34 @@
     </script>
 
     <script type="text/javascript">
-
-    	//$('#datetimepicker-fi').datetimepicker('calendarWeeks', true);
-
-    //var myvar = '{{ tabActive }}';
-    //console.log(myvar);
-
-        $("#datetimepicker-fi").on("change.datetimepicker", function (e) {
+    	
+    	$("#datetimepicker-fi").on("change.datetimepicker", function (e) {
         	
         	if (window.sessionStorage) 
         	{	
             		ui = JSON.parse( sessionStorage.getItem("ui") );
-
-                    if (ui != null)
+            		if (ui != null)
                     {
-                        ui.fInicio = e.date.format('DD/MM/Y');    
+                        //console.log(e.date);
+                        ui.fInicio = e.date.format('DD/MM/Y');
                         sessionStorage.setItem("ui",JSON.stringify(ui));
                     }
+                    //alert('sessionStorage');
+            		//alert(ui.fInicio);
             }
 
             if (e.oldDate != null){
+
                 $('form').attr('action');
+                //alert('Add tabActive to UI user when change tab');
+                //console.log(ui);
+                //alert('change');
+                
+                //alert(e.date.format('DD/MM/Y'));
+                //alert(ui.fInicio);
+                
+
+                $('#sgr_filters_sgr_eventos_ui').val(JSON.stringify(ui));
                 $('form[name="sgr_filters_sgr_eventos"]').submit();
             }
         });

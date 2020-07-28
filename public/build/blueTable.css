@@ -46,6 +46,11 @@ table.blueTable thead th {
 	font-weight: bold;
 	color: #FFFFFF;
 	border-left: 2px solid #D0E4F5;
+	color: #fff;
+	background-color: #343a40;
+	border-color: #454d55;
+    border-left-color: rgb(69, 77, 85);
+	padding: .75rem;
 }
 
 table.blueTable thead th:first-child {

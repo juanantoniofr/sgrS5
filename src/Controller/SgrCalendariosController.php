@@ -55,7 +55,7 @@ class SgrCalendariosController extends AbstractController
         {
             $data = $form->getData();
             //dump($view);
-            //dump($data);
+            dump($data);
             $termino = $data['termino']->getId();
             $espacios = $data['espacio'];
             $data['f_inicio'] == null ? $begin = $this->newGetBegin($view, $action, $data['f_inicio']) : $begin = $this->getFromFormat($data['f_inicio']);
@@ -111,6 +111,9 @@ class SgrCalendariosController extends AbstractController
         //dump($session->get('filtros', Array()));
         //exit;
 
+        //set Values to session
+        $this->setValuesToSession($session,'idTermino',$termino);
+
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'calendarios' => $sgrCalendarios,
@@ -123,6 +126,11 @@ class SgrCalendariosController extends AbstractController
             'tabActive' => $this->newGetSelectedTab($espacioId,$sgrEspacios),
         ]);
     
+    }
+
+    private function setValuesToSession($session,$key,$value){
+
+        return $session->set($key, $value);
     }
 
     private function newGetSelectedTab($espacioId,$sgrEspacios){
