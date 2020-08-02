@@ -36,9 +36,9 @@ $(function () {
         
         $('input[name="sgr_filters_sgr_eventos[ui]"]').val(JSON.stringify(ui));
         
-        console.log('hidden');
-        console.log(JSON.stringify(ui));
-        console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
+        //console.log('hidden');
+        //console.log(JSON.stringify(ui));
+        //console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
     });
 
     $('#collapseFiltros').on('show.bs.collapse', function () {
@@ -54,20 +54,21 @@ $(function () {
         
         $('input[name="sgr_filters_sgr_eventos[ui]"]').val(JSON.stringify(ui));
                 
-        console.log('show');
-        console.log(JSON.stringify(ui));
-        console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
+        //console.log('show');
+        //console.log(JSON.stringify(ui));
+        //console.log($('input[name="sgr_filters_sgr_eventos[ui]"]').val());
     });
 
     $('a.editarEvento').on('click',function(e){
 
         e.preventDefault();
-        console.log(JSON.stringify(ui));
+        //console.log(JSON.stringify(ui));
     });
 
     $('form[name="sgr_filters_sgr_eventos"]').on('submit', function(e){
-
-        showGifEspera();
+        
+        if ( $('form[name="sgr_filters_sgr_eventos"]').attr("target") != "_blank" )
+                showGifEspera();
     });
 
     function showGifEspera(){

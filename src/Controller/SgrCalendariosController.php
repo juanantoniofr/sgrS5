@@ -31,10 +31,10 @@ class SgrCalendariosController extends AbstractController
 
 
     /**
-       * @Route("/vista/test/{view}/{espacioId}/{action}/{f_inicio}/{f_fin}", name="sgr_test_calendarios_vista", methods={"GET","POST"}), defaults={"view": "semanal", "espacioId": "","action" : "show", "f_inicio" : "", "f_fin" : ""}
+       * @Route("/vista/test/{view}/{espacioId}/{action}/{f_inicio}/{f_fin}", name="sgr_test_calendarios_vista", methods={"GET","POST"}), defaults={"view": "anual", "espacioId": "","action" : "show", "f_inicio" : "", "f_fin" : ""}
     */
     //sustituye a la función index
-    public function test(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository,  Calendario $calendario, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, SessionInterface $session, String $view = 'semanal', String $espacioId = '',String $action = 'show', String $f_inicio = '', String $f_fin = '')
+    public function test(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository,  Calendario $calendario, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, SessionInterface $session, String $view = 'anual', String $espacioId = '',String $action = 'show', String $f_inicio = '', String $f_fin = '')
     {
 
         $template = $this->newGetTemplate($view);
@@ -43,15 +43,18 @@ class SgrCalendariosController extends AbstractController
         $form = $this->createForm(SgrFiltersSgrEventosType::class);
         $form->handleRequest($request);
 
-        //Set defaults values
-        $termino = 2;           //default value: Aulas de docencia
-        //$espacios = new ArrayCollection();
-
-        //dump($session->get('idsEspacios', Array()));
-        $espacios = new ArrayCollection($session->get('idsEspacios', Array())); // default values for espacios, 
+        //*********************
+        // Set defaults values
+        //*********************
+        //default value: Aulas de docencia
+        $termino = 2;           
+        // default values (Array ids) for espacios
+        $espacios = new ArrayCollection($session->get('idsEspacios', Array()));
+                 
         $titulacion = '';
         $actividad = '';
-        empty($view) ? $view = "semanal" : $view;
+        //dump($view);
+        empty($view) ? $view = "anual" : $view;
         empty($action) ? $action = "show" : $action;
 
         if ( $form->isSubmitted() && $form->isValid() )
@@ -83,6 +86,7 @@ class SgrCalendariosController extends AbstractController
         } 
 
         //get Espacios
+        //dump($espacios);
         $sgrEspacios = $sgrEspacioRepository->getByTerminoAndEspacios($termino,$espacios->toArray());
         
         $sgrCalendarios = new ArrayCollection();
@@ -111,6 +115,7 @@ class SgrCalendariosController extends AbstractController
             $sgrCalendarios->set($keyForCalendario, [$sgrEspacio, $sgrEventos, count($sgrEventosByEspacio)]);
         }
         
+        //dump($template);
         //dump($sgrCalendarios);
         //dump($sgrCalendarios->key());
         //dump($espacioId);
@@ -125,7 +130,7 @@ class SgrCalendariosController extends AbstractController
         $idsEspacios = $this->getIdToEspacios($sgrEspacios);
         //dump($idsEspacios);
         $this->setValuesToSession($session,'idsEspacios',$idsEspacios);
-        //dump($session->get('idsEspacios'));
+        
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'calendarios' => $sgrCalendarios,
@@ -184,6 +189,7 @@ class SgrCalendariosController extends AbstractController
     private function newGetTemplate($view)
     {
 
+        /* testViewDay es una vista semanal mientras hacemos pruebas */
         switch ($view) 
         {
             case 'semanal':
@@ -194,7 +200,7 @@ class SgrCalendariosController extends AbstractController
                 $template = 'sgr_calendarios/viewMonth.html.twig';
                 break;    
             case 'anual':
-                $template = 'sgr_calendarios/viewWeek.html.twig';
+                $template = 'sgr_calendarios/testViewDay.html.twig';
                 break;
             case 'diaria':
             default:

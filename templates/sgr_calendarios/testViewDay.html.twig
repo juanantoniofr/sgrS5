@@ -78,6 +78,7 @@
 
             <div class="row mb-1" id="div-tablist">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    
                     {% for key, calendario in calendarios %}
                         <li class="nav-item">
                             {% set active='' %}
@@ -154,12 +155,12 @@
                                                     
                                                     {% set h = ( 26 * reserva['evento'].getDuracionHoras ) / 30 %}
                                                     {# set w = 95 -  (reserva['concurrencias'] * 12)  #}
-                                                    {% set w = nwth -  (reserva['concurrencias'] * 12)  %}
-                                                    {% set left = (reserva['concurrencias'] * 12)  ~ "px" %}
+                                                    {% set w = nwth -  (reserva['concurrencias'] * 14)  %}
+                                                    {% set left = (reserva['concurrencias'] * 16)  ~ "px" %}
                                                     {% if key < 6 %}
                                                     {% set color = reserva['evento'].actividad.color %}
                                                     <div    class="borde div_reserva" 
-                                                            style=' text-align: center;
+                                                            style=' text-align: rigth;
                                                                     overflow:hidden;
                                                                     font-size: 11px;
                                                                     /*max-width: 95px;*/
@@ -258,18 +259,43 @@
     	if (window.sessionStorage) 
     	{	
         	ui = JSON.parse( sessionStorage.getItem("ui") );
+            //console.log(ui);
+
+            
         	if (ui != null)
             {
-            	$('.nav-link').removeClass('active');
+                
+                //console.log($('#home-tab-' + ui.tabActive).length == 0);
+                //console.log({{tabActive}});
+
+                //if (ui.tabActive != {{ tabActive}} || $('#home-tab-' + ui.tabActive).length == 0 ) ui.tabActive = {{ tabActive }};
+                if ($('#home-tab-' + ui.tabActive).length == 0 ) ui.tabActive = {{ tabActive }};
+            	
+                $('.nav-link').removeClass('active');
 				$('#home-tab-' + ui.tabActive ).addClass('active');
 
 				$('#home-tab-' + ui.tabActive ).css('border','2px solid #180a09a1');
+
+                sessionStorage.setItem("ui",JSON.stringify(ui));
             }
 		    //alert('sessionStorage');
         	//alert(ui.fInicio);
         }
 
-
+        $(function () {
+            $('.div_reserva').hover(
+                    function() {
+                        var z_index = $(this).css('z-index');
+                        $(this).css('z-index', z_index + 20 );
+                        $(this).css('opacity', '0.9' ); 
+                    }, 
+                    function() {
+                        //var z_index = $(this).css('z-index');
+                        $(this).css('z-index', 100 ); 
+                        $(this).css('opacity', '1' );
+                    });
+        });
+        
     	$('.nav-link').on('click',function(e){
 
     		//alert($(this).data('idpanel'));
@@ -278,15 +304,14 @@
     		if (window.sessionStorage) 
         	{	
             		ui = JSON.parse( sessionStorage.getItem("ui") );
+                    console.log(ui.tabActive);
             		if (ui != null)
                     {
                         ui.tabActive = $(this).data('idpanel');
+                        console.log(ui.tabActive);
                         sessionStorage.setItem("ui",JSON.stringify(ui));
                         $('#sgr_filters_sgr_eventos_ui').val(JSON.stringify(ui));
                     }
-
-                    //alert('sessionStorage');
-            		//alert(ui.fInicio);
             }
 
     		/*cambiando el action del formulario:
@@ -296,12 +321,35 @@
     			Peeeero, al recargar la página, vuelve al idespacio original. (el usuario no debe recargar!!....)
     		*/
     	});
+
+         $('#genPDF').on('click',function(e){
+
+            var action = "{{ path('sgr_genPDF')|escape('js') }}";
+            console.log( $('form[name="sgr_filters_sgr_eventos"]').attr('action') );
+            console.log( $('form[name="sgr_filters_sgr_eventos"]').attr('target') );
+            var defaultAction = $('form[name="sgr_filters_sgr_eventos"]').attr('action');
+            //var defaultTarget = $('form[name="sgr_filters_sgr_eventos"]').attr("target");
+            $('form[name="sgr_filters_sgr_eventos"]').attr('action',action);
+            $('form[name="sgr_filters_sgr_eventos"]').attr("target","_blank");
+
+            $('form[name="sgr_filters_sgr_eventos"]').submit();
+            $('form[name="sgr_filters_sgr_eventos"]').attr('action',defaultAction);
+            $('form[name="sgr_filters_sgr_eventos"]').attr('target','');
+           /* e.preventDefault();
+            var f_inicio = $('#datetimepicker-fi').datetimepicker( 'date').format('Y-MM-DD');
+            var url = $(this).attr('href');
+            var newUrl = url + '/' + f_inicio;
+            alert (newUrl);
+            */
+            //window.location.href = newUrl; 
+       });
     </script>	
     <script type="text/javascript">
     
-        $('form[name="sgr_filters_sgr_eventos"]').on('submit', function(e){
-
-            showGifEspera();
+        /*$('form[name="sgr_filters_sgr_eventos"]').on('submit', function(e){
+            alert($('form[name="sgr_filters_sgr_eventos"]').attr("target") != "_blank" );
+            if ( $('form[name="sgr_filters_sgr_eventos"]').attr("target") != "_blank" )
+                showGifEspera();
         });
 
         function showGifEspera(){
@@ -311,7 +359,7 @@
         function hideGifEspera(){
             //console.log('ready');
             $('#espera').css('display','none').css('z-index','-100');
-        }
+        }*/
     </script>
 
     <script type="text/javascript">        
