@@ -124,6 +124,12 @@ class SgrFiltersSgrEventosType extends AbstractType
                                                                       ->setParameter('termino', $this->session->get('idTermino',2))
                                                                       ->orderBy('e.nombre', 'ASC');
                                                         },
+                                    'choice_attr' => function($choice, $key, $value) {
+                                        
+                                                        if ( in_array($value, $this->session->get('idsEspacios')) ) 
+                                                            return [ 'checked' => 'checked' ];
+                                                        return [];
+                                                    },
                                 ])
             ->add('actividad', EntityType::class,[
                                     'label' => 'Actividad',
@@ -192,18 +198,27 @@ class SgrFiltersSgrEventosType extends AbstractType
         //$builder->get('f_fin')
         //    ->addModelTransformer($this->transformerDateTime);
         
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) 
-        {
-            //$data = $event->getData();
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             
             $form = $event->getForm();
-            //dump($this->session->get('idTermino'));
-            //exit;    
+            //dump($form);
+
             $termino = $this->session->get('idTermino', null);
-            if ( $termino )
+            $idsEspacios = $this->session->get('idsEspacios', array());
+            //dump($idsEspacios);
+            //dump('form PRE_SET_DATA');
+            
+            $termino = null;
+            if ( $termino  )
             {
                     
-                    $choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $termino ]);    
+                    //$choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $termino ]); 
+                    //dump($idsEspacios); 
+                    //exit;
+                    $choices = $this->entityManager->getRepository(SgrEspacio::class)->getByTerminoAndEspacios($termino, $idsEspacios );    
+                    
+                            
+
                     $form->add('espacio', EntityType::class,[
                             'label' => 'Espacio',
                             'required' => false,
@@ -233,10 +248,6 @@ class SgrFiltersSgrEventosType extends AbstractType
                                                     },
                     */
             }
-                
-
-
-            
         });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event)
@@ -249,10 +260,19 @@ class SgrFiltersSgrEventosType extends AbstractType
                 {
                     $form->add('f_fin', DateTimeType::class, [ 'data' => date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'))/*$data['f_inicio']*/ ]);
                 }
+                //dump($data['termino']);
+            
+                //$idsEspacios = $this->session->get('idsEspacios', array());
+                //dump($data['espacio']);
+                
                 if ($data['termino'])
                 {
                     
-                    $choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $data['termino'] ]);    
+                    $choices = $this->entityManager->getRepository(SgrEspacio::class)->findBy([ 'termino' => $data['termino'] ], [ 'nombre' => 'ASC'] );    
+                    //$choices = $this->entityManager->getRepository(SgrEspacio::class)->getByTerminoAndEspacios($data['termino'], $data['espacio'] );
+                    //dump($choices);
+                    //dump('form PRE_SUBMIT');
+                    $idsEspacios = $data['espacio'];
                     $form->add('espacio', EntityType::class,[
                             'label' => 'Espacio',
                             'required' => false,
@@ -263,9 +283,12 @@ class SgrFiltersSgrEventosType extends AbstractType
                             'expanded' => true,
                             'multiple' => true,
                             'attr' => ['class' => 'form-check'],
-                            'choice_attr' => function($choice, $key, $value) {
-                                                        return [ 'checked' => 'checked' ];
-                                                },
+                            'choice_attr' => function($choice, $key, $value) use ($idsEspacios) {
+                                        
+                                                        if ( in_array($value, $idsEspacios) ) 
+                                                            return [ 'checked' => 'checked' ];
+                                                        return [];
+                                                    },
                         ]);
                 }
 

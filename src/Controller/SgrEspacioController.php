@@ -148,9 +148,9 @@ class SgrEspacioController extends AbstractController
             $termino_id = $request->query->get('sgr_filters_sgr_eventos')['termino'];
             $sgrEspacioRepository = $this->getDoctrine()->getRepository(SgrEspacio::class);
             if($termino_id)
-                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $termino_id ]);
+                $sgrEspacios = $sgrEspacioRepository->findBy([ 'termino' => $termino_id ], [ 'nombre' => 'asc' ]);
             else 
-                $sgrEspacios = $sgrEspacioRepository->findBy( array() );
+                $sgrEspacios = $sgrEspacioRepository->findBy( array(),  [ 'nombre' => 'asc' ] );
 
             //if ($sgrEspacios)
             //{

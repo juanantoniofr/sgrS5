@@ -49,6 +49,8 @@ class SgrEspacioRepository extends ServiceEntityRepository
             $qb->andWhere('sgr_e.termino = :termino')
                     ->setParameter('termino', $termino);
         
+        $qb->orderBy('sgr_e.nombre', 'ASC');
+        
         $query = $qb->getQuery();
             //->orderBy('s.id', 'ASC')
             //->setMaxResults(10)
@@ -96,10 +98,10 @@ class SgrEspacioRepository extends ServiceEntityRepository
             $qb->andWhere('sgr_e.id IN (:espacios)')
              ->setParameter('espacios', $aEspacios);
 
-        $qb->orderBy('sgr_e.nombre');
+        $qb->orderBy('sgr_e.nombre', 'ASC');
 
         $query = $qb->getQuery();
-            //->orderBy('s.id', 'ASC')
+                    //->orderBy('s.id', 'ASC');
             //->setMaxResults(10)
         return $query->execute();   
     }

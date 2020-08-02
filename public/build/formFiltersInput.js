@@ -7,7 +7,7 @@ $(function () {
             // ... retrieve the corresponding form name.
             var $form = $(this).closest('form');
             var $form_name = $form.attr('name');
-            console.log($form_name);
+            //console.log($form_name);
             
             //.... set object input form
             $('#'+$form_name+'_titulacion').length ? $titulacion = $('#'+$form_name+'_titulacion') : $titulacion = null;

@@ -45,7 +45,10 @@ class SgrCalendariosController extends AbstractController
 
         //Set defaults values
         $termino = 2;           //default value: Aulas de docencia
-        $espacios = new ArrayCollection(); 
+        //$espacios = new ArrayCollection();
+
+        //dump($session->get('idsEspacios', Array()));
+        $espacios = new ArrayCollection($session->get('idsEspacios', Array())); // default values for espacios, 
         $titulacion = '';
         $actividad = '';
         empty($view) ? $view = "semanal" : $view;
@@ -55,9 +58,13 @@ class SgrCalendariosController extends AbstractController
         {
             $data = $form->getData();
             //dump($view);
-            dump($data);
+            //dump('controller');
+            //dump($data);
+           
             $termino = $data['termino']->getId();
             $espacios = $data['espacio'];
+            //dump('data espacio');
+            //dump($data['espacio']);
             $data['f_inicio'] == null ? $begin = $this->newGetBegin($view, $action, $data['f_inicio']) : $begin = $this->getFromFormat($data['f_inicio']);
             $data['f_fin'] == null ? ( ( $view == 'diaria' ) ? $end = $begin : $end = $this->newGetEnd($view, $action, $data['f_inicio'], $data['f_fin']) ) : $end = $this->getFromFormat($data['f_fin']);
             //dump($action);
@@ -104,16 +111,21 @@ class SgrCalendariosController extends AbstractController
             $sgrCalendarios->set($keyForCalendario, [$sgrEspacio, $sgrEventos, count($sgrEventosByEspacio)]);
         }
         
-        dump($sgrCalendarios);
-        dump($sgrCalendarios->key());
-        dump($espacioId);
-        dump($view);
+        //dump($sgrCalendarios);
+        //dump($sgrCalendarios->key());
+        //dump($espacioId);
+        //dump($view);
         //dump($session->get('filtros', Array()));
+        //dump($sgrEspacios);
         //exit;
 
         //set Values to session
         $this->setValuesToSession($session,'idTermino',$termino);
-
+        
+        $idsEspacios = $this->getIdToEspacios($sgrEspacios);
+        //dump($idsEspacios);
+        $this->setValuesToSession($session,'idsEspacios',$idsEspacios);
+        //dump($session->get('idsEspacios'));
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'calendarios' => $sgrCalendarios,
@@ -126,6 +138,20 @@ class SgrCalendariosController extends AbstractController
             'tabActive' => $this->newGetSelectedTab($espacioId,$sgrEspacios),
         ]);
     
+    }
+
+    private function getIdToEspacios(Array $sgrEspacios){
+
+        $idsEspacios = Array();
+
+        if ( !empty($sgrEspacios) )
+        {
+            foreach ($sgrEspacios as $espacio) {
+                $idsEspacios[] = $espacio->getId(); 
+            }
+        }
+
+        return $idsEspacios;
     }
 
     private function setValuesToSession($session,$key,$value){
@@ -489,10 +515,10 @@ class SgrCalendariosController extends AbstractController
                 // No valid form
                 //********
 
-                dump($form->getData());//['f_inicio']);
-                dump($form->getErrors(true));
+                //dump($form->getData());//['f_inicio']);
+                //dump($form->getErrors(true));
                 foreach ($form->getErrors(true) as $error) {
-                    dump($error->getMessage());
+                    //dump($error->getMessage());
                 }
             }
         }
