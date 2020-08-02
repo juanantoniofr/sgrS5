@@ -21,6 +21,8 @@ use App\Entity\SgrFechasEvento;
 use App\Service\Calendario;
 use App\Service\Evento;
 
+use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
+
 /**
  * @Route("/admin/sgr/calendario")
  */
@@ -34,7 +36,7 @@ class SgrCalendariosController extends AbstractController
        * @Route("/vista/test/{view}/{espacioId}/{action}/{f_inicio}/{f_fin}", name="sgr_test_calendarios_vista", methods={"GET","POST"}), defaults={"view": "anual", "espacioId": "","action" : "show", "f_inicio" : "", "f_fin" : ""}
     */
     //sustituye a la función index
-    public function test(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository,  Calendario $calendario, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, SessionInterface $session, String $view = 'anual', String $espacioId = '',String $action = 'show', String $f_inicio = '', String $f_fin = '')
+    public function test(Request $request, SgrEspacioRepository $sgrEspacioRepository, SgrEventoRepository $sgrEventoRepository,  Calendario $calendario, sgrFechasEventoRepository $sgrFechasEventoRepository, sgrTerminoRepository $sgrTerminoRepository, SessionInterface $session, DompdfWrapperInterface $wrapper, String $view = 'anual', String $espacioId = '',String $action = 'show', String $f_inicio = '', String $f_fin = '')
     {
 
         $template = $this->newGetTemplate($view);
@@ -130,6 +132,28 @@ class SgrCalendariosController extends AbstractController
         $idsEspacios = $this->getIdToEspacios($sgrEspacios);
         //dump($idsEspacios);
         $this->setValuesToSession($session,'idsEspacios',$idsEspacios);
+
+        //dump($request->query->get('genPDF'));
+
+        if ( $request->query->get('genPDF') )
+        {
+            // return like html 
+            /*return $this->render('sgr_informes/pdf.html.twig', [
+                'calendarios' => $sgrCalendarios,
+            ]);*/
+
+            //return like PDF download file
+            $html = $this->renderView('sgr_informes/pdf.html.twig', [
+                'calendarios' => $sgrCalendarios,
+            ]);
+            
+            dump($html);
+            exit;
+            $response = $wrapper->getStreamResponse($html, "document.pdf",[
+                "Attachment" => false
+            ]);
+            $response->send();
+        }
         
         return $this->render( $template,[ 
             'form'  => $form->createView(),

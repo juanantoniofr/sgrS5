@@ -126,7 +126,7 @@ class SgrFiltersSgrEventosType extends AbstractType
                                                         },
                                     'choice_attr' => function($choice, $key, $value) {
                                         
-                                                        if ( in_array($value, $this->session->get('idsEspacios')) ) 
+                                                        if ( in_array($value, $this->session->get('idsEspacios', Array())) ) 
                                                             return [ 'checked' => 'checked' ];
                                                         return [];
                                                     },

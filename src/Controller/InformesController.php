@@ -107,6 +107,7 @@ class InformesController extends AbstractController
             'calendarios' => $sgrCalendarios,
         ]);
     	
+        
         $response = $wrapper->getStreamResponse($html, "document.pdf",[
             "Attachment" => false
         ]);
