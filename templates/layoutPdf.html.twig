@@ -1,13 +1,93 @@
 <html class="h-100" lang="es-ES">
     <head>
 		<style>
+
+			div.miWrapper {
+				margin: 1em auto;
+				max-width: 920px;
+				width: 95%;
+				font: 18px/1.5 sans-serif;
+				text-align: center;
+			}
+
+			div.miWrapper h1 {
+				margin: 0px;
+			}
+
+			div#resp-table {
+				display: table;
+				width: 100%;
+			}
+
+			div#resp-table-caption{
+				display: table-caption;
+				text-align: center;
+				font-size: 30px;
+				font-weight: bold;
+			}
+
+			div#resp-table-header{
+				display: table-header-group;
+				background-color: gray;
+				font-weight: bold;
+				font-size: 25px;
+			}
+			
+			div.table-header-cell{
+				display: table-cell;
+				padding: 10px;
+				text-align: justify;
+				border-bottom: 1px solid black;
+				font-size: 16px;
+			}
+			
+			div#resp-table-body{
+				display: table-row-group;
+			}
+
+			div.resp-table-row{
+				display: table-row;
+			}
+
+			div.table-body-cell{
+				display: table-cell;
+				border: 1px solid aliceblue;
+			}
+
+			div#resp-table-footer {
+				display: table-footer-group;
+				background-color: gray;
+				font-weight: bold;
+				font-size: 25px;
+				color: rgba(255, 255, 255, 0.45);
+			}
+
+			div.table-footer-cell{
+				display: table-cell;
+				padding: 10px;
+				text-align: justify;
+				border-bottom: 1px solid black;
+			}
+
+			div.content {
+				position: relative;
+			}
+
+			@media print {    
+    			.no-print, .no-print * {
+        			display: none !important;
+    			}
+			}
+
 			table.blueTable {
-				border: 1px solid #E5E2E261;/*#1C6EA4;*/
-				background-color: transparent; /*#D0E4F5;#EEEEEE;*/
+				/*border: 1px solid #E5E2E261;*/
+				background-color: transparent;
 				width: 100%;
 				text-align: left;
 				border-collapse: collapse;
-				page-break-inside:auto
+				page-break-inside:auto;
+
+
 			}
 			table.blueTable td, table.blueTable td {
 				border: none;
@@ -17,17 +97,16 @@
 				 page-break-inside:avoid; page-break-after:auto
 			}
 			table.blueTable td, table.blueTable th {
-				border: 1px solid #E5E2E261; /*#AAAAAA;*/
+				border: 1px solid #aaa;
 			}
 			table.blueTable td:empty{
 				background-color: transparent;
 			}
 			table.blueTable tbody td {
 				font-size: 13px;
-				/*width: 180px;*/
 			}
 			table.blueTable tr:nth-child(even) {
-				/*background: #D0E4F5;*/
+			
 			}
 			table.blueTable thead {
 				background: #1C6EA4;
@@ -66,18 +145,240 @@
 				-webkit-border-radius: 10px 10px 10px 10px;
 				border: 1px solid #736e6e;
 			}
-			.miWrapper {
-				margin: 1em auto;
-				max-width: 800px;
-				width: 95%;
-				font: 18px/1.5 sans-serif;
-			}
+
 		</style>
+
 	</head>	
 	<body>
-		<div class="miWrapper">
+		<div class="miWrapper" id="div-content">
 			{% block title %}{% endblock%}
 			{% block content %}{% endblock%}
 		</div>
+		
+
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha512-s/XK4vYVXTGeUSv4bRPOuxSDmDlTedEpMEcAQk0t/FMd9V6ft8iXdwSBxV0eD60c6w/tjotSlKu9J2AAW1ckTA==" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" integrity="sha512-1g3IT1FdbHZKcBVZzlk4a4m5zLRuBjMFMxub1FeIRvR+rhfqHFld9VFXXBYe66ldBWf+syHHxoZEbZyunH6Idg==" crossorigin="anonymous"></script>
+
+		<script type="text/javascript">  
+			
+			async function loop() {
+			    
+
+				var pages =  $('span#numPages').data('divs');
+				var currentPage = 0;
+			    var doc = new jsPDF('p', 'mm', 'a4');
+
+			    for (var i = 0; i < pages; i++) {
+			      	await new Promise(function(resolve) {
+			        	html2canvas(document.querySelector("#selector-"+i), {scale: 1}).then(function(canvas) {
+			        		console.log(pages);
+			        		var img=canvas.toDataURL("image/png");
+			          		doc.addImage(img,'PNG',  5, 0, 201, 288);
+			          		if ((i+1) == pages) {
+			            		doc.save('menu.pdf');
+			          		} else {
+			            		doc.addPage();
+			          		}
+			          		resolve();
+			        	});
+			      	});
+			    }
+			}
+
+			
+			$('#downloadPDF').click(function(){
+				
+				loop()
+				/*
+				var images = new Array();
+				var doc = new jsPDF();
+				var numPages =  $('span#numPages').data('divs');
+				var currentPage = 0;
+
+				for (i = currentPage; i < numPages; i++){
+
+					var selector = "#selector-" + i;
+
+					genImgToDataUrl(images,selector,i);
+					
+					
+				}
+
+					console.log(images);
+					console.log(images.length);
+					
+
+					
+					
+				for (j = 0; j < images.length; j++){
+					
+				}	
+			
+					
+
+				
+
+				function genImgToDataUrl(images, selector,index){
+
+					let algo = html2canvas(document.querySelector(selector)).then(canvas => {
+
+							//img = canvas.toDataURL('img/png');
+							console.log(index);
+							images[index] = canvas.toDataURL('img/png');
+							console.log(images[index]);
+						});
+					//console.log(images);
+				}
+				*/
+			
+
+			});
+			
+
+
+			$('#downloadPDF_1').click(function () {
+
+					async function addPageToPDF(pdf,page){
+
+						html2canvas(page).then(canvas => {
+									pdf.addPage();
+									pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 5, 0, 201, 288);			
+								});	
+					}					
+
+					const filename  = 'ThisIsYourPDFFilename.pdf';
+
+					var aPages = $('.div-content').toArray(); 
+
+					html2canvas(aPages[0]).then(canvas => {
+
+						let pdf = new jsPDF('p', 'mm', 'a4');
+						pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 5, 0, 201, 288);
+						
+						for(index = 1; index < aPages.length; index++){
+
+							if (index == 1){
+								addPageToPDF(pdf,aPages[1]);
+							}
+							/*else{
+								
+								pdf.addPage();
+								pdf.text(20,20,index + ' => holaqueaseee');		
+							}*/
+							
+						}
+						
+						pdf.save(filename);
+					});
+				
+	    		    
+			});
+
+			$('#downloadPDF_').click(function () {
+				generatePDF();
+				
+			});
+			//console.log($('.div-content').toArray());
+			
+		var pdf,page_section,HTML_Width,HTML_Height,top_left_margin,PDF_Width,PDF_Height,canvas_image_width,canvas_image_height;
+	
+	
+	
+		function calculatePDF_height_width(selector,index){
+			page_section = $(selector).eq(index);
+			console.log(page_section);
+			HTML_Width = page_section.width();
+			
+			HTML_Height = page_section.height();
+			console.log('HTML_Width= ' + HTML_Width + 'HTML_Height=' + HTML_Height);
+			top_left_margin = 15;
+			PDF_Width = HTML_Width + (top_left_margin * 2);
+			PDF_Height = (PDF_Width * 1.2) + (top_left_margin * 2);
+
+			console.log('HTML_Width= ' + HTML_Width + 'HTML_Height=' + HTML_Height + ' PDF_Width=' + PDF_Width + 'PDF_Height= ' + PDF_Height);
+			canvas_image_width = HTML_Width;
+			canvas_image_height = HTML_Height;
+		}
+	
+
+
+
+	    //Generate PDF
+	    function generatePDF() {
+	        pdf = "";
+			//$("#downloadbtn").hide();
+			//$("#genmsg").show();
+	        
+	        var aPages = $('.div-content').toArray(); 
+	        console.log(aPages[0]);
+	        html2canvas(aPages[0]).then(function(canvas) {
+
+	            calculatePDF_height_width(".div-content",0);
+	            var imgData = canvas.toDataURL("image/png");
+				pdf = new jsPDF('p', 'mm', 'a4');
+	            pdf.addImage(imgData, 'PNG', 0, 0, HTML_Width, HTML_Height);
+	            pdf.save("HTML-Document.pdf");
+	            
+	            /*setTimeout(function() {
+
+	                //Save PDF Doc	
+	                pdf.save("HTML-Document.pdf");
+	            },0);        */
+
+	        });
+
+        /*html2canvas($(".print-wrap:eq(1)")[0], { allowTaint: true }).then(function(canvas) {
+
+            calculatePDF_height_width(".print-wrap",1);
+			
+            var imgData = canvas.toDataURL("image/png", 1.0);
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, HTML_Width, HTML_Height);
+
+        });
+
+        html2canvas($(".print-wrap:eq(2)")[0], { allowTaint: true }).then(function(canvas) {
+
+            calculatePDF_height_width(".print-wrap",2);
+			
+            var imgData = canvas.toDataURL("image/png", 1.0);
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, HTML_Width, HTML_Height);
+
+
+           
+                //console.log((page_section.length-1)+"==="+index);
+                setTimeout(function() {
+
+                    //Save PDF Doc	
+                    pdf.save("HTML-Document.pdf");
+
+                    //Generate BLOB object
+                    var blob = pdf.output("blob");
+
+                    //Getting URL of blob object
+                    var blobURL = URL.createObjectURL(blob);
+
+                    //Showing PDF generated in iFrame element
+                    var iframe = document.getElementById('sample-pdf');
+                    iframe.src = blobURL;
+
+                    //Setting download link
+                    var downloadLink = document.getElementById('pdf-download-link');
+                    downloadLink.href = blobURL;
+
+					$("#sample-pdf").slideDown();
+					
+					
+					$("#downloadbtn").show();
+					$("#genmsg").hide();
+                }, 0);
+        });*/
+    };
+
+			
+
+		</script>
 	</body>
 </html>

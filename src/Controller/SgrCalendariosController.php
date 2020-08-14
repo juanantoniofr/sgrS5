@@ -22,6 +22,8 @@ use App\Service\Calendario;
 use App\Service\Evento;
 
 use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 /**
  * @Route("/admin/sgr/calendario")
@@ -138,17 +140,19 @@ class SgrCalendariosController extends AbstractController
         if ( $request->query->get('genPDF') )
         {
             // return like html 
-            /*return $this->render('sgr_informes/pdf.html.twig', [
+            return $this->render('sgr_informes/pdf.html.twig', [
                 'calendarios' => $sgrCalendarios,
-            ]);*/
+            ]);
 
             //return like PDF download file
             $html = $this->renderView('sgr_informes/pdf.html.twig', [
                 'calendarios' => $sgrCalendarios,
             ]);
             
-            dump($html);
-            exit;
+            //$html = '<h1>Sample Title</h1><p>Lorem Ipsum</p>';
+            
+            //dump($html);
+            //exit;
             $response = $wrapper->getStreamResponse($html, "document.pdf",[
                 "Attachment" => false
             ]);

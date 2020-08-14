@@ -3,7 +3,10 @@
 {% block title %}<h1>SGR: Informe de ocupación</h1> {% endblock %}
 
 {% block content %}
-
+    
+    <button type="button" id="" class="btn btn-success border no-print" onClick="if (window.print) { window.print();} return false;">Imprimir</button>
+    <button class="btn btn-info no-print" id="downloadPDF">Download PDF</button>
+    
 	{% set begin = date("1970-1-1 07:30")%}
 	{% set h_inicio = [] %}
 	{% set h_fin = [] %}
@@ -21,79 +24,84 @@
 	{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Dom' } %}
 
 	{# key = espacio_id #}
+    {% set id = 0 %}
     {% for key, calendario in calendarios %}
     	{# calendario = array [0 => sgrEspacio, 1 => Array con key = diaSemana (1=lunes..7=domingo)]#}
-    	
-    	<table class="blueTable">
+    	<div id="selector-{{id}}">
+    	<div id="resp-table" class="div-content">
+        		
+            <div id="resp-table-caption">{{ calendario[0].nombre }}</div>
     		
-    		<caption>{{ calendario[0].nombre }}</caption>
-    		
-    		<thead style="width: 100%">
-                <tr>
-                    <th style=""><div class="">Hora</div></th>
+            <div id="resp-table-header">
+                <div class="table-header-cell" style="width: 5%">Hora</div>
                     {% for i in 1..7 %}
-    				    <th><div class="">{{ diaSemana[i] }}</div></th>
-                    {% endfor %}
-                </tr>
-    		</thead>
-
-    		<tbody>
-
+                        <div class="table-header-cell">{{ diaSemana[i] }}</div>
+        	        {% endfor %}
+            </div>
+    		
+            <div id="resp-table-body">
     			{% for j in 0..27 %}
-    				<tr>
-    					<td style="height: 27px;font-size: 11px;text-align: center"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
-                        {% set wth = '150px' %}
-                        {% set nwth = 150 %}
-    					{% for i in 1..7 %}
-                            
-    						{% if calendario[1][i] is defined %}
-                                {% if calendario[1][i][h_inicio[j]|date('H:i')] is defined %}
-                                    <td  class="reserva" style="height: 24px;min-width: 150px;padding-top: 0px;padding-bottom: 0px">
-            						<div style="position: relative;top: 0px;height: 24px;/*max-width: 100px*/">
-                            	
-    									
-	    								{% for key, reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
-	    									
-	    									{% set h = ( ( 27 * reserva['evento'].getDuracionHoras ) / 30 ) - 5  %}
-	    									{% set w = 95 -  (reserva['concurrencias'] * 12)  %}
-                                            {% set w = nwth -  (reserva['concurrencias'] * 14)  %}
-	    									{% set left = (reserva['concurrencias'] * 16)  ~ "px" %}
-                                            {% if key < 6 %}
-                                                {% set color = reserva['evento'].actividad.color %}
-    	    									<div 	class="borde div_reserva" 
-    	    										style=' text-align: center;
-                                                            overflow:hidden;
-                                                            font-size: 11px;
-                                                            max-width: 95px;
-                                                            padding-top: 3px;
-                                                            padding-left: 3px;
-                                                            height: {{ h }}px;
-                                                            background-color: #{{ color }};
-                                                            position: absolute;
-                                                            top:-1px;
-                                                            z-index:100;
-                                                            width: {{ w }}px;'>
-                                                    
-                                                    <span style="mix-blend-mode: difference;color: white">{{reserva['evento'].getDuracionHoras}} {{ reserva['evento'].titulo }}</span>
-                                                </div>
-                                            {% endif %}
-	    								{% endfor %}
-	    							</div>
-                                    </td>
+                    <div class="resp-table-row">
+                        <!-- style="height: 27px;font-size: 11px;text-align: center" -->
+    				    <div class="table-body-cell" style="height: 27px;font-size: 11px;text-align: center;vertical-align: middle;"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </div>
+    				
+                            {% set wth = '100px' %}
+                            {% set nwth = 100 %}
+        					{% for i in 1..7 %}
                                 
-                                {% else %}  
-                                    <td style="height: 24px;min-width: {{ wth }};padding-top: 0px;padding-bottom: 0px"><div style="width:100%;height: 100%;min-height: 26px;"></div></td>
+        						{% if calendario[1][i] is defined %}
+                                    {% if calendario[1][i][h_inicio[j]|date('H:i')] is defined %}
+                                        <!-- style="height: 24px;min-width: 100px;padding-top: 0px;padding-bottom: 0px;" -->
+                                        <div class="reserva content table-body-cell" style="height: 24px;min-width: 100px;padding-top: 0px;padding-bottom: 0px;">
+                                            
+                                            
+	       								        {% for key, reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
+	    									
+        	    									{% set h = ( ( 27 * reserva['evento'].getDuracionHoras ) / 30 ) - 5  %}
+        	    									{% set w = 95 -  (reserva['concurrencias'] * 12)  %}
+                                                    {% set w = nwth -  (reserva['concurrencias'] * 14)  %}
+        	    									{% set left = (reserva['concurrencias'] * 16)  ~ "px" %}
+                                                    {% if key < 6 %}
+                                                        {% set color = reserva['evento'].actividad.color %}
+    	    									        <div class="borde div_reserva" style=' text-align: center;overflow:hidden;font-size: 11px;max-width: 95px;padding-top: 3px;padding-left: 3px;height: {{ h }}px;background-color: #{{ color }};top:-1px;z-index:100;width: {{ w }}px;opacity: 1;background-color: red;position: absolute;'>
+                                                            <span style="mix-blend-mode: difference;color: white;">{{reserva['evento'].getDuracionHoras}} {{ reserva['evento'].titulo }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+	    							        
+                                            
+                                        </div>
+                                    {% else %}
+                                        <!-- style="height: 24px;min-width: {{ wth }};padding-top: 0px;padding-bottom: 0px;z-index: -100;position: relative;" -->
+                                        <div class="table-body-cell">
+                                            <!-- <div style=" width:100%;height: 26px;background-color: transparent;">&nbsp;</div>-->
+                                                
+                                        </div>  
+                                    
+                                    {% endif %}
+                                
+                                {% else %}
+                                        <!-- style="height: 24px;min-width: {{ wth }};padding-top: 0px;padding-bottom: 0px;z-index: -100;position: relative;" -->
+                                        <div class="table-body-cell">
+                                            <!-- <div style=" width:100%;height: 26px;background-color: transparent;">&nbsp;</div>-->
+                                                
+                                        </div>
                                 {% endif %}
-                            {% else %}  
-                                    <td style="height: 24px;min-width: {{ wth }};padding-top: 0px;padding-bottom: 0px"><div style="width:100%;height: 100%;min-height: 26px;"></div></td>
-                            {% endif %}
-                            
-    					{% endfor %}
-    				</tr>
-    			{% endfor %}
-    		</tbody>
-
-    	</table>
+                            {% endfor %}
+    			    </div><!-- /.resp-table-row --> 
+                {% endfor %}
+    		</div>
+            
+            <div id=“resp-table-footer”>
+                <div class=“table-footer-cell”>
+                    Footer 
+                </div>
+            </div>
+                
+        </div>
+    	</div>
         <div style="page-break-after:always;"></div>
+        {% set id = id + 1 %}
     {% endfor %}
+        <span id="numPages" style="display: none" data-divs="{{id}}"></span>
 {% endblock %}

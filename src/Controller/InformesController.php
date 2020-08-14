@@ -99,9 +99,9 @@ class InformesController extends AbstractController
         //dump($sgrCalendarios);
         //exit; 
 
-        return $this->render('sgr_informes/pdf.html.twig', [
+        /*return $this->render('sgr_informes/pdf.html.twig', [
             'calendarios' => $sgrCalendarios,
-        ]);
+        ]);*/
 
     	$html = $this->renderView('sgr_informes/pdf.html.twig', [
             'calendarios' => $sgrCalendarios,
