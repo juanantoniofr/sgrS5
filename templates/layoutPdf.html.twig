@@ -4,8 +4,8 @@
 
 			div.miWrapper {
 				margin: 1em auto;
-				max-width: 920px;
-				width: 95%;
+				/*max-width: 920px;
+				width: 95%;*/
 				font: 18px/1.5 sans-serif;
 				text-align: center;
 			}
@@ -14,9 +14,21 @@
 				margin: 0px;
 			}
 
+			div.pagePDF{
+				/*width: 794px;
+				height: 1123px;*/
+				/*width: 1240px;
+				height: 1754px;*/
+				width: 595px;
+				height: 842px;
+				border: 1px solid;
+			}
+			
 			div#resp-table {
 				display: table;
-				width: 100%;
+				/*width: 100%;*/
+				/*width: 794px;
+				height: 1123px;*/
 			}
 
 			div#resp-table-caption{
@@ -31,14 +43,18 @@
 				background-color: gray;
 				font-weight: bold;
 				font-size: 25px;
+				height: 20px;
 			}
 			
 			div.table-header-cell{
 				display: table-cell;
-				padding: 10px;
-				text-align: justify;
+				/*padding: 10px;*/
+				padding: 10px 2px;
+				/*text-align: justify;*/
+				text-align: center;
 				border-bottom: 1px solid black;
-				font-size: 16px;
+				/*font-size: 16px;*/
+				font-size: 12px;
 			}
 			
 			div#resp-table-body{
@@ -164,7 +180,8 @@
 			
 			async function loop() {
 			    
-
+				var scale = window.devicePixelRatio;
+				console.log(scale);
 				var pages =  $('span#numPages').data('divs');
 				var currentPage = 0;
 			    var doc = new jsPDF('p', 'mm', 'a4');
@@ -172,9 +189,13 @@
 			    for (var i = 0; i < pages; i++) {
 			      	await new Promise(function(resolve) {
 			        	html2canvas(document.querySelector("#selector-"+i), {scale: 1}).then(function(canvas) {
+			        		//var ctx = canvas.getContext('2d');
 			        		console.log(pages);
-			        		var img=canvas.toDataURL("image/png");
-			          		doc.addImage(img,'PNG',  5, 0, 201, 288);
+			        		//console.log(ctx);
+			        		var img = canvas.toDataURL('image/png');
+			        		console.log(img);
+			          		//doc.addImage(img,'PNG',  5, 0, 201, 297);
+			          		doc.addImage(img,'PNG',  5, 0);
 			          		if ((i+1) == pages) {
 			            		doc.save('menu.pdf');
 			          		} else {
