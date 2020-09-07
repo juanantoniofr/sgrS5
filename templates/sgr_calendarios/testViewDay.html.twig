@@ -3,9 +3,10 @@
 {% block title %}TEST: SgrEvento Vista Calendarios de ocupación: {{ view }} {% endblock %}
 
 {% block stylesheets %}
-    
+    {# Modify when Upload #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
-    <link rel="stylesheet" href="/reservasfgh/public/build/blueTable.css">
+    <link rel="stylesheet" href="/build/blueTable.css">
+    <!--<link rel="stylesheet" href="/reservasfgh/public/build/blueTable.css">-->
 {% endblock %}
 
 
@@ -329,16 +330,16 @@
     		*/
     	});
 
-         $('#genPDF').on('click',function(e){
+        $('#genPDF').on('click',function(e){
 
             var action = "{{ path('sgr_genPDF')|escape('js') }}";
-            console.log( $('form[name="sgr_filters_sgr_eventos"]').attr('action') );
+            //console.log( $('form[name="sgr_filters_sgr_eventos"]').attr('action') );
             var actionForm = $('form[name="sgr_filters_sgr_eventos"]').attr('action');
             var newAction = actionForm + '?genPDF=true';
 
-            console.log(newAction);
+            //console.log(newAction);
 
-            console.log( $('form[name="sgr_filters_sgr_eventos"]').attr('target') );
+            //console.log( $('form[name="sgr_filters_sgr_eventos"]').attr('target') );
             //var defaultAction = $('form[name="sgr_filters_sgr_eventos"]').attr('action');
             //var defaultTarget = $('form[name="sgr_filters_sgr_eventos"]').attr("target");
             $('form[name="sgr_filters_sgr_eventos"]').attr('action',newAction);
@@ -354,7 +355,7 @@
             alert (newUrl);
             */
             //window.location.href = newUrl; 
-       });
+        });
     </script>	
     <script type="text/javascript">
     
@@ -400,16 +401,18 @@
     </script>
     
     {# Modify when Upload #}
-    <!--
+    
     <script type="text/javascript" src="/build/formFiltersInput.js"></script>
     <script type="text/javascript" src="/build/datetimepickerInit.js"></script>
     <script type="text/javascript" src="/build/datetimepicker-calendarViewDay.js"></script>
-    --> 
+    <script type="text/javascript" src="/build/calendarios.js"></script>
+    
+    <!--
     <script type="text/javascript" src="/reservasfgh/public/build/formFiltersInput.js"></script>
     <script type="text/javascript" src="/reservasfgh/public/build/datetimepickerInit.js"></script>
     <script type="text/javascript" src="/reservasfgh/public/build/datetimepicker-calendarViewDay.js"></script>
     <script type="text/javascript" src="/reservasfgh/public/build/calendarios.js"></script>
-    
+    -->
     <script type="text/javascript">
 
         $(function() {
