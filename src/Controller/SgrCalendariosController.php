@@ -136,13 +136,15 @@ class SgrCalendariosController extends AbstractController
         $this->setValuesToSession($session,'idsEspacios',$idsEspacios);
 
         //dump($request->query->get('genPDF'));
-
+        //dump($request->query->get('genPDF'));
+        //exit;
         if ( $request->query->get('genPDF') )
         {
             // return like html 
-            return $this->render('sgr_informes/pdf.html.twig', [
+            /*return $this->render('sgr_informes/pdf.html.twig', [
                 'calendarios' => $sgrCalendarios,
-            ]);
+            ]);*/
+
 
             //return like PDF download file
             $html = $this->renderView('sgr_informes/pdf.html.twig', [
@@ -150,15 +152,22 @@ class SgrCalendariosController extends AbstractController
             ]);
             
             //$html = '<h1>Sample Title</h1><p>Lorem Ipsum</p>';
-            
+            /*return $this->render('sgr_informes/pdf.html.twig', [
+                'calendarios' => $sgrCalendarios,
+            ]);*/
             //dump($html);
             //exit;
-            $response = $wrapper->getStreamResponse($html, "document.pdf",[
+            $response = $wrapper->getStreamResponse($html, "sgr_Pdf.pdf",[
                 "Attachment" => false
             ]);
             $response->send();
         }
+        //dump($sgrCalendarios);
         
+        
+
+
+
         return $this->render( $template,[ 
             'form'  => $form->createView(),
             'calendarios' => $sgrCalendarios,
@@ -375,9 +384,12 @@ class SgrCalendariosController extends AbstractController
             $template = $this->getTemplate($view);
 
             //dump($f_inicio);
+            //exit;
             $begin = $this->getBegin($view, $current_month, $current_year, $action, $f_inicio);
             $end = $this->getEnd($view, $current_month, $current_year, $action, $f_inicio);
 
+            //dump($begin);
+            //dump($end);
             //set f_inicio and f_fin
             $this->session->set( 'f_inicio', $begin->format('d/m/Y'));
             $this->session->set( 'f_fin', $end->format('d/m/Y'));

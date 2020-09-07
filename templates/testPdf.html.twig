@@ -1,5 +1,5 @@
 <html class="h-100" lang="es-ES">
-    <head>
+	<head>
 		<style>
 
 			div.miWrapper {
@@ -25,7 +25,7 @@
 				border: 1px solid;
 				padding: 10px;
 			}
-			
+
 			div#resp-table {
 				display: table;
 				border-collapse:collapse;
@@ -39,6 +39,8 @@
 				text-align: center;
 				font-size: 30px;
 				font-weight: bold;
+				
+				border-bottom: 1px solid black;
 			}
 
 			div#resp-table-header{
@@ -48,7 +50,7 @@
 				font-size: 25px;
 				height: 20px;
 			}
-			
+
 			div.table-header-cell{
 				display: table-cell;
 				/*padding: 10px;*/
@@ -174,108 +176,13 @@
 				-webkit-border-radius: 10px 10px 10px 10px;
 				border: 1px solid #736e6e;
 			}
-
 		</style>
-
-	</head>	
+	</head>
 	<body>
 		<div class="miWrapper" id="div-content">
+			<h1>test layout pdf</h1>
 			{% block title %}{% endblock%}
 			{% block content %}{% endblock%}
 		</div>
-		
-
-		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha512-s/XK4vYVXTGeUSv4bRPOuxSDmDlTedEpMEcAQk0t/FMd9V6ft8iXdwSBxV0eD60c6w/tjotSlKu9J2AAW1ckTA==" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" integrity="sha512-1g3IT1FdbHZKcBVZzlk4a4m5zLRuBjMFMxub1FeIRvR+rhfqHFld9VFXXBYe66ldBWf+syHHxoZEbZyunH6Idg==" crossorigin="anonymous"></script>
- 
-
-		<script type="text/javascript">  
-			
-			async function loop() {
-			    
-				var scale = window.devicePixelRatio;
-				console.log(scale);
-				var pages =  $('span#numPages').data('divs');
-				var currentPage = 0;
-			    var doc = new jsPDF('p', 'mm', 'a4');
-
-			    var width = doc.internal.pageSize.width;
-				var height = doc.internal.pageSize.height;
-				console.log(width);
-				console.log(height);
-
-			    for (var i = 0; i < pages; i++) {
-			      	await new Promise(function(resolve) {
-			        	html2canvas(document.querySelector("#selector-"+i), {scale: 1}).then(function(canvas) {
-			        		//var ctx = canvas.getContext('2d');
-			        		console.log(pages);
-			        		//console.log(ctx);
-			        		var img = canvas.toDataURL('image/png');
-			        		console.log(canvas.height);
-			          		//doc.addImage(img,'PNG',  5, 0, 201, 297);
-			          		doc.addImage(img,'PNG',  5, 5, width-10, 280);
-			          		if ((i+1) == pages) {
-			            		doc.save('menu.pdf');
-			          		} else {
-			            		doc.addPage();
-			          		}
-			          		resolve();
-			        	});
-			      	});
-			    }
-			}
-
-			
-			$('#downloadPDF').click(function(){
-				
-				loop()
-				/*
-				var images = new Array();
-				var doc = new jsPDF();
-				var numPages =  $('span#numPages').data('divs');
-				var currentPage = 0;
-
-				for (i = currentPage; i < numPages; i++){
-
-					var selector = "#selector-" + i;
-
-					genImgToDataUrl(images,selector,i);
-					
-					
-				}
-
-					console.log(images);
-					console.log(images.length);
-					
-
-					
-					
-				for (j = 0; j < images.length; j++){
-					
-				}	
-			
-					
-
-				
-
-				function genImgToDataUrl(images, selector,index){
-
-					let algo = html2canvas(document.querySelector(selector)).then(canvas => {
-
-							//img = canvas.toDataURL('img/png');
-							console.log(index);
-							images[index] = canvas.toDataURL('img/png');
-							console.log(images[index]);
-						});
-					//console.log(images);
-				}
-				*/
-			
-
-			});
-			
-
-		</script>
 	</body>
 </html>

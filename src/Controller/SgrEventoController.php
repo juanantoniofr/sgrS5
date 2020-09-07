@@ -90,14 +90,20 @@ class SgrEventoController extends AbstractController
             }
 
             $f_inicio = null;
+            //dump($data['f_inicio']);
             if ($data['f_inicio']){
 
-                $f_inicio = date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));//$data['f_inicio'];////->getId();
+                $f_inicio = date_create_from_format('d/m/Y', $data['f_inicio'], new \DateTimeZone('Europe/Madrid'));
+                //$begin = $data['f_inicio'];
+                $begin = $f_inicio;
             }
             
             $f_fin = null;
-            if ($data['f_fin'])
-                $f_fin = date_create_from_format('d/m/Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));//$data['f_fin'];////$data['f_fin'];//->getId();
+            if ($data['f_fin']){
+                $f_fin = date_create_from_format('d/m/Y', $data['f_fin'], new \DateTimeZone('Europe/Madrid'));
+                //$end = $data['f_fin'];
+                $end = $f_fin;
+            }
             
             //All espacios.
             $sgrEspacios = $sgrEspacioRepository->findAll();

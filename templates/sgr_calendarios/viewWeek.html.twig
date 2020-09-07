@@ -545,9 +545,11 @@
     <script type="text/javascript">
 
     	$("#datetimepicker-fi").on("change.datetimepicker", function (e) {
-        
+        	
+        	console.log('change');
             if (e.oldDate != null)
                 $('form[name="sgr_filters_sgr_eventos"]').submit();
+
         });
 
         $('#thisWeek').on('click',function(){
@@ -559,20 +561,24 @@
 
         $('#nextWeek').on('click',function(){
         
-            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').add( 1, 'weeks' );
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').startOf('week').add( 1, 'weeks' );
+            //console.log(date);
             
             //set f_inicio
-            $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
-            $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
+            //$('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
+            //$('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').format('DD/MM/YYYY') );
+            //console.log($('#sgr_filters_sgr_eventos_f_inicio').val());
+            //console.log('f_inicio = ' + $('#sgr_filters_sgr_eventos_f_inicio').val());
+            //$('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
         });
 
         $('#prevWeek').on('click',function(){
             
-            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').subtract( 1, 'week' );
+            var date = $('#datetimepicker-fi').datetimepicker( 'date' ).locale('es').startOf('week').subtract( 1, 'week' );
             
             //set f_inicio
-            $('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
-            $('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
+            //$('#datetimepicker-fi').datetimepicker( 'date', date.locale('es').startOf('week').format('DD/MM/YYYY') );
+            //$('#sgr_filters_sgr_eventos_f_inicio').val( date.locale('es').startOf('week').format('DD/MM/YYYY') );
         });
     </script>
 

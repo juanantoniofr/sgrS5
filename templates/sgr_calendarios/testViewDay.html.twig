@@ -38,7 +38,7 @@
                     
                     <div class="content-justify-left text-left float-left">
              
-                        {{ include('sgr_calendarios/nav.html.twig') }}
+                        {{ include('sgr_calendarios/testNav.html.twig') }}
                     </div>
 
                     <div class="content-justify-left text-left float-left ml-1">
@@ -80,6 +80,7 @@
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     
                     {% for key, calendario in calendarios %}
+
                         <li class="nav-item">
                             {% set active='' %}
                             {% set selected = 'false' %}
@@ -94,15 +95,17 @@
             </div><!-- /#div-tablist -->
             
             <div class="tab-content" id="myTabContent">    
-            {% set begin = date("1970-1-1 07:30")%}
+            {% set begin = date("1970-1-1 07:45")%}
             {% set h_inicio = [] %}
             {% set h_fin = [] %}
 
-            {% for i in 1..28 %}
+         
+
+            {% for i in 1..56 %}
                 
-                {% set minutos = 30 * i %}
+                {% set minutos = 15 * i %}
                 {% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
-                {% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 30 minutes") %}
+                {% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 15 minutes") %}
                 {% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
                 {% set h_fin= h_fin|merge({(i):next_h_fin})  %}
             {% endfor %}
@@ -137,7 +140,7 @@
 
                     <tbody>
 
-                        {% for j in 0..27 %}
+                        {% for j in 0..55 %}
                             <tr>
                                 <td style="height: 27px;font-size: 11px;text-align: center"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </td>
                                 {% set wth = '150px' %}
@@ -153,7 +156,7 @@
                                                 
                                                 {% for key, reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
                                                     
-                                                    {% set h = ( ( 27 * reserva['evento'].getDuracionHoras ) / 30 ) - 5 %}
+                                                    {% set h = 2 *( ( ( 27 * reserva['evento'].getDuracionHoras ) / 30 ) )%}
                                                     {# set w = 95 -  (reserva['concurrencias'] * 12)  #}
                                                     {% set w = nwth -  (reserva['concurrencias'] * 14)  %}
                                                     {% set left = (reserva['concurrencias'] * 16)  ~ "px" %}

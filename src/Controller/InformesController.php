@@ -112,6 +112,21 @@ class InformesController extends AbstractController
             "Attachment" => false
         ]);
         $response->send();
+
+        // Load HTML to Dompdf
+        //$dompdf->loadHtml($html);
+        
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        //$dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        //$dompdf->render();
+
+        //return 1;
+        // Output the generated PDF to Browser (force download)
+        /*$dompdf->stream("mypdf.pdf", [
+            "Attachment" => true
+        ]);*/
     }
 
     /*private function getConcurrencias($eventosDiaSemanaAgrupadosPorHinicio, $miEvento){

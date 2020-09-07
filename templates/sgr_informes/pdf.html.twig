@@ -1,25 +1,24 @@
-{% extends 'layoutPdf.html.twig' %}
+{% extends 'testPdf.html.twig' %}
 
 {% block title %}<h1>SGR: Informe de ocupación</h1> {% endblock %}
 
 {% block content %}
     
-    <button type="button" id="" class="btn btn-success border no-print" onClick="if (window.print) { window.print();} return false;">Imprimir</button>
+    <!--<button type="button" id="" class="btn btn-success border no-print" onClick="if (window.print) { window.print();} return false;">Imprimir</button>
     <button class="btn btn-info no-print" id="downloadPDF">Download PDF</button>
-    
-	{% set begin = date("1970-1-1 07:30")%}
+    -->
+	{% set begin = date("1970-1-1 07:45")%}
 	{% set h_inicio = [] %}
 	{% set h_fin = [] %}
 
-	{% for i in 1..28 %}
-		
-		{% set minutos = 30 * i %}
-		{% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
-		{% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 30 minutes") %}
-		{% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
-		{% set h_fin= h_fin|merge({(i):next_h_fin})  %}
-
-	{% endfor %}
+	 {% for i in 1..56 %}
+                
+        {% set minutos = 15 * i %}
+        {% set next_h_inicio = date(begin.format("Y-m-d H:i") ~ " + " ~ minutos ~ " minutes") %}
+        {% set next_h_fin = date(next_h_inicio.format("Y-m-d H:i") ~ " + 15 minutes") %}
+        {% set h_inicio= h_inicio|merge({(i):next_h_inicio})  %}
+        {% set h_fin= h_fin|merge({(i):next_h_fin})  %}
+    {% endfor %}
 
 	{% set  diaSemana = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Dom' } %}
 
@@ -30,20 +29,20 @@
     	<div id="selector-{{id}}" class="pagePDF">
     	<div id="resp-table" class="div-content">
         		
-            <div id="resp-table-caption">{{ calendario[0].nombre }}</div>
+            <div id="resp-table-caption">{{ calendario[0].nombre }}</div><br />
     		
             <div id="resp-table-header">
-                <div class="table-header-cell" style="width: 5%">Hora</div>
+                <div class="table-header-cell" style="width: 40px">Hora</div>
                     {% for i in 1..7 %}
-                        <div class="table-header-cell">{{ diaSemana[i] }}</div>
+                        <div class="table-header-cell" style="width: 40px">{{ diaSemana[i] }}</div>
         	        {% endfor %}
-            </div>
+            </div><br />
     		
             <div id="resp-table-body">
-    			{% for j in 0..27 %}
+    			{% for j in 0..55 %}
                     <div class="resp-table-row">
                         <!-- style="height: 27px;font-size: 11px;text-align: center" -->
-    				    <div class="table-body-cell" style="height: 27px;font-size: 11px;text-align: center;vertical-align: middle;"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </div>
+    				    <div class="table-body-cell" style="font-size: 10px;text-align: center;vertical-align: middle;"> {{ h_inicio[j]|date('H:i') }}-{{ h_fin[j]|date("H:i") }} </div>
     				
                             {# set wth = '100px' #}
                             {# set nwth = 100 #}
@@ -58,15 +57,16 @@
                                             
                                             
 	       								        {% for key, reserva in calendario[1][i][h_inicio[j]|date('H:i')] %} 
-	    									
-        	    									{% set h = ( ( 27 * reserva['evento'].getDuracionHoras ) / 30 ) - 5  %}
+
+                                                    {% set numCeldas = ((reserva['evento'].hfin|date('U') - reserva['evento'].hinicio|date('U'))/60)/15 %}	    									   
+        	    									{% set h =  ( ( 16 * reserva['evento'].getDuracionHoras ) / 16 ) + ( numCeldas - 4) %}
         	    									{# set w = 95 -  (reserva['concurrencias'] * 12)  #}
                                                     {% set w = 65 -  (reserva['concurrencias'] * 12)  %}
                                                     {% set w = nwth -  (reserva['concurrencias'] * 14)  %}
         	    									{% set left = (reserva['concurrencias'] * 16)  ~ "px" %}
                                                     {% if key < 6 %}
                                                         {% set color = reserva['evento'].actividad.color %}
-    	    									        <div class="borde div_reserva" style=' text-align: center;overflow:hidden;font-size: 11px;max-width: 95px;padding-top: 3px;padding-left: 3px;height: {{ h }}px;
+    	    									        <div class="borde div_reserva"  style=' text-align: center;overflow:hidden;font-size: 11px;max-width: 95px;padding-top: 3px;padding-left: 3px;height: {{ h }}px;
                                                             /*background-color: #{{ color }};*/
                                                             background-color: #ECEEB1;
                                                             top:0px;z-index:100;width: {{ w }}px;opacity: 1;position: absolute;'>
@@ -79,7 +79,7 @@
                                         </div>
                                     {% else %}
                                         <!-- style="height: 24px;min-width: {{ wth }};padding-top: 0px;padding-bottom: 0px;z-index: -100;position: relative;" -->
-                                        <div class="table-body-cell cell-empty" >
+                                        <div class="table-body-cell cell-empty" >a
                                             <!-- <div style=" width:100%;height: 26px;background-color: transparent;">&nbsp;</div>-->
                                                 
                                         </div>  
@@ -88,7 +88,7 @@
                                 
                                 {% else %}
                                         <!-- style="height: 24px;min-width: {{ wth }};padding-top: 0px;padding-bottom: 0px;z-index: -100;position: relative;" -->
-                                        <div class="table-body-cell cell-empty" >
+                                        <div class="table-body-cell cell-empty" >a
                                             <!-- <div style=" width:100%;height: 26px;background-color: transparent;">&nbsp;</div>-->
                                                 
                                         </div>
@@ -106,7 +106,7 @@
                 
         </div>
     	</div>
-        <div style="page-break-after:always;"></div>
+        <!-- <div style="page-break-after:always;"></div> -->
         {% set id = id + 1 %}
     {% endfor %}
         <span id="numPages" style="display: none" data-divs="{{id}}"></span>
