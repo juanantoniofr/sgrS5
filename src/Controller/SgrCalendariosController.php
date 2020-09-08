@@ -21,9 +21,11 @@ use App\Entity\SgrFechasEvento;
 use App\Service\Calendario;
 use App\Service\Evento;
 
-use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
+/*use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
 use Dompdf\Dompdf;
-use Dompdf\Options;
+use Dompdf\Options;*/
+
+use Nucleos\DompdfBundle\Wrapper\DompdfWrapperInterface;
 
 /**
  * @Route("/admin/sgr/calendario")
@@ -157,10 +159,10 @@ class SgrCalendariosController extends AbstractController
             ]);*/
             //dump($html);
             //exit;
-            $response = $wrapper->getStreamResponse($html, "sgr_Pdf.pdf",[
+            return $wrapper->getStreamResponse($html, "sgr_Pdf.pdf",[
                 "Attachment" => false
             ]);
-            $response->send();
+            //$response->send();
         }
         //dump($sgrCalendarios);
         

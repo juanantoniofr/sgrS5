@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\SgrEventoRepository;
 use App\Repository\SgrEspacioRepository;
-use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
+//use Core23\DompdfBundle\Wrapper\DompdfWrapperInterface;
+use Nucleos\DompdfBundle\Wrapper\DompdfWrapperInterface;
 
 use App\Service\Calendario;
 
@@ -108,10 +109,10 @@ class InformesController extends AbstractController
         ]);
     	
         
-        $response = $wrapper->getStreamResponse($html, "document.pdf",[
+        return $wrapper->getStreamResponse($html, "document.pdf",[
             "Attachment" => false
         ]);
-        $response->send();
+        //$response->send();
 
         // Load HTML to Dompdf
         //$dompdf->loadHtml($html);
