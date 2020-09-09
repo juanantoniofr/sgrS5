@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use Knp\Snappy\Pdf;
+//use Knp\Snappy\Pdf;
 
 
 /**
@@ -14,13 +14,13 @@ use Knp\Snappy\Pdf;
 */
 class TestPdfController extends AbstractController
 {
-    private $snappy;
+    /*private $snappy;
 
     function __construct(Pdf $snappy){
 
         $this->snappy = $snappy;
     }
-
+    */
 
     /**
        * @Route("/test", name="snappy_pdf")
@@ -28,16 +28,17 @@ class TestPdfController extends AbstractController
     public function test()
     {
 
-    	// Retrieve the HTML generated in our twig file
+    /*
         $html = $this->renderView('dompdf/pdf.html.twig', [
             'title' => 'asdasdasdasd'
         ]);
-        //Generate pdf with the retrieved HTML
+    
         return new Response( $this->snappy->getOutputFromHtml($html), 200, array(
             'Content-Type'          => 'application/pdf',
             'Content-Disposition'   => 'inline; filename="export.pdf"'
         )
     );
+    */
         
     }
 }
