@@ -1,0 +1,13 @@
+knp_snappy:
+    temporary_folder: "%kernel.cache_dir%/snappy"
+    pdf:
+        enabled:    true
+        binary:     '%kernel.project_dir%/vendor/bin/wkhtmltopdf-amd64'
+        options:    
+            no-outline: true
+            page-size: A4
+            encoding: UTF-8
+    image:
+        enabled:    true
+        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
+        options:    []

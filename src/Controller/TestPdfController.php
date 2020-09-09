@@ -6,48 +6,38 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-// Include Dompdf required namespaces
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Knp\Snappy\Pdf;
 
+
+/**
+ * @Route("/admin/sgr/snappy")
+*/
 class TestPdfController extends AbstractController
 {
-    
+    private $snappy;
+
+    function __construct(Pdf $snappy){
+
+        $this->snappy = $snappy;
+    }
+
+
     /**
-       * @Route("/testpdf", name="test_pdf")
+       * @Route("/test", name="snappy_pdf")
     */
-    public function testpdf()
+    public function test()
     {
 
-    	// Configure Dompdf according to your needs
-        $pdfOptions = new Options();
-        $pdfOptions->set('defaultFont', 'Arial');
-        
-        //Instantiate Dompdf with our options
-        $dompdf = new Dompdf($pdfOptions);
-        
-        //Retrieve the HTML generated in our twig file
-        $site_name = 'Facultad de Geografía e Historia';
-        $site_app = 'SGR: Sistema de Gestión de Reservas';
-
-        $html = $this->render('static/wellcome.html.twig', [
-            'site_name' => $site_name,
-            'site_app' => $site_app,
+    	// Retrieve the HTML generated in our twig file
+        $html = $this->renderView('dompdf/pdf.html.twig', [
+            'title' => 'asdasdasdasd'
         ]);
-
-        // Load HTML to Dompdf
-        $dompdf->loadHtml($html);
-        
-        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-        $dompdf->setPaper('A4', 'portrait');
-
-        // Render the HTML as PDF
-        $dompdf->render();
-
-        // Output the generated PDF to Browser (inline view)
-        $dompdf->stream("mypdf.pdf", [
-            "Attachment" => false
-        ]);
+        //Generate pdf with the retrieved HTML
+        return new Response( $this->snappy->getOutputFromHtml($html), 200, array(
+            'Content-Type'          => 'application/pdf',
+            'Content-Disposition'   => 'inline; filename="export.pdf"'
+        )
+    );
         
     }
 }
